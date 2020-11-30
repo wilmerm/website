@@ -1,0 +1,20 @@
+
+<!-- {# inclusion_tag: svg() #} -->
+<!-- SVG {{ filename }} -->
+
+<span id="{% firstof id 'id-'|add:filename|add:size %}">
+    {{ svg|safe }}
+</span>
+
+<style>
+    #{% firstof id 'id-'|add:filename|add:size %} .bi-{{ filename }} {
+        width: {{ size }}; height: {{ size }};
+        fill: {% firstof fill 'var(--primary)' '#505050' %};
+    }
+</style>
+
+<script>
+    let svg = document.querySelector("#{% firstof id 'id-'|add:filename|add:size %} .bi-{{ filename }}");
+    //svg.style.fill = "red";
+</script>
+<!-- End SVG {{ filename }} -->
