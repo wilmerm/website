@@ -23,7 +23,11 @@ import django.views.generic
 from django.db import models
 from django.contrib import messages
 from django.contrib.auth.decorators import (login_required, permission_required, user_passes_test)
-from simple_history.models import HistoricalRecords
+
+try:
+    from simple_history.models import HistoricalRecords
+except (ImportError) as e:
+    print(e)
 
 from fuente import (var, html, text, json, report)
 import fuente
@@ -342,7 +346,12 @@ class Menu(object):
 # https://django-simple-history.readthedocs.io/en/latest/
 # django-simple-history almacena el estado del modelo
 # Django en cada creación / actualización / eliminación.
-Historical = HistoricalRecords
+try:
+    Historical = HistoricalRecords
+except (NameError):
+    pass
+
+
 
 
 conteo = 0
