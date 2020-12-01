@@ -56,12 +56,12 @@
             opacity: 1;
         }
 
-        .carousel-inner > .carousel-item {
+        /* .carousel-inner > .carousel-item {
             -webkit-transition: -webkit-transform 3s ease-in-out !important;
             -o-transition: -o-transform 3s ease-in-out !important;
             -moz-transition: -moz-transform 3s ease-in-out !important;
             transition: transform 3s ease-in-out !important;
-        }
+        } */
     </style>
 </head>
 
@@ -248,21 +248,21 @@
     <!-- section-1 -->
     {% block carousel %}
     <section id="section-1">
+
         <!-- Transcción de imágenes. -->
-        <div id="carousel1" class="carousel" data-ride="carousel" data-interval="7000">
+        <div id="carousel1" class="carousel slide" data-ride="carousel" data-interval="9000">
             <ol class="carousel-indicators">
                 {% for obj in base.sliders %}
                 <li data-target="#carousel1" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
                 {% endfor %}
             </ol>
-            <!-- Sliders. -->
             <div class="carousel-inner">
                 {% for obj in base.sliders %}
                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                    <img src="{{ obj.image|thumbnail_url:'1024x768crop' }}" alt="{{ obj }}" class="w-100">
+                    <img src="{{ obj.image|thumbnail_url:'1024x768crop' }}" alt="{{ obj }}" class="d-block w-100">
                     <div class="carousel-caption d-none d-md-block">
-                        <h5 class="display-3 text-shadow animate__animated animate__fadeInDown animate__delay-2s animate__slower">{{ obj.title }}</h5>
-                        <p class="text-shadow animate__animated animate__fadeIn animate__delay-2s animate__slower" style="font-size: 2rem;">{{ obj.description }}</p>
+                        <h5 class="h1 text-shadow animate__animated animate__fadeInDown animate__delay-2s animate__slow">{{ obj.title }}</h5>
+                        <p class="h3 text-shadow animate__animated animate__fadeIn animate__delay-2s animate__slow">{{ obj.description }}</p>
                     </div>
                 </div>
                 {% endfor %}
@@ -286,7 +286,7 @@
     {% block brands %}
     <section id="marcas-representadas">
         <div class="container text-center p-4 mt-4">
-            <h2>Marcas Representadas</h2>
+            <h2>Marcas <strong>Representadas</strong></h2>
             <div class="text-center mx-auto my-4">
                 <div class="btn-group">
                     {% for obj in base.brands %}
@@ -308,7 +308,7 @@
     <section id="section-schedule">
         <div class="container">
             <div class="p-4 m-4 border shadow">
-                <div class="bg-primary p-4"><h2 class="display-4 text-white text-center">Nuestro horario de servicio</h2></div>
+                <div class="bg-primary p-4"><h2 class="display-4 text-white text-center">Nuestro Horario de <strong>Servicio</strong></h2></div>
                 <table class="table table-bordered border-0">
                     <thead class="thead-light">
                         <th class=""></th>
@@ -538,7 +538,7 @@
                         </div>
                     </div>
                     <div class="col col-12 col-md-6 p-4 bg-white">
-                        <h2 class="text-center">Solicitar <b>visita</b></h2>
+                        <h2 class="text-center">Solicitar <strong>visita</strong></h2>
                         <form action="/solicitar-visita/">
                             <div class="row mt-4">
                                 <div class="col col-6">
@@ -657,26 +657,28 @@
         
 
 
-        // Activate Carousel
-        $("#carousel1").carousel();
+        // // Activate Carousel
+        // $("#carousel1").carousel({
+        //     interval: 2000,
+        // });
 
-        // Enable Carousel Indicators
-        $(".carousel-item").click(function() {
-            $("#carousel1").carousel(1);
-        });
+        // // Enable Carousel Indicators
+        // $(".item").click(function() {
+        //     $("#carousel1").carousel(1);
+        // });
 
-        // Enable Carousel Controls
-        $(".carousel-control-prev").click(function() {
-            $("#carousel1").carousel("prev");
-        });
+        // // Enable Carousel Controls
+        // $(".carousel-control-prev").click(function() {
+        //     $("#carousel1").carousel("prev");
+        // });
 
-        $(".carousel-control-next").click(function() {
-            $("#carousel1").carousel("next");
-        });
+        // $(".carousel-control-next").click(function() {
+        //     $("#carousel1").carousel("next");
+        // });
 
-        $('#carousel1').on('slide.bs.carousel', function (direction, relatedTarget, from, to) {
-            //console.log(direction, relatedTarget, from, to);
-        })
+        // $('#carousel1').on('slide.bs.carousel', function (direction, relatedTarget, from, to) {
+        //     //console.log(direction, relatedTarget, from, to);
+        // })
     </script>
 </body>
 </html>
