@@ -10,6 +10,7 @@ parte de TEMPLATES -- OPTIONS -- context_procesors
 
 from django.conf import settings
 from django.utils.translation import gettext as _
+from django.db.utils import OperationalError
 
 from base.models import (Setting, AdvancedSetting, SocialNetwork, Slide,
 Schedule, Brand, Question)
@@ -24,31 +25,52 @@ class Base:
 
     @classmethod
     def social_networks(self, request=None):
-        return SocialNetwork.objects.all()
-
+        try:
+            return SocialNetwork.objects.all()
+        except (OperationalError) as e:
+            print(e)
+        
     @classmethod
     def setting(self, request=None):
-        return Setting.objects.last()
+        try:
+            return Setting.objects.last()
+        except (OperationalError) as e:
+            print(e)
 
     @classmethod
     def advanced_setting(self, request=None):
-        return AdvancedSetting.objects.last()
+        try:
+            return AdvancedSetting.objects.last()
+        except (OperationalError) as e:
+            print(e)
 
     @classmethod
     def sliders(self, request=None):
-        return Slide.objects.filter(is_active=True)
+        try:
+            return Slide.objects.filter(is_active=True)
+        except (OperationalError) as e:
+            print(e)
 
     @classmethod
     def schedule(self, request=None):
-        return Schedule.objects.last()
+        try:
+            return Schedule.objects.last()
+        except (OperationalError) as e:
+            print(e)
 
     @classmethod
     def brands(self, request=None):
-        return Brand.objects.all()
+        try:
+            return Brand.objects.all()
+        except (OperationalError) as e:
+            print(e)
 
     @classmethod
     def questions(self, request=None):
-        return Question.objects.all()
+        try:
+            return Question.objects.all()
+        except (OperationalError) as e:
+            print(e)
 
 
 
