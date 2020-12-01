@@ -15,4 +15,4 @@ DATABASES = {
     }
 }
 
-
+MEDIA_ROOT = MEDIA_ROOT / "localhost"
