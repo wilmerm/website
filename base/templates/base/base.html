@@ -502,7 +502,7 @@
 
 
     <!-- Footer. -->
-    <footer class="">
+    <footer class="bg-primary">
         {% block contact %}
         <div class="bg-light p-4" id="contact">
             <div class="container">
@@ -601,7 +601,7 @@
         {% endblock contact %}
         <!-- block footer. -->
         {% block footer %}
-        <div class="container-fluid bg-primary text-white p-4">
+        <div class="container-fluid text-white p-4">
             <div class="row">
                 <div class="col col-12 col-sm-6 col-md-4"></div>
                 <div class="col col-12 col-sm-6 col-md-4">
@@ -618,8 +618,9 @@
             </div>
         </div>
         {% endblock footer %}
+        <hr>
         <!-- Copyright. -->
-        <div class="copyright text-center bg-primary text-white p-4">
+        <div class="copyright text-center text-white p-4">
             © {% now "Y" %} {{ base.setting.website_name }} by <a class="text-white" href="{{ unolet.site.url }}" target="_blank"><b>{{ unolet.site.name }}</b></a>
         </div>
     </footer>

@@ -72,6 +72,13 @@ class Item(models.Model):
     help_text=_l("Tipo de material principal del cual está constituído "
     "(Ejemplo 'plástico')."))
 
+    capacity = models.DecimalField(_("Capacidad"), max_digits=17, 
+    decimal_places=2, null=True, blank=True)
+
+    capacity_type = models.CharField(_l("Capacidad (tipo)"), max_length=50,
+    blank=True, help_text=_l("El tipo de medida para la capacidad indicada "
+    "(ejemplos BTU, Watts, Voltios, Amperaje, Hz, etc."))
+
     price = models.DecimalField(_l("Precio"), max_digits=17, 
     decimal_places=2, null=True, blank=True) 
 
