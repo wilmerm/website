@@ -54,6 +54,40 @@
 }
 
 
+.btn-outline-primary {
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-hover) !important;
+    color: var(--primary-contrast) !important;
+}
+
+
+.btn-outline-secondary {
+    border-color: var(--secondary) !important;
+    color: var(--secondary) !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--secondary-hover) !important;
+    color: var(--secondary-contrast) !important;
+}
+
+
+.btn-outline-tertiary {
+    border-color: var(--tertiary) !important;
+    color: var(--tertiary);
+}
+
+.btn-outline-tertiary:hover {
+    background-color: var(--tertiary-hover);
+    color: var(--tertiary-contrast);
+}
+
+
+
 
 .bg-primary {
     background-color: var(--primary) !important;
@@ -89,26 +123,83 @@
 
 
 
-h1, .h1 {
+
+h1 {
     font-size: 2.5rem !important;
 }
 
-h2, .h2 {
+h2 {
     font-size: 1.8rem !important;
 }
 
-h3, .h3 {
+h3 {
     font-size: 1.5rem !important;
 }
 
-h4, .h4 {
+h4 {
     font-size: 1.2rem !important;
 }
 
-h5, .h5 {
+h5 {
     font-size: 0.9rem !important;
 }
 
-h6, .h6 {
+h6 {
     font-size: 0.7rem !important;
+}
+
+
+.h1 {
+    font-size: 2.5rem !important;
+}
+
+.h2 {
+    font-size: 1.8rem !important;
+}
+
+.h3 {
+    font-size: 1.5rem !important;
+}
+
+.h4 {
+    font-size: 1.2rem !important;
+}
+
+.h5 {
+    font-size: 0.9rem !important;
+}
+
+.h6 {
+    font-size: 0.7rem !important;
+}
+
+
+.h1 svg {
+    font-size: 2.5rem !important;
+    width: 2.5rem; height: 2.5rem;
+}
+
+.h2 svg {
+    font-size: 1.8rem !important;
+    width: 1.8rem; height: 1.8rem;
+}
+
+.h3 svg {
+    font-size: 1.5rem !important;
+    width: 1.5rem; height: 1.5rem;
+}
+
+.h4 svg {
+    font-size: 1.2rem !important;
+    width: 1.2rem; height: 1.2rem;
+}
+
+.h5 svg {
+    font-size: 0.9rem !important;
+    width: 0.9rem; height: 0.9rem;
+}
+
+.h6 svg {
+    font-size: 0.7rem !important;
+    width: 0.7rem; height: 0.7rem;
 }

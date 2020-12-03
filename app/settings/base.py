@@ -145,10 +145,16 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 
+# CARGA DE ARCHIVOS
+DATA_UPLOAD_MAX_MEMORY_SIZE = 15728640 # 15 MB
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 20480 # 20 KB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 2621440 # 2.5 MB
+
+
 # Aplicación 'easy_thumbnails'
 THUMBNAIL_ALIASES = {
     '': {
-        'icon': {'size': (32, 32), 'crop': True},
+        'icon': {'size': (32, 32), 'crop': "smart"},
         '64': {'size': (64, 64), 'crop': False},
         '64crop': {'size': (64, 64), 'crop': True},
         '128': {'size': (128, 128), 'crop': False},

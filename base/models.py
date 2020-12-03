@@ -10,6 +10,38 @@ from colorfield.fields import ColorField
 
 
 
+
+def validate_video_size(value):
+    """
+    Validador de máximo size permitido en subida de archivos.
+
+    """
+    size = 50 * 1024 * 1024 # 50 MB
+    filesize = value.size
+    
+    if filesize > size:
+        raise ValidationError(f"El valor máximo del archivo es "
+    f"{size/1024/1024} MB, este tiene {round(filesize/1024/1024)} MB")
+
+    return value
+
+
+def validate_image_size(value):
+    """
+    Validador de máximo size permitido en subida de archivos.
+
+    """
+    size = 5 * 1024 * 1024 # 5 MB
+    filesize = value.size
+    
+    if filesize > size:
+        raise ValidationError(f"El valor máximo del archivo es "
+    f"{size/1024/1024} MB, este tiene {round(filesize/1024/1024)} MB")
+
+    return value
+
+
+
 class Setting(models.Model):
     """
     Configuración del sitio.
@@ -399,3 +431,73 @@ class Question(models.Model):
         return self.question
 
     
+
+
+
+
+class SampleImage(models.Model):
+    """
+    Imágen de muestra.
+    
+    """
+
+    RECORD_LIMIT = 50 # Número máximo de registros que se pueden registrar.
+
+    title = models.CharField(_l("Título"), max_length=70, blank=True)
+
+    description = models.CharField(_l("Descripción"), max_length=700, blank=True)
+
+    image = models.ImageField(_l("Imágen"), upload_to="sapleimage", 
+    validators=[validate_image_size])
+
+    index = models.IntegerField(_l("Indice"), default=0, help_text=_l("Orden "
+    "en que será mostrada la imagen con respecto a otra."))
+
+
+    class Meta:
+        verbose_name = _("Imagen de muestra")
+        verbose_name_plural = _("Imágenes de muestra")
+        ordering = ["index"]
+
+    
+    def __str__(self):
+        return self.title or f"Imágen: {self.id}"
+
+    def clean(self):
+        if SampleVideo.objects.count() >= self.RECORD_LIMIT:
+            raise ValidationError(_("Se alcanzó el máximo de imágenes subidas."))
+
+
+
+
+
+class SampleVideo(models.Model):
+    """
+    Video de muestra.
+    
+    """
+    RECORD_LIMIT = 5 # Número máximo de registros que se pueden registrar.
+
+    title = models.CharField(_l("Título"), max_length=70, blank=True)
+
+    description = models.CharField(_l("Descripción"), max_length=700, blank=True)
+
+    video = models.FileField(_l("Video"), upload_to="saplevideo",
+    validators=[validate_video_size])
+
+    index = models.IntegerField(_l("Indice"), default=0, help_text=_l("Orden "
+    "en que será mostrado el video con respecto a otro."))
+
+
+    class Meta:
+        verbose_name = _("Video de muestra")
+        verbose_name_plural = _("Videos de muestra")
+        ordering = ["index"]
+
+    
+    def __str__(self):
+        return self.title or f"Video: {self.id}"
+
+    def clean(self):
+        if SampleVideo.objects.count() >= self.RECORD_LIMIT:
+            raise ValidationError(_("Se alcanzó el máximo de videos subidos."))

@@ -1,8 +1,7 @@
 from django.contrib import admin
 
 from base.models import (Setting, AdvancedSetting, SocialNetwork, Slide, 
-Schedule, Brand, Question)
-
+Schedule, Brand, Question, SampleImage, SampleVideo)
 
 
 
@@ -13,3 +12,5 @@ admin.site.register(Slide)
 admin.site.register(Schedule)
 admin.site.register(Brand)
 admin.site.register(Question)
+admin.site.register(SampleImage)
+admin.site.register(SampleVideo)

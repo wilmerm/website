@@ -2,19 +2,21 @@
 <!-- {# inclusion_tag: svg() #} -->
 <!-- SVG {{ filename }} -->
 
-<span id="{% firstof id 'id-'|add:filename|add:size %}">
-    {{ svg|safe }}
-</span>
+
 
 <style>
-    #{% firstof id 'id-'|add:filename|add:size %} .bi-{{ filename }} {
-        width: {{ size }}; height: {{ size }};
+    #{{ id }} svg {
+        {% if size %}width: {{ size }} !important; height: {{ size }} !important;{% endif %}
         fill: {% firstof fill 'var(--primary)' '#505050' %};
     }
 </style>
 
+<span id="{{ id }}">
+    {{ svg|safe }}
+</span>
+
 <script>
-    let svg = document.querySelector("#{% firstof id 'id-'|add:filename|add:size %} .bi-{{ filename }}");
+    let svg = document.querySelector("#{{ id }} svg");
     //svg.style.fill = "red";
 </script>
 <!-- End SVG {{ filename }} -->

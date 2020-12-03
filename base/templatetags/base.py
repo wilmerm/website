@@ -11,13 +11,52 @@ register = template.Library()
 
 
 @register.inclusion_tag("tags/icon.html")
-def svg(filename: str, size: str = "32px", fill=None) -> dict:
+def svg(filename: str, size: str = None, fill: str = None, 
+    id: str = None) -> dict:
     """
     Retorna el contenido del archivo SVG con el nombre indicado.
 
     Nota: retorna el contenido, no la ruta, en un archivo .SVG.
-    
+
+    Parameters:
+        filename (str): Nombre del archivo o ruta. Si se indica el nombre del 
+        archivo, buscará dentro de los directorios static/img/* predeterminados.
+        Si se indica una ruta, tendrá que empezar por /static/*
+
+        size (str): El size se pasará a las opciones CSS (width, height) tal y 
+        como se especifiquen, por lo cual es conveniente indicar su tipo de 
+        medida (ejemplos '32px', '2rem', etc.).
+
+        fill (str): CSS color que se pasará a la opción fill para pintar la 
+        imagen.
+
     """
-    path = settings.BASE_DIR / f"static/img/icons/{filename}.svg"
-    svg = open(path, "r").read()
-    return {"svg": svg, "size": size, "fill": fill, "filename": filename}
+    if "/" in filename:
+        path = filename
+        if not ".svg" in path:
+            path += ".svg"
+        if path[0] == "/":
+            path = path.replace("/", "", 1)
+        path = settings.BASE_DIR / path
+        svg = open(path, "r").read()
+        filename = filename.split("/")[-1].replace(".", "-")
+    else:
+        path1 = settings.BASE_DIR / f"static/img/icons/{filename}.svg"
+        path2 = settings.BASE_DIR / f"static/img/others/{filename}.svg"
+
+        try:
+            svg = open(path1, "r").read()
+        except (FileNotFoundError):
+            svg = open(path2, "r").read()
+
+    if fill:
+        if not "!important" in fill:
+            fill = fill.strip() + " !important"
+
+    if not id:
+        id = f"id-svg-{filename}-fill-{fill}-size-{size}"
+
+    id = "-".join(id.split()).replace("#", "").replace(".", "").replace("!", "")
+
+    return {"svg": svg, "size": size, "fill": fill, "filename": filename, 
+        "id": id}

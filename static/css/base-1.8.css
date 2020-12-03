@@ -533,6 +533,33 @@ Tablas.
 /* -----------------------------------------------------------------------------
  Posiciones.
 ------------------------------------------------------------------------------*/
+.z-index-inherit {
+    z-index: inherit;
+}
+
+.z-index-auto {
+    z-index: auto;
+}
+
+.z-index-initial {
+    z-index: initial;
+}
+
+.z-index-unset {
+    z-index: unset;
+}
+
+.z-index-n1000 {
+    z-index: -1000;
+}
+
+.z-index-0 {
+    z-index: 0;
+}
+
+.z-index-500 {
+    z-index: 500;
+}
 
 .z-index-1000 {
     z-index: 1000;
@@ -654,6 +681,182 @@ Colores, Opacidad...
 
 
 
+.blur-0 {
+    filter: blur(0);
+    -webkit-filter: blur(0);
+}
+
+.blur-1px {
+    filter: blur(1px);
+    -webkit-filter: blur(1px);
+}
+
+.blur-2px {
+    filter: blur(2px);
+    -webkit-filter: blur(2px);
+}
+
+.blur-3px {
+    filter: blur(3px);
+    -webkit-filter: blur(3px);
+}
+
+.blur-4px {
+    filter: blur(4px);
+    -webkit-filter: blur(4px);
+}
+
+.blur-5px {
+    filter: blur(5px);
+    -webkit-filter: blur(5px);
+}
+
+.blur-6px {
+    filter: blur(6px);
+    -webkit-filter: blur(6px);
+}
+
+.blur-7px {
+    filter: blur(7px);
+    -webkit-filter: blur(7px);
+}
+
+.blur-8px {
+    filter: blur(8px);
+    -webkit-filter: blur(8px));
+}
+
+.blur-9px {
+    filter: blur(9px);
+    -webkit-filter: blur(9px);
+}
+
+.blur-10px {
+    filter: blur(10px);
+    -webkit-filter: blur(10px);
+}
+
+
+
+
+/* -----------------------------------------------------------------------------
+ Rotación.
+------------------------------------------------------------------------------*/
+
+.rotate-5 {
+    transform: rotate(5deg);
+    -moz-transform: rotate(5deg);
+    -webkit-transform: rotate(5deg);
+}
+
+.rotate-10 {
+    transform: rotate(10deg);
+    -moz-transform: rotate(10deg);
+    -webkit-transform: rotate(10deg);
+}
+
+.rotate-20 {
+    transform: rotate(20deg);
+    -moz-transform: rotate(20deg);
+    -webkit-transform: rotate(20deg);
+}
+
+.rotate-30 {
+    transform: rotate(30deg);
+    -moz-transform: rotate(30deg);
+    -webkit-transform: rotate(30deg);
+}
+
+.rotate-40 {
+    transform: rotate(40deg);
+    -moz-transform: rotate(40deg);
+    -webkit-transform: rotate(40deg);
+}
+
+.rotate-50 {
+    transform: rotate(50deg);
+    -moz-transform: rotate(50deg);
+    -webkit-transform: rotate(50deg);
+}
+
+.rotate-60 {
+    transform: rotate(60deg);
+    -moz-transform: rotate(60deg);
+    -webkit-transform: rotate(60deg);
+}
+
+.rotate-70 {
+    transform: rotate(70deg);
+    -moz-transform: rotate(70deg);
+    -webkit-transform: rotate(70deg);
+}
+
+.rotate-80 {
+    transform: rotate(80deg);
+    -moz-transform: rotate(80deg);
+    -webkit-transform: rotate(80deg);
+}
+
+.rotate-90 {
+    transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+}
+
+.rotate-100 {
+    transform: rotate(100deg);
+    -moz-transform: rotate(100deg);
+    -webkit-transform: rotate(100deg);
+}
+
+.rotate-110 {
+    transform: rotate(110deg);
+    -moz-transform: rotate(110deg);
+    -webkit-transform: rotate(110deg);
+}
+
+.rotate-120 {
+    transform: rotate(120deg);
+    -moz-transform: rotate(120deg);
+    -webkit-transform: rotate(120deg);
+}
+
+.rotate-130 {
+    transform: rotate(130deg);
+    -moz-transform: rotate(130deg);
+    -webkit-transform: rotate(130deg);
+}
+
+.rotate-140 {
+    transform: rotate(140deg);
+    -moz-transform: rotate(140deg);
+    -webkit-transform: rotate(140deg);
+}
+
+.rotate-150 {
+    transform: rotate(150deg);
+    -moz-transform: rotate(150deg);
+    -webkit-transform: rotate(150deg);
+}
+
+.rotate-160 {
+    transform: rotate(160deg);
+    -moz-transform: rotate(160deg);
+    -webkit-transform: rotate(160deg);
+}
+
+.rotate-170 {
+    transform: rotate(170deg);
+    -moz-transform: rotate(170deg);
+    -webkit-transform: rotate(170deg);
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+}
+
 
 /* -----------------------------------------------------------------------------
  Positions.
@@ -738,27 +941,27 @@ body, .btn, .form-control, .form-control-plaintext, .dropdown-menu,
 
 h1, .h1 {
     font-size: 1.4rem;
-  }
+}
 
-  h2, .h2 {
+h2, .h2 {
     font-size: 1.3rem;
-  }
+}
 
-  h3, .h3 {
+h3, .h3 {
     font-size: 1.2rem;
-  }
+}
 
-  h4, .h4 {
+h4, .h4 {
     font-size: 1.1rem;
-  }
+}
 
-  h5, .h5 {
+h5, .h5 {
     font-size: 1rem;
-  }
+}
 
-  h6, .h6 {
+h6, .h6 {
     font-size: 0.9rem;
-  }
+}
 
 
 

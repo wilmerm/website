@@ -7,7 +7,7 @@
 <html lang="es">
 <head>
     <title>{% if title %}{{ title }} |{% endif %} {{ base.setting.website_name|truncatechars:30 }} {% if settings.DEBUG %}(Debug){% endif %}</title>
-    <link rel="icon" type="image/png" href="{% if base.setting.icon %}{{ base.setting.icon }}{% else %}'/static/img/base/logo.png'{% endif %}">
+    <link rel="icon" type="image/any" href="{% if base.setting.icon %}{{ base.setting.icon|thumbnail_url:'icon' }}{% else %}'/static/img/base/logo.png'{% endif %}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{{ description }}">
@@ -44,16 +44,17 @@
 
     <style>
         #btnUp {
+            border: 1px solid white !important;
             visibility: hidden;
             opacity: 0;
             transition: visibility 0s, opacity 0.7s linear;
         }
         #btnUp.active {
             visibility: visible;
-            opacity: 0.4;
+            opacity: 0.6;
         }
         #btnUp:hover {
-            opacity: 1;
+            opacity: 1;|
         }
 
         /* .carousel-inner > .carousel-item {
@@ -71,12 +72,12 @@
     
     <!-- En construcción. -->
     {% if settings.DEBUG != True %}
-    <div class="alert alert-warning alert-dismissible fade show container-fluid shadow-lg position-fixed shadow-lg border z-index-3000 w-25 bottom animate__animated animate__shakeY text-dark" role="alert">
+    <div class="alert alert-warning alert-dismissible fade show container-fluid shadow-lg position-fixed top shadow-lg border z-index-3000 w-100 animate__animated animate__shakeY text-dark" role="alert">
         <div class="row">
-            <div class="col col-3">
+            <div class="col col-2">
                 <img src="/static/img/miscelaneos/parlante.png" alt="" class="img-fluid">
             </div>
-            <div class="col col-9">
+            <div class="col col-10">
                 <p class="h2">!{{ base.setting.website_name }} próximamente!</p>
                 <strong>Alerta de sitio en construcción.</strong> Este sitio web está siendo construido por <a href="https://www.unolet.com" target="_blank">Unolet</a>.
             </div>
@@ -90,7 +91,7 @@
 
 
     <!-- Header. -->
-    <header class="animate__animated animate__slideInDown">
+    <header class="d-none d-md-block animate__animated animate__slideInDown">
         <!-- block header -->
         {% block header %}
         <div class="container-fluid sticky-top" style="position: absolute; z-index: 0; {% if base.setting.cover %}height: {{ base.setting.cover_height }}px; background-image: url('{{ base.setting.cover.url }}'); background-size: cover; filter: blur(8px); -webkit-filter: blur(8px);{% endif %}"></div>
@@ -98,7 +99,7 @@
         {% block cover %}
         <div class="container z-index-3000 border-bottom">
             <div class="row">
-                <div class="col col-md-3 pt-2 px-0 mx-0">
+                <div class="col col-md-3 pt-2 px-md-0 mx-md-0">
                     <a href="{% url 'index' %}#section-schedule" class="btn btn-block text-left">
                         <div class="container-fluid p-0">
                             <div class="row">
@@ -113,7 +114,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col col-md-3 pt-2 px-0 mx-0">
+                <div class="col col-md-3 pt-2 px-md-0 mx-md-0">
                     <a href="{% url 'index' %}#section-certification" class="btn btn-block text-left px-0">
                         <div class="container-fluid p-0">
                             <div class="row">
@@ -128,8 +129,8 @@
                         </div>
                     </a>
                 </div>
-                <div class="col col-md-3 pt-2 px-0 mx-0">
-                    <a href="{% url 'index' %}#section-contact" class="btn btn-block text-left px-0">
+                <div class="col col-md-3 pt-2 px-md-0 mx-md-0">
+                    <a href="{% url 'index' %}#contact" class="btn btn-block text-left px-0">
                         <div class="container-fluid p-0">
                             <div class="row">
                                 <div class="col col-auto my-auto px-0">
@@ -143,8 +144,8 @@
                         </div>
                     </a>
                 </div>
-                <div class="col col-md-3 bg-primary pt-2 px-0 mx-0">
-                    <a href="{% url 'index' %}#section-schedule" class="btn btn-block text-left">
+                <div class="col col-md-3 bg-primary pt-2 px-md-0 mx-md-0">
+                    <a href="{% url 'index' %}#contact" class="btn btn-block text-left">
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col col-auto my-auto px-0">
@@ -173,7 +174,7 @@
     -->
     {% block navbar %}
     <div id="primary-navigation" class="bg-white sticky-top shadow-sm p-0">
-        <nav class="navbar navbar-expand-lg px-0 py-1 navbar-light bg-white container animate__animated animate__fadeIn">
+        <nav class="navbar navbar-expand-lg px-md-0 py-1 navbar-light bg-white container animate__animated animate__fadeIn">
             <!-- Logo. -->
             <a class="navbar-brand animate__animated animate__heartBeat" href="{% url 'index' %}">
                 {% if base.setting.logo %}
@@ -182,6 +183,10 @@
                 {% else %}
                     <div class="h1 font-weight-bold" style="white-space: normal;">{{ base.setting.website_name|truncatechars:70 }}</div>
                 {% endif %}
+            </a>
+            <!-- Shop -->
+            <a href="{% url 'store' %}" class="btn d-md-none" aria-label="Store">
+                {% svg 'cart4' size="24px" %}
             </a>
             <!-- Mobile button. -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -211,6 +216,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'policy' %}">Políticas</a>
                 </li>
+                {% comment %}
                 <!-- 
                     <li class="nav-item dropdown">
                       <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -226,19 +232,22 @@
                     <li class="nav-item">
                       <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                     </li>
-                 -->
+                -->
+                {% endcomment %}
+                 <!-- Shop -->
+                <li class="nav-item d-none d-md-block">
+                    <a class="nav-link" href="{% url 'store' %}" aria-label="Store">{% svg 'cart4' size="24px" %}</a>
+                </li>
               </ul>
-              <!-- Shop -->
-              <a href="/tienda/" class="btn">
-                  {% svg 'cart4' size="24px" %}
-              </a>
+              {% comment %}
               <!-- Search. -->
               <!-- <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0 animate" type="submit">Search</button>
               </form> -->
+              {% endcomment %}
             </div>
-          </nav>
+        </nav>
     </div>
     {% endblock navbar %}
 
@@ -259,10 +268,10 @@
             <div class="carousel-inner">
                 {% for obj in base.sliders %}
                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                    <img src="{{ obj.image|thumbnail_url:'1024x768crop' }}" alt="{{ obj }}" class="d-block w-100">
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5 class="h1 text-shadow animate__animated animate__fadeInDown animate__delay-2s animate__slow">{{ obj.title }}</h5>
-                        <p class="h3 text-shadow animate__animated animate__fadeIn animate__delay-2s animate__slow">{{ obj.description }}</p>
+                    <img src="{{ obj.image.url }}" alt="{{ obj }}" class="d-block w-100">
+                    <div class="carousel-caption d-none d-md-block" style="width: 100%; left: 0px; bottom: 0px; padding-bottom: 40px; background: rgb(255,255,255);background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);">
+                        <h5 class="h1 text-dark font-weight-bold animate__animated animate__fadeInDown animate__delay-1s animate__slow">{{ obj.title }}</h5>
+                        <p class="h3 text-dark animate__animated animate__fadeIn animate__delay-2s animate__slow">{{ obj.description }}</p>
                     </div>
                 </div>
                 {% endfor %}
@@ -288,7 +297,7 @@
         <div class="container text-center p-4 mt-4">
             <h2>Marcas <strong>Representadas</strong></h2>
             <div class="text-center mx-auto my-4">
-                <div class="btn-group">
+                <div class="">
                     {% for obj in base.brands %}
                     <a class="btn">
                         <img class="h-96px w-auto" src="{{ obj.image|thumbnail_url:'256' }}" alt="{{ obj }}">
@@ -303,13 +312,125 @@
 
 
 
+
+
+    {% block about %}
+    <section id="section-about">
+        <div class="container mb-4">
+            {% if base.setting.about_content %}
+            <div class="row">
+                <div class="col col-12 col-md-6 bg-light p-4">
+                    <h2 class="h4">Bienvenidos</h2>
+                    <h3 class="h1">{{ base.setting.about_title|safe }}</h3>
+                    <p class="lead">
+                        {{ base.setting.about_content|safe }}
+                    </p>
+                    <div><img class="img-fluid" src="{{ base.setting.about_image_footer|thumbnail_url:'1024' }}" alt=""></div>
+                </div>
+                <div class="col col-12 col-md-6">
+                    <h2 class="h4 text-primary font-weight-bold text-center">¡Equipos para todas las necesidades!</h2>
+                    <div class="container-fluid p-0 mt-3">
+                        <div class="row">
+                            {% for obj in base.sample_images|slice:":3" %}
+                            <div class="col col-12 col-md-4">
+                                <img class="img-fluid w-100" src="{{ obj.image|thumbnail_url:'256crop' }}" alt="{{ obj.title }}">
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col col-12">
+                                <video loop controls tabindex="0" class="img-fluid w-100">
+                                    <source src="{{ base.sample_videos.last.video.url }}" type='video/webm; codecs="vp8, vorbis"' />
+                                    <source src="{{ base.sample_videos.last.video.url }}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+                                    <source src="{{ base.sample_videos.last.video.url }}" type='video/ogg; codecs="theora, vorbis"' />
+                                    Video tag not supported. Download the video <a href="movie.webm">here</a>.
+                                  <video>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+    {% endblock about %}
+
+
+
+
+
+    {% block brochure %}
+    <section>
+        <div class="container-fluid bg-light2 p-5 text-center">
+            <a class="btn btn-primary p-4" href="">DESCARGA NUESTRO BROCHURE</a>
+            <a class="btn btn-outline-primary p-4" href="{% url 'store' %}">IR A LA TIENDA</a>
+        </div>
+    </section>
+    {% endblock brochure %}
+
+
+
+
     <!-- section-schedule -->
     {% block schedule %}
-    <section id="section-schedule">
-        <div class="container">
-            <div class="p-4 m-4 border shadow">
+    <section id="section-schedule" style="background-color: #50505010;" class="py-4">
+        <div class="container position-relative" >
+            <div class="d-block text-center">
+                {% with base.schedule as schedule %}
+                {% if schedule %}
+                    <div class="position-absolute left top z-index-n1000 blur-4px opacity-2 rotate-5 w-50">{% svg 'calendar-week-fill' size="320px" fill="#606060" %}</div>
+                    <h2>Nuestro <strong>Horario de Servicio</strong></h2>
+                    {% if schedule.monday %}
+                        <div id="schedule-monday" class="p-2 text-center border-top">
+                            <h3>Lunes</h3>
+                            <div>{{ schedule.monday_ini }} - {{ schedule.monday_end }}</div>
+                        </div>
+                    {% endif %}
+                    {% if schedule.tuesday %}
+                        <div id="schedule-tuesday" class="p-2 text-center border-top">
+                            <h3>Martes</h3>
+                            <div>{{ schedule.tuesday_ini }} - {{ schedule.tuesday_end }}</div>
+                        </div>
+                    {% endif %}
+                    {% if schedule.wednesday %}
+                        <div id="schedule-wednesday" class="p-2 text-center border-top">
+                            <h3>Miércoles</h3>
+                            <div>{{ schedule.wednesday_ini }} - {{ schedule.wednesday_end }}</div>
+                        </div>
+                    {% endif %}
+                    {% if schedule.thursday %}
+                        <div id="schedule-thursday" class="p-2 text-center border-top">
+                            <h3>Jueves</h3>
+                            <div>{{ schedule.thursday_ini }} - {{ schedule.thursday_end }}</div>
+                        </div>
+                    {% endif %}
+                    {% if schedule.friday %}
+                        <div id="schedule-friday" class="p-2 text-center border-top">
+                            <h3>Viernes</h3>
+                            <div>{{ schedule.friday_ini }} - {{ schedule.friday_end }}</div>
+                        </div>
+                    {% endif %}
+                    {% if schedule.saturday %}
+                        <div id="schedule-saturday" class="p-2 text-center border-top">
+                            <h3>Sábado</h3>
+                            <div>{{ schedule.saturday_ini }} - {{ schedule.saturday_end }}</div>
+                        </div>
+                    {% endif %}
+                    {% if schedule.sunday %}
+                        <div id="schedule-sunday" class="p-2 text-center border-top">
+                            <h3>Domingo</h3>
+                            <div>{{ schedule.sunday_ini }} - {{ schedule.sunday_end }}</div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+                {% endwith %}
+            </div>
+
+            <!-- Calendario (solo md) -->
+            {% comment %}
+            <div class="p-4 m-4 border shadow d-none d-md-block">
                 <div class="bg-primary p-4"><h2 class="display-4 text-white text-center">Nuestro Horario de <strong>Servicio</strong></h2></div>
-                <table class="table table-bordered border-0">
+                <table class="table table-bordered border-0 d-none d-md-block">
                     <thead class="thead-light">
                         <th class=""></th>
                         <th class="text-truncate" style="width: 12%">Lunes</th>
@@ -454,6 +575,7 @@
                     </tbody>
                 </table>
             </div>
+            {% endcomment %}
         </div>
     </section>
     {% endblock schedule %}
@@ -461,7 +583,13 @@
 
 
 
+
+
+
     {% block location %}
+    <div id="contact-phone1" class="container-fluid text-center bg-primary text-white py-5 d-md-none">
+        <h3 class="h1 font-weight-bold">{% svg '/static/img/others/call-center-worker.svg' fill='#ffffff' %} {{ base.setting.phone1 }}</h3>
+    </div>
     <section id="section-address">
         <iframe 
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3783.9087491267533!2d-69.83276778528776!3d18.487792087428108!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8eaf87fa3179001d%3A0x6e88ed9f616219ca!2sRefriMorel!5e0!3m2!1ses-419!2sdo!4v1606663381501!5m2!1ses-419!2sdo" 
@@ -490,8 +618,8 @@
         </div>
         {% endif %}
     
-        <a id="btnUp" class="btn btn-primary rounded-circle font-weight-bold shadow m-2 p-2 position-fixed bottom right" href="#">
-            {% svg 'arrow-bar-up' fill='var(--primary-contrast)' size='48px' %}
+        <a id="btnUp" class="btn btn-primary rounded-circle font-weight-bold shadow-lg m-2 p-4 position-fixed z-index-5000 bottom right" href="#">
+            {% svg 'arrow-bar-up' fill='#ffffff' size='32px' %}
         </a>
     
         {% block content %}
@@ -505,7 +633,7 @@
     <footer class="bg-primary">
         {% block contact %}
         <div class="bg-light p-4" id="contact">
-            <div class="container">
+            <div class="container text-center text-md-left">
                 <div class="row">
                     <div class="col col-12 col-md-6 p-4">
                         <h2 class="lead">Información</h2>
@@ -517,23 +645,26 @@
                             de sus problemas de aire acondicionado y solucionarlos rápidamente.
                         </p>
                         <div class="row mt-4">
-                            <div class="col col-4">
+                            <div class="col col-12 col-md-4">
                                 <h4>{% svg 'telephone-fill' size='30' %} Central Telf.</h4>
-                                <hr>
+                                <hr class="d-none d-md-block">
                                 <div>Nuestra central:</div>
                                 <div class="text-primary h3">{{ base.setting.phone1 }}</div>
+                                <hr class="d-block d-md-none">
                             </div>
-                            <div class="col col-4">
+                            <div class="col col-12 col-md-4">
                                 <h4>{% svg 'envelope-open-fill' size='30' %} Email</h4>
-                                <hr>
+                                <hr class="d-none d-md-block">
                                 <div>Nuestro correo:</div>
                                 <div class="text-primary"><a class="text-primary" href="mailto:{{ base.setting.email }}">{{ base.setting.email }}</a> </div>
+                                <hr class="d-block d-md-none">
                             </div>
-                            <div class="col col-4">
+                            <div class="col col-12 col-md-4">
                                 <h4>{% svg 'geo-alt-fill' size='30' %} Dirección</h4>
-                                <hr>
+                                <hr class="d-none d-md-block">
                                 <div>Localización:</div>
                                 <div class="text-primary"><a class="text-primary" href="{% url 'index' %}#section-address">{{ base.setting.address }}</a></div>
+                                <hr class="d-block d-md-none">
                             </div>
                         </div>
                     </div>
@@ -588,8 +719,8 @@
                                 </div>
                             </div>
                             <div class="row mt-3">
-                                <div class="col col-6"></div>
-                                <div class="col col-6 text-right">
+                                <div class="col col-0 col-md-6"></div>
+                                <div class="col col-12 col-md-6 text-right">
                                     <input type="submit" class="btn btn-primary btn-block p-3" value="PROGRAMAR CITA">
                                 </div>
                             </div>
@@ -603,8 +734,8 @@
         {% block footer %}
         <div class="container-fluid text-white p-4">
             <div class="row">
-                <div class="col col-12 col-sm-6 col-md-4"></div>
-                <div class="col col-12 col-sm-6 col-md-4">
+                <div class="col col-12 col-md-4"></div>
+                <div class="col col-12 col-md-4">
                     <!-- Social networks. -->
                     <div class="text-center">
                         {% for obj in base.social_networks %}
@@ -614,7 +745,7 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div class="col col-12 col-sm-6 col-md-4"></div>
+                <div class="col col-12 col-md-4"></div>
             </div>
         </div>
         {% endblock footer %}
