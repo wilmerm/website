@@ -92,6 +92,14 @@ class Setting(models.Model):
     about_content = models.TextField(_l("Acerca de: Contenido"), blank=True)
 
 
+    # Others.
+
+    embed_promo_url = models.URLField(_l("URL de promoción incrustrada"), 
+    blank=True, help_text=_l("URL del contenido externo que desea mostrar como "
+    "promoción en la página principal. Esta url puede bien ser la url de un "
+    "video en Youtube, una imagen, o un contenido html."))
+
+
 
     class Meta:
         verbose_name = _("Ajustes")
