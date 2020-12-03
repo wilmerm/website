@@ -71,14 +71,14 @@
 
     
     <!-- En construcción. -->
-    {% if settings.DEBUG != True %}
-    <div class="alert alert-warning alert-dismissible fade show container-fluid shadow-lg position-fixed top shadow-lg border z-index-3000 w-100 animate__animated animate__shakeY text-dark" role="alert">
+    {% if settings.DEBUG == True %}
+    <div class="alert alert-warning alert-dismissible fade show container-fluid shadow-lg position-fixed bottom shadow-lg border z-index-3000 w-100 animate__animated animate__shakeY text-dark" role="alert" style="background-color: rgba(250, 235, 215, 0.638);">
         <div class="row">
-            <div class="col col-2">
-                <img src="/static/img/miscelaneos/parlante.png" alt="" class="img-fluid">
+            <div class="col col-2 p-0 m-0">
+                <img src="/static/img/miscelaneos/parlante.png" alt="" class="w-64px h-64px">
             </div>
             <div class="col col-10">
-                <p class="h2">!{{ base.setting.website_name }} próximamente!</p>
+                <p class="h2 font-weight-bold">¡{{ base.setting.website_name }} próximamente!</p>
                 <strong>Alerta de sitio en construcción.</strong> Este sitio web está siendo construido por <a href="https://www.unolet.com" target="_blank">Unolet</a>.
             </div>
         </div>
