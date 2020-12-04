@@ -1,0 +1,30 @@
+{% extends 'base/base.html' %}
+{% load thumbnail %}
+{% load base %}
+
+
+
+
+
+{% block carousel %}{% endblock %}
+{% block schedule %}{% endblock %}
+{% block brands %}{% endblock %}
+{% block location %}{% endblock %}
+{% block about %}{% endblock %}
+{% block brochure %}{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center">Preguntas frecuentes</h1>
+    <p class="text-center">Consulte nuestro índice de inquietudes</p>
+    <div class="row">
+        {% for obj in base.questions %}
+        <div class="col col-12 col-md-6">
+            <h2 class="text-primary">{{ obj.question }}</h2>
+            <p>{{ obj.answer }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

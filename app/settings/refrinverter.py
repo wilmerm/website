@@ -1,13 +1,13 @@
 from .base import *
 
 
-NAME = "localhost"
+NAME = "refrinverter"
 
-SECRET_KEY = ')i-)cyg((ap3*-asg2#$314z9*b%qo56wgc2+zmdtqbo@*i3!$'
+SECRET_KEY = ')i-)cyg((ap3*ad6(2#$001z9*b%qo$/-4c2+zm4tqbo~@|¬sz'
 
-DEBUG = True
+#DEBUG = False
 
-ALLOWED_HOSTS = [NAME, "*"]
+#ALLOWED_HOSTS = [f"www.{NAME}.com", f"{NAME}.com"]
 
 DATABASES = {
     'default': {

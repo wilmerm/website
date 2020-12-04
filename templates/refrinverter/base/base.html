@@ -1,0 +1,794 @@
+<!-- {# Plantilla base.html #} -->
+{% load i18n %}
+{% load thumbnail %}
+{% load base %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>{% if title %}{{ title }} |{% endif %} {{ base.setting.website_name|truncatechars:30 }} {% if settings.DEBUG %}(Debug){% endif %}</title>
+    <link rel="icon" type="image/any" href="{% if base.setting.icon %}{{ base.setting.icon|thumbnail_url:'icon' }}{% else %}'/static/img/base/logo.png'{% endif %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ description }}">
+    <meta name="keywords" content="{{ keywords }}">
+    <meta name="author" content="{{ author }}">
+
+    <!-- OG Meta Tags to improve the way the post looks when you share the page on LinkedIn, Facebook, Google+ -->
+	<meta property="og:site_name" content="{{ site_name }}" /> 
+	<meta property="og:site" content="{{ request.build_absolute_uri }}" /> 
+	<meta property="og:title" content="{{ title }}"/> 
+	<meta property="og:description" content="{{ description }}" /> 
+	<meta property="og:image" content="{% firstof '/static/img/sections/unolet-multiplataforma.jpg' site_img %}" /> 
+	<meta property="og:url" content="" /> <!-- where do you want your post to link to -->
+    <meta property="og:type" content="article" />
+    
+    {% if settings.DEBUG == True %}
+        <!-- Utilizamos las versiones almacenadas localmente, para reducir la 
+        carga del Internet al recargar sin caché. -->
+        <link rel="stylesheet" href="/static/external/bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/external/animatecss/animate.min.css">
+    {% else %}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    {% endif %}
+    
+    <link rel="stylesheet" href="/static/css/instances/refrinverter.css">
+    <link rel="stylesheet" href="/static/css/base-1.8.css">
+    
+    {% if request.session.darkmode %}
+        <link rel="stylesheet" href="/static/css/darkmode-1.1.css">
+    {% endif %}
+
+
+
+    <style>
+        #btnUp {
+            border: 1px solid white !important;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.7s linear;
+        }
+        #btnUp.active {
+            visibility: visible;
+            opacity: 0.6;
+        }
+        #btnUp:hover {
+            opacity: 1;|
+        }
+
+        /* .carousel-inner > .carousel-item {
+            -webkit-transition: -webkit-transform 3s ease-in-out !important;
+            -o-transition: -o-transform 3s ease-in-out !important;
+            -moz-transition: -moz-transform 3s ease-in-out !important;
+            transition: transform 3s ease-in-out !important;
+        } */
+    </style>
+</head>
+
+
+<body class="bg-white p-0 m-0">
+
+    
+    <!-- En construcción. -->
+    {% if settings.DEBUG == True %}
+    <div class="alert alert-warning alert-dismissible fade show container-fluid shadow-lg position-fixed bottom shadow-lg border z-index-3000 w-100 animate__animated animate__shakeY text-dark" role="alert" style="background-color: rgba(250, 235, 215, 0.638);">
+        <div class="row">
+            <div class="col col-2 p-0 m-0">
+                <img src="/static/img/miscelaneos/parlante.png" alt="" class="w-64px h-64px">
+            </div>
+            <div class="col col-10">
+                <p class="h2 font-weight-bold">¡{{ base.setting.website_name }} próximamente!</p>
+                <strong>Alerta de sitio en construcción.</strong> Este sitio web está siendo construido por <a href="https://www.unolet.com" target="_blank">Unolet</a>.
+            </div>
+        </div>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+
+
+    <!-- Header. -->
+    <header class="d-none d-md-block border-bottom animate__animated animate__slideInDown">
+        <!-- block header -->
+        {% block header %}
+        <div class="container-fluid sticky-top" style="position: absolute; z-index: 0; {% if base.setting.cover %}height: {{ base.setting.cover_height }}px; background-image: url('{{ base.setting.cover.url }}'); background-size: cover; filter: blur(8px); -webkit-filter: blur(8px);{% endif %}"></div>
+        <!-- block cover -->
+        {% block cover %}
+        <div class="container z-index-3000">
+            <div class="row">
+                <div class="col col-md-6 py-4 px-md-0 mx-md-0">
+                    <a href="{% url 'index' %}#" class="">
+                        {% if base.setting.logo %}
+                        <img src="{{ base.setting.logo|thumbnail_url:'256' }}" class="img-fluid" alt="{{ base.setting.website_name }}">
+                        {% else %}
+                        <span class="h1 font-weight-bold">{{ base.setting.website_name }}</span>
+                        {% endif %}
+                    </a>
+                </div>
+                <div class="col col-md-3 py-4 px-md-0 mx-md-0">
+                    <a href="{% url 'index' %}#contact" class="btn btn-block text-left px-0">
+                        <div class="container-fluid p-0">
+                            <div class="row">
+                                <div class="col col-auto my-auto px-0">
+                                    {% svg 'telephone-fill' size="32px" %}
+                                </div>
+                                <div class="col col-10">
+                                    <div class="p-0 text-primary font-weight-bold text-truncate">LLÁMENOS AL {{ base.setting.phone1 }}</div>
+                                    <div class="p-0 text-muted">TELÉFONO CENTRAL</div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col col-md-3 py-4 px-md-0 mx-md-0">
+                    <a href="{% url 'index' %}#section-schedule" class="btn btn-block text-left">
+                        <div class="container-fluid p-0">
+                            <div class="row">
+                                <div class="col col-auto my-auto px-0">
+                                    {% svg 'calendar2-week' size="32px" %}
+                                </div>
+                                <div class="col col-10">
+                                    <div class="p-0 text-primary font-weight-bold text-truncate" title="Lun-Sáb: 08:00am - 06:00pm">HORARIO DE TRABAJO</div>
+                                    <div class="p-0 text-muted">LUNES A SÁBADOS 8:00AM - 6:00PM</div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        {% endblock cover %}
+        {% endblock header %}
+    </header>
+
+
+
+    <!-- block navbar. -->
+    <!-- 
+        {# Para que .sticky-top funcione debe estar fuera de cualquier #}
+        {# otra etiqueta que no sea body. #} 
+    -->
+    {% block navbar %}
+    <div id="primary-navigation" class="bg-white sticky-top shadow-sm p-0">
+        <nav class="navbar navbar-expand-lg px-md-0 py-3 navbar-light bg-white container animate__animated animate__fadeIn">
+            <!-- Shop -->
+            <a href="{% url 'store' %}" class="btn d-md-none" aria-label="Store">
+                {% svg 'cart4' size="24px" %}
+            </a>
+            <!-- Mobile button. -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Links. -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'index' %}#">INICIO <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'store-item-list' %}">TIENDA</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'calcbtu' %}">CALCULADORA BTH/H</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'brands' %}">MARCAS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'index' %}#contact">CONTACTO</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}">SOBRE NOSOTROS</a>
+                </li>
+                {% comment %}
+                <!-- 
+                    <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Dropdown
+                      </a>
+                      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                      </div>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                    </li>
+                -->
+                {% endcomment %}
+                </ul>
+              <!-- Shop -->
+              <a href="{% url 'store' %}" class="btn" aria-label="Store">
+                {% svg 'cart4' size="24px" %}
+              </a>
+              {% comment %}
+              <!-- Search. -->
+              <!-- <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0 animate" type="submit">Search</button>
+              </form> -->
+              {% endcomment %}
+            </div>
+        </nav>
+    </div>
+    {% endblock navbar %}
+
+
+
+
+    <!-- section-1 -->
+    {% block carousel %}
+    <section id="section-1">
+
+        <!-- Transcción de imágenes. -->
+        <div id="carousel1" class="carousel slide" data-ride="carousel" data-interval="9000">
+            <ol class="carousel-indicators">
+                {% for obj in base.sliders %}
+                <li data-target="#carousel1" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
+                {% endfor %}
+            </ol>
+            <div class="carousel-inner">
+                {% for obj in base.sliders %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <img src="{{ obj.image.url }}" alt="{{ obj }}" class="d-block w-100">
+                    <div class="carousel-caption d-none d-md-block" style="width: 100%; left: 0px; bottom: 0px; padding-bottom: 40px; background: rgb(255,255,255);background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);">
+                        <h5 class="h1 text-dark font-weight-bold animate__animated animate__fadeInDown animate__delay-1s animate__slow">{{ obj.title }}</h5>
+                        <p class="h3 text-dark animate__animated animate__fadeIn animate__delay-2s animate__slow">{{ obj.description }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <a class="carousel-control-prev" href="#carousel1" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carousel1" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </section>
+    {% endblock carousel %}
+
+
+
+
+
+    {% block brands %}
+    <section id="marcas-representadas">
+        <div class="container text-center p-4 mt-4">
+            <h2>Marcas <strong>Representadas</strong></h2>
+            <div class="text-center mx-auto my-4">
+                <div class="">
+                    {% for obj in base.brands %}
+                    <a class="btn">
+                        <img class="h-96px w-auto" src="{{ obj.image|thumbnail_url:'256' }}" alt="{{ obj }}">
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endblock brands %}
+
+
+
+
+
+
+    {% block about %}
+    <section id="section-about">
+        <div class="container mb-4">
+            {% if base.setting.about_content %}
+            <div class="row">
+                <div class="col col-12 col-md-6 bg-light p-4">
+                    <h2 class="h4">Bienvenidos</h2>
+                    <h3 class="h1">{{ base.setting.about_title|safe }}</h3>
+                    <p class="lead">
+                        {{ base.setting.about_content|safe }}
+                    </p>
+                    <div><img class="img-fluid" src="{{ base.setting.about_image_footer|thumbnail_url:'1024' }}" alt=""></div>
+                </div>
+                <div class="col col-12 col-md-6">
+                    <h2 class="h4 text-primary font-weight-bold text-center">¡Equipos para todas las necesidades!</h2>
+                    <div class="container-fluid p-0 mt-3">
+                        <div class="row">
+                            {% for obj in base.sample_images|slice:":3" %}
+                            <div class="col col-12 col-md-4">
+                                <img class="img-fluid w-100" src="{{ obj.image|thumbnail_url:'256crop' }}" alt="{{ obj.title }}">
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% if base.setting.embed_promo_url %}
+                        <div class="row mt-4">
+                            <div class="col col-12">
+                                <div class="embed-responsive embed-responsive-16by9">
+                                    <iframe class="embed-responsive-item" 
+                                        style=""
+                                        src="{{ base.setting.embed_promo_url }}" 
+                                        frameborder="0" 
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                        allowfullscreen>
+                                    </iframe>
+                                </div>
+                                <!-- <video loop controls tabindex="0" class="img-fluid w-100">
+                                    <source src="{{ base.sample_videos.last.video.url }}" type='video/webm; codecs="vp8, vorbis"' />
+                                    <source src="{{ base.sample_videos.last.video.url }}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+                                    <source src="{{ base.sample_videos.last.video.url }}" type='video/ogg; codecs="theora, vorbis"' />
+                                    Video tag not supported. Download the video <a href="movie.webm">here</a>.
+                                <video> -->
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+    {% endblock about %}
+
+
+
+
+
+    {% block brochure %}
+    <section>
+        <div class="container-fluid bg-light2 p-5 text-center">
+            <a class="btn btn-primary p-4" href="">DESCARGA NUESTRO BROCHURE</a>
+            <a class="btn btn-outline-primary p-4" href="{% url 'store' %}">IR A LA TIENDA</a>
+        </div>
+    </section>
+    {% endblock brochure %}
+
+
+
+
+    <!-- section-schedule -->
+    {% block schedule %}
+    <section id="section-schedule" style="background-color: #50505010;" class="py-4">
+        <div class="container position-relative" >
+            <div class="d-block text-center">
+                {% with base.schedule as schedule %}
+                {% if schedule %}
+                    <div class="position-absolute left top z-index-n1000 blur-4px opacity-2 rotate-5 w-50">{% svg 'calendar-week-fill' size="320px" fill="#606060" %}</div>
+                    <h2>Nuestro <strong>Horario de Servicio</strong></h2>
+                    {% if schedule.monday %}
+                        <div id="schedule-monday" class="p-2 text-center border-top">
+                            <h3>Lunes</h3>
+                            <div>{{ schedule.monday_ini }} - {{ schedule.monday_end }}</div>
+                        </div>
+                    {% endif %}
+                    {% if schedule.tuesday %}
+                        <div id="schedule-tuesday" class="p-2 text-center border-top">
+                            <h3>Martes</h3>
+                            <div>{{ schedule.tuesday_ini }} - {{ schedule.tuesday_end }}</div>
+                        </div>
+                    {% endif %}
+                    {% if schedule.wednesday %}
+                        <div id="schedule-wednesday" class="p-2 text-center border-top">
+                            <h3>Miércoles</h3>
+                            <div>{{ schedule.wednesday_ini }} - {{ schedule.wednesday_end }}</div>
+                        </div>
+                    {% endif %}
+                    {% if schedule.thursday %}
+                        <div id="schedule-thursday" class="p-2 text-center border-top">
+                            <h3>Jueves</h3>
+                            <div>{{ schedule.thursday_ini }} - {{ schedule.thursday_end }}</div>
+                        </div>
+                    {% endif %}
+                    {% if schedule.friday %}
+                        <div id="schedule-friday" class="p-2 text-center border-top">
+                            <h3>Viernes</h3>
+                            <div>{{ schedule.friday_ini }} - {{ schedule.friday_end }}</div>
+                        </div>
+                    {% endif %}
+                    {% if schedule.saturday %}
+                        <div id="schedule-saturday" class="p-2 text-center border-top">
+                            <h3>Sábado</h3>
+                            <div>{{ schedule.saturday_ini }} - {{ schedule.saturday_end }}</div>
+                        </div>
+                    {% endif %}
+                    {% if schedule.sunday %}
+                        <div id="schedule-sunday" class="p-2 text-center border-top">
+                            <h3>Domingo</h3>
+                            <div>{{ schedule.sunday_ini }} - {{ schedule.sunday_end }}</div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+                {% endwith %}
+            </div>
+
+            <!-- Calendario (solo md) -->
+            {% comment %}
+            <div class="p-4 m-4 border shadow d-none d-md-block">
+                <div class="bg-primary p-4"><h2 class="display-4 text-white text-center">Nuestro Horario de <strong>Servicio</strong></h2></div>
+                <table class="table table-bordered border-0 d-none d-md-block">
+                    <thead class="thead-light">
+                        <th class=""></th>
+                        <th class="text-truncate" style="width: 12%">Lunes</th>
+                        <th class="text-truncate" style="width: 12%">Martes</th>
+                        <th class="text-truncate" style="width: 12%">Miércoles</th>
+                        <th class="text-truncate" style="width: 12%">Jueves</th>
+                        <th class="text-truncate" style="width: 12%">Viernes</th>
+                        <th class="text-truncate" style="width: 12%">Sábado</th>
+                        <th class="text-truncate" style="width: 12%">Domingo</th>
+                    </thead>
+                    <tbody>
+                        <!-- <tr id="schedule-hour-7">
+                            <th class="bg-light">07:00 a.m.</th>
+                            <td class="schedule-monday"></td>
+                            <td class="schedule-tuesday"></td>
+                            <td class="schedule-wednesday"></td>
+                            <td class="schedule-thursday"></td>
+                            <td class="schedule-friday"></td>
+                            <td class="schedule-saturday"></td>
+                            <td class="schedule-sunday"></td>
+                        </tr> -->
+                        <tr id="schedule-hour-8">
+                            <th class="bg-light">08:00 a.m.</th>
+                            <td class="schedule-monday bg-secondary animate__animated animate__bounce"></td>
+                            <td class="schedule-tuesday bg-secondary"></td>
+                            <td class="schedule-wednesday bg-secondary"></td>
+                            <td class="schedule-thursday bg-secondary"></td>
+                            <td class="schedule-friday bg-secondary"></td>
+                            <td class="schedule-saturday bg-secondary"></td>
+                            <td class="schedule-sunday"></td>
+                        </tr>
+                        <tr id="schedule-hour-9">
+                            <th class="bg-light">09:00 a.m.</th>
+                            <td class="schedule-monday bg-secondary"></td>
+                            <td class="schedule-tuesday bg-secondary"></td>
+                            <td class="schedule-wednesday bg-secondary"></td>
+                            <td class="schedule-thursday bg-secondary"></td>
+                            <td class="schedule-friday bg-secondary"></td>
+                            <td class="schedule-saturday bg-secondary"></td>
+                            <td class="schedule-sunday"></td>
+                        </tr>
+                        <tr id="schedule-hour-10">
+                            <th class="bg-light">10:00 a.m.</th>
+                            <td class="schedule-monday bg-secondary"></td>
+                            <td class="schedule-tuesday bg-secondary"></td>
+                            <td class="schedule-wednesday bg-secondary"></td>
+                            <td class="schedule-thursday bg-secondary"></td>
+                            <td class="schedule-friday bg-secondary"></td>
+                            <td class="schedule-saturday bg-secondary"></td>
+                            <td class="schedule-sunday"></td>
+                        </tr>
+                        <tr id="schedule-hour-11">
+                            <th class="bg-light">11:00 a.m.</th>
+                            <td class="schedule-monday bg-secondary"></td>
+                            <td class="schedule-tuesday bg-secondary"></td>
+                            <td class="schedule-wednesday bg-secondary"></td>
+                            <td class="schedule-thursday bg-secondary"></td>
+                            <td class="schedule-friday bg-secondary"></td>
+                            <td class="schedule-saturday bg-secondary"></td>
+                            <td class="schedule-sunday"></td>
+                        </tr>
+                        <tr id="schedule-hour-12">
+                            <th class="bg-light">12:00 a.m.</th>
+                            <td class="schedule-monday bg-secondary"></td>
+                            <td class="schedule-tuesday bg-secondary"></td>
+                            <td class="schedule-wednesday bg-secondary"></td>
+                            <td class="schedule-thursday bg-secondary"></td>
+                            <td class="schedule-friday bg-secondary"></td>
+                            <td class="schedule-saturday bg-secondary"></td>
+                            <td class="schedule-sunday"></td>
+                        </tr>
+                        <tr id="schedule-hour-13">
+                            <th class="bg-light">01:00 p.m.</th>
+                            <td class="schedule-monday bg-secondary"></td>
+                            <td class="schedule-tuesday bg-secondary"></td>
+                            <td class="schedule-wednesday bg-secondary"></td>
+                            <td class="schedule-thursday bg-secondary"></td>
+                            <td class="schedule-friday bg-secondary"></td>
+                            <td class="schedule-saturday bg-secondary"></td>
+                            <td class="schedule-sunday"></td>
+                        </tr>
+                        <tr id="schedule-hour-14">
+                            <th class="bg-light">02:00 p.m.</th>
+                            <td class="schedule-monday bg-secondary"></td>
+                            <td class="schedule-tuesday bg-secondary"></td>
+                            <td class="schedule-wednesday bg-secondary"></td>
+                            <td class="schedule-thursday bg-secondary"></td>
+                            <td class="schedule-friday bg-secondary"></td>
+                            <td class="schedule-saturday"></td>
+                            <td class="schedule-sunday"></td>
+                        </tr>
+                        <tr id="schedule-hour-15">
+                            <th class="bg-light">03:00 p.m.</th>
+                            <td class="schedule-monday bg-secondary"></td>
+                            <td class="schedule-tuesday bg-secondary"></td>
+                            <td class="schedule-wednesday bg-secondary"></td>
+                            <td class="schedule-thursday bg-secondary"></td>
+                            <td class="schedule-friday bg-secondary"></td>
+                            <td class="schedule-saturday"></td>
+                            <td class="schedule-sunday"></td>
+                        </tr>
+                        <tr id="schedule-hour-16">
+                            <th class="bg-light">04:00 p.m.</th>
+                            <td class="schedule-monday bg-secondary"></td>
+                            <td class="schedule-tuesday bg-secondary"></td>
+                            <td class="schedule-wednesday bg-secondary"></td>
+                            <td class="schedule-thursday bg-secondary"></td>
+                            <td class="schedule-friday bg-secondary"></td>
+                            <td class="schedule-saturday"></td>
+                            <td class="schedule-sunday"></td>
+                        </tr>
+                        <tr id="schedule-hour-17">
+                            <th class="bg-light">05:00 p.m.</th>
+                            <td class="schedule-monday bg-secondary"></td>
+                            <td class="schedule-tuesday bg-secondary"></td>
+                            <td class="schedule-wednesday bg-secondary"></td>
+                            <td class="schedule-thursday bg-secondary"></td>
+                            <td class="schedule-friday bg-secondary"></td>
+                            <td class="schedule-saturday"></td>
+                            <td class="schedule-sunday"></td>
+                        </tr>
+                        <tr id="schedule-hour-18">
+                            <th class="bg-light">06:00 p.m.</th>
+                            <td class="schedule-monday bg-secondary"></td>
+                            <td class="schedule-tuesday bg-secondary"></td>
+                            <td class="schedule-wednesday bg-secondary"></td>
+                            <td class="schedule-thursday bg-secondary"></td>
+                            <td class="schedule-friday bg-secondary"></td>
+                            <td class="schedule-saturday"></td>
+                            <td class="schedule-sunday"></td>
+                        </tr>
+                        <!-- <tr id="schedule-hour-19">
+                            <th class="bg-light">07:00 p.m.</th>
+                            <td class="schedule-monday"></td>
+                            <td class="schedule-tuesday"></td>
+                            <td class="schedule-wednesday"></td>
+                            <td class="schedule-thursday"></td>
+                            <td class="schedule-friday"></td>
+                            <td class="schedule-saturday"></td>
+                            <td class="schedule-sunday"></td>
+                        </tr> -->
+                    </tbody>
+                </table>
+            </div>
+            {% endcomment %}
+        </div>
+    </section>
+    {% endblock schedule %}
+
+
+
+
+
+
+
+    {% block location %}
+    <div id="contact-phone1" class="container-fluid text-center bg-primary text-white py-5 d-md-none">
+        <h3 class="h1 font-weight-bold">{% svg '/static/img/others/call-center-worker.svg' fill='#ffffff' %} {{ base.setting.phone1 }}</h3>
+    </div>
+    <section id="section-address">
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1299.7602939306498!2d-69.92500265593821!3d18.483637924251774!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8eaf89c7e96fa371%3A0x76010410d676fc5!2sRefrinverter!5e0!3m2!1ses-419!2sdo!4v1607041803665!5m2!1ses-419!2sdo" 
+            width="100%" height="450" frameborder="0" style="border:0;" 
+            allowfullscreen="" aria-hidden="false" tabindex="0">
+        </iframe>
+    </section>
+    {% endblock location %}
+
+
+
+
+
+    <!-- Content -->
+    <main id="content" class="bg-white py-5">
+        {% if messages %}
+        <div class="messages fixed-bottom w-100 p-4">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} text-center shadow-lg lead">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    
+        <a id="btnUp" class="btn btn-primary rounded-circle font-weight-bold shadow-lg m-2 p-4 position-fixed z-index-5000 bottom right" href="#">
+            {% svg 'arrow-bar-up' fill='#ffffff' size='32px' %}
+        </a>
+    
+        {% block content %}
+        <!-- block content -->
+        {% endblock content %}
+    </main>
+
+
+
+    <!-- Footer. -->
+    <footer class="bg-primary">
+        {% block contact %}
+        <div class="bg-light p-4" id="contact">
+            <div class="container text-center text-md-left">
+                <div class="row">
+                    <div class="col col-12 col-md-6 p-4">
+                        <h2 class="lead">Información</h2>
+                        <h3 class="h1">Contacta con <b>{{ base.setting.website_name }}</b></h3>
+                        <p class="lead">Ofrecemos servicio de <b>primera</b> en nuestros planes a clientes. 
+                            Siempre puede contar con los expertos de <b>{{ base.setting.website_name }}</b> 
+                            para llegar rápido y hacer bien el trabajo la primera vez.
+                            Utilizamos equipos de diagnóstico de última generación para encontrar la fuente 
+                            de sus problemas de aire acondicionado y solucionarlos rápidamente.
+                        </p>
+                        <div class="row mt-4">
+                            <div class="col col-12 col-md-4">
+                                <h4>{% svg 'telephone-fill' size='30' %} Central Telf.</h4>
+                                <hr class="d-none d-md-block">
+                                <div>Nuestra central:</div>
+                                <div class="text-primary h3">{{ base.setting.phone1 }}</div>
+                                <hr class="d-block d-md-none">
+                            </div>
+                            <div class="col col-12 col-md-4">
+                                <h4>{% svg 'envelope-open-fill' size='30' %} Email</h4>
+                                <hr class="d-none d-md-block">
+                                <div>Nuestro correo:</div>
+                                <div class="text-primary"><a class="text-primary" href="mailto:{{ base.setting.email }}">{{ base.setting.email }}</a> </div>
+                                <hr class="d-block d-md-none">
+                            </div>
+                            <div class="col col-12 col-md-4">
+                                <h4>{% svg 'geo-alt-fill' size='30' %} Dirección</h4>
+                                <hr class="d-none d-md-block">
+                                <div>Localización:</div>
+                                <div class="text-primary"><a class="text-primary" href="{% url 'index' %}#section-address">{{ base.setting.address }}</a></div>
+                                <hr class="d-block d-md-none">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-12 col-md-6 p-4 bg-white">
+                        <h2 class="text-center">Solicitar <strong>visita</strong></h2>
+                        <form action="/solicitar-visita/">
+                            <div class="row mt-4">
+                                <div class="col col-6">
+                                    <input class="form-control form-control-lg bg-light2 border-0" type="text" name="name" placeholder="Su nombre">
+                                </div>
+                                <div class="col col-6">
+                                    <select name="service" class="form-control form-control-lg bg-light2 border-0">
+                                        <option value="">Tipo de servicio</option>
+                                        <option value="instalacion_central">Instalación central</option>
+                                        <option value="instalacion_central">Unidad de ventada</option>
+                                        <option value="instalacion_central">Instalación split</option>
+                                        <option value="instalacion_central">Mantenimiento, soporte, replaración</option>
+                                        <option value="instalacion_central">Otro</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col col-6">
+                                    <input class="form-control form-control-lg bg-light2 border-0" type="email" name="email" placeholder="Su email">
+                                </div>
+                                <div class="col col-6">
+                                    <select name="location" class="form-control form-control-lg bg-light2 border-0">
+                                        <option value="">Localidad</option>
+                                        <option value="instalacion_central">Santo Domingo</option>
+                                        <option value="instalacion_central">Santiago</option>
+                                        <option value="instalacion_central">Bávaro</option>
+                                        <option value="instalacion_central">Otro</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col col-6">
+                                    <input class="form-control form-control-lg bg-light2 border-0" type="phone" name="phone" placeholder="Teléfono">
+                                </div>
+                                <div class="col col-6">
+                                    <select name="warranty" class="form-control form-control-lg bg-light2 border-0">
+                                        <option value=RefriMorel"">Sin garantía</option>
+                                        <option value="instalacion_central">6 meses de garantía</option>
+                                        <option value="instalacion_central">1 año de garantía</option>
+                                        <option value="instalacion_central">2 años de garantía</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col col-12">
+                                    <textarea class="form-control bg-light2 border-0" name="message" id="" rows="5" placeholder="Su mensaje"></textarea>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col col-0 col-md-6"></div>
+                                <div class="col col-12 col-md-6 text-right">
+                                    <input type="submit" class="btn btn-primary btn-block p-3" value="PROGRAMAR CITA">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock contact %}
+        <!-- block footer. -->
+        {% block footer %}
+        <div class="container-fluid text-white p-4">
+            <div class="row">
+                <div class="col col-12 col-md-4"></div>
+                <div class="col col-12 col-md-4">
+                    <!-- Social networks. -->
+                    <div class="text-center">
+                        {% for obj in base.social_networks %}
+                        <a class="btn btn-lg" href="{{ obj.url }}" target="_blank">
+                            <img src="{{ obj.GetImg }}" alt="{{ obj }}">
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col col-12 col-md-4"></div>
+            </div>
+        </div>
+        {% endblock footer %}
+        <hr>
+        <!-- Copyright. -->
+        <div class="copyright text-center text-white p-4">
+            © {% now "Y" %} {{ base.setting.website_name }} by <a class="text-white" href="{{ unolet.site.url }}" target="_blank"><b>{{ unolet.site.name }}</b></a>
+        </div>
+    </footer>
+
+
+    
+    <!-- Scripts. -->
+    {% if settings.DEBUG == True %}
+        <!-- Utilizamos las versiones almacenadas localmente, para reducir la 
+        carga del Internet al recargar sin caché. -->
+        <script src="/static/external/jquery/jquery-3.5.1.min.js"></script>
+        <script src="/static/external/bootstrap/js/bootstrap.bundle.js"></script>
+    {% else %}
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    {% endif %}
+    <script src="/static/js/utils-1.1.js"></script>
+
+
+            
+    <script>
+
+       document.documentElement.dataset.scroll = window.scrollY;
+        document.addEventListener('scroll', () => {
+            document.documentElement.dataset.scroll = window.scrollY;
+
+            if (window.scrollY > 512) {
+                $("#btnUp").addClass("active");
+            } else {
+                $("#btnUp").removeClass("active");
+            }
+        });
+
+        
+
+
+        // // Activate Carousel
+        // $("#carousel1").carousel({
+        //     interval: 2000,
+        // });
+
+        // // Enable Carousel Indicators
+        // $(".item").click(function() {
+        //     $("#carousel1").carousel(1);
+        // });
+
+        // // Enable Carousel Controls
+        // $(".carousel-control-prev").click(function() {
+        //     $("#carousel1").carousel("prev");
+        // });
+
+        // $(".carousel-control-next").click(function() {
+        //     $("#carousel1").carousel("next");
+        // });
+
+        // $('#carousel1').on('slide.bs.carousel', function (direction, relatedTarget, from, to) {
+        //     //console.log(direction, relatedTarget, from, to);
+        // })
+    </script>
+</body>
+</html>

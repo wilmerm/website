@@ -1,0 +1,79 @@
+{% extends 'base/base.html' %}
+{% load thumbnail %}
+{% load base %}
+
+
+
+{% block carousel %}{% endblock %}
+{% block schedule %}{% endblock %}
+{% block brands %}{% endblock %}
+{% block location %}{% endblock %}
+{% block about %}{% endblock %}
+{% block brochure %}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col col-12 col-md-8">
+            <h1 class="h4">Sobre nosotros</h1>
+            <h2 class="h1">{{ base.setting.about_title|safe }}</h2>
+            {% if base.setting.about_image_cover %}
+                <img class="w-100 h-auto" src="{{ base.setting.about_image_cover|thumbnail_url:'1024' }}" alt="{{ base.setting.about_title }}">
+            {% endif %}
+            <p class="text-muted">
+                {{ base.setting.about_content|safe }}
+            </p>
+            {% if base.setting.about_image_footer %}
+                <img class="w-100 h-auto" src="{{ base.setting.about_image_footer|thumbnail_url:'1024' }}" alt="{{ base.setting.about_title }}">
+            {% endif %}
+        </div>
+        <div class="col col-12 col-md-4">
+            <div>
+                <h2>Proyectos Residenciales y Comerciales</h2>
+                <p class="lead">
+                    Proporcionamos un servicio excepcional para tus proyectos, 
+                    somos especialistas en refrigeracion y climatizacion de ambientes.  
+                    ¡Estamos aquí cuando necesita que le demos servicio a sus 
+                    propiedades residenciales y comerciales!
+                </p>
+                <h3 class="h1 text-primary font-weight-bold text-center text-md-left">{% svg 'telephone-fill' size="32px" %} {{ base.setting.phone1 }}</h3>
+            </div>
+            <hr>
+            <div>
+                <h2>Nuestro horario</h2>
+                <ul class="list-unstyled">
+                    <li class="py-1">{% svg 'clock-fill' size="1rem" %} Lunes - Viernes 08:00am-06:00pm</li>
+                    <li class="py-1">{% svg 'clock-fill' size="1rem" %} Sábados 08:00am-01:00pm</li> 
+                </ul> 
+            </div>
+            <hr>
+            <a class="btn btn-primary btn-block btn-lg text-left" href="javascript:alert('Función pendiente')">
+                <div class="container-fluid p-0">
+                   <div class="row">
+                        <div class="col col-2">
+                            {% svg 'file-earmark-richtext-fill' size="32px" fill="#fff" %}
+                        </div>
+                        <div class="col col-10">
+                            <span class="font-weight-bold">DESCARGUE NUESTRO BROCHURE</span>
+                            <span class="">Conozca más de nuestros servicios</span>
+                        </div>
+                   </div>
+                </div>
+            </a>
+            <a class="btn btn-primary btn-block btn-lg text-left" href="javascript:alert('Función pendiente')">
+                <div class="container-fluid p-0">
+                   <div class="row">
+                        <div class="col col-2">
+                            {% svg 'award-fill' size="32px" fill="#fff" %}
+                        </div>
+                        <div class="col col-10">
+                            <span class="font-weight-bold">REGISTRE LA GARANTÍA DEL EQUIPO</span>
+                            <span class="">Registrar ahora</span>
+                        </div>
+                   </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

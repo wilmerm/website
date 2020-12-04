@@ -1,0 +1,204 @@
+
+
+:root {
+    --primary: #005082;
+    --primary-hover: #007ecc;
+    --primary-contrast: #ffffff;
+    --secondary: #08a8eb;
+    --secondary-hover: #62ccf9;
+    --secondary-contrast: #151515;
+    --tertiary: #ffffff;
+    --tertiary-hover: #000000;
+    --tertiary-contrast: #404040;
+
+    --blue: #005082;
+    --white: #ffffff;
+}
+
+
+
+.btn-primary {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: var(--primary-contrast) !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover) !important;
+    color: var(--primary-contrast) !important;
+}
+
+
+.btn-secondary {
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+    color: var(--secondary-contrast) !important;
+}
+
+.btn-secondary:hover {
+    background-color: var(--secondary-hover) !important;
+    color: var(--secondary-contrast) !important;
+}
+
+
+.btn-tertiary {
+    background-color: var(--tertiary) !important;
+    border-color: var(--tertiary) !important;
+    color: var(--tertiary-contrast);
+}
+
+.btn-tertiary:hover {
+    background-color: var(--tertiary-hover);
+    color: var(--tertiary-contrast);
+}
+
+
+.btn-outline-primary {
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-hover) !important;
+    color: var(--primary-contrast) !important;
+}
+
+
+.btn-outline-secondary {
+    border-color: var(--secondary) !important;
+    color: var(--secondary) !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--secondary-hover) !important;
+    color: var(--secondary-contrast) !important;
+}
+
+
+.btn-outline-tertiary {
+    border-color: var(--tertiary) !important;
+    color: var(--tertiary);
+}
+
+.btn-outline-tertiary:hover {
+    background-color: var(--tertiary-hover);
+    color: var(--tertiary-contrast);
+}
+
+
+
+
+.bg-primary {
+    background-color: var(--primary) !important;
+    border-color: var(--primary);
+}
+
+
+.bg-secondary {
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary);
+}
+
+
+.bg-tertiary {
+    background-color: var(--tertiary) !important;
+    border-color: var(--tertiary);
+}
+
+
+
+.text-primary {
+    color: var(--primary) !important;
+}
+
+.text-secondary {
+    color: var(--secondary) !important;
+}
+
+.text-tertiary {
+    color: var(--tertiary) !important;
+}
+
+
+
+
+
+h1 {
+    font-size: 2.5rem !important;
+}
+
+h2 {
+    font-size: 1.8rem !important;
+}
+
+h3 {
+    font-size: 1.5rem !important;
+}
+
+h4 {
+    font-size: 1.2rem !important;
+}
+
+h5 {
+    font-size: 0.9rem !important;
+}
+
+h6 {
+    font-size: 0.7rem !important;
+}
+
+
+.h1 {
+    font-size: 2.5rem !important;
+}
+
+.h2 {
+    font-size: 1.8rem !important;
+}
+
+.h3 {
+    font-size: 1.5rem !important;
+}
+
+.h4 {
+    font-size: 1.2rem !important;
+}
+
+.h5 {
+    font-size: 0.9rem !important;
+}
+
+.h6 {
+    font-size: 0.7rem !important;
+}
+
+
+.h1 svg {
+    font-size: 2.5rem !important;
+    width: 2.5rem; height: 2.5rem;
+}
+
+.h2 svg {
+    font-size: 1.8rem !important;
+    width: 1.8rem; height: 1.8rem;
+}
+
+.h3 svg {
+    font-size: 1.5rem !important;
+    width: 1.5rem; height: 1.5rem;
+}
+
+.h4 svg {
+    font-size: 1.2rem !important;
+    width: 1.2rem; height: 1.2rem;
+}
+
+.h5 svg {
+    font-size: 0.9rem !important;
+    width: 0.9rem; height: 0.9rem;
+}
+
+.h6 svg {
+    font-size: 0.7rem !important;
+    width: 0.7rem; height: 0.7rem;
+}
