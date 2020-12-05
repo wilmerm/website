@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'base',
     'store',
     # Externas.
+    'bootstrap4',
     'easy_thumbnails',
     'colorfield',
     
@@ -157,16 +158,27 @@ THUMBNAIL_ALIASES = {
         'icon': {'size': (32, 32), 'crop': "smart"},
         '64': {'size': (64, 64), 'crop': False},
         '64crop': {'size': (64, 64), 'crop': True},
+        '64crop-upscale': {'size': (64, 64), 'crop': True, "upscale": True},
+
         '128': {'size': (128, 128), 'crop': False},
         '128crop': {'size': (128, 128), 'crop': True},
+        '128crop-upscale': {'size': (128, 128), 'crop': True, "upscale": True},
+        
         '256': {'size': (256, 256), 'crop': False},
         '256crop': {'size': (256, 256), 'crop': "smart"},
+        '256crop-upscale': {'size': (256, 256), 'crop': "smart", "upscale": True},
+        
         '512': {'size': (512, 512), 'crop': False},
         '512crop': {'size': (512, 512), 'crop': "smart"},
+        '512crop-upscale': {'size': (512, 512), 'crop': "smart", "upscale": True},
+        
         '768': {'size': (768, 768), 'crop': False},
         '768crop': {'size': (768, 768), 'crop': "smart"},
+        '768crop-upscale': {'size': (768, 768), 'crop': "smart", "upscale": True},
+        
         '1024': {'size': (1024, 1024), 'crop': False},
         '1024crop': {'size': (1024, 1024), 'crop': "smart"},
+        '1024crop-upscale': {'size': (1024, 1024), 'crop': "smart", "upscale": True},
         '1024x768crop': {'size': (1024, 768), 'crop': "smart"},
     },
 }

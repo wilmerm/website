@@ -12,5 +12,6 @@ urlpatterns = [
     path("calculadora-btu/", views.CalcBTUView.as_view(), name="calcbtu"),
     path("preguntas-frecuentes/", views.QuestionsView.as_view(), name="questions"),
     path("policy/", views.PolicyView.as_view(), name="policy"),
+    path("contact/", views.contact_view, name="contact"),
 
 ]

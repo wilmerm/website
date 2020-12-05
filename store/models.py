@@ -28,6 +28,13 @@ class Item(models.Model):
     description = models.CharField(_l("Descripción"), max_length=700, 
     blank=True)
 
+    group = models.ManyToManyField("store.Group", verbose_name=_l("Grupo"), 
+    blank=True, null=True, help_text=_l("Categoría a la que pertenece."))
+
+    brand = models.ForeignKey("store.Brand", verbose_name=_l("Marca"), 
+    blank=True, null=True, on_delete=models.CASCADE, 
+    help_text=_l("Marca a la que pertenece."))
+
     image1 = models.ImageField(_l("Imágen 1"), upload_to="store/item/", 
     blank=True)
 
@@ -141,3 +148,73 @@ class Item(models.Model):
     def GetFirstImageField(self):
         return (self.image1 or self.image2 or self.image3)
 
+
+
+
+
+class Group(models.Model):
+    """
+    Grupo de artículos.
+    
+    """
+    IMG_DEFAULT = "/static/img/base/articulo.svg"
+
+    name = models.CharField(_l("Nombre"), max_length=100, unique=True)
+
+    description = models.CharField(_l("Descripción"), max_length=500, blank=True)
+
+    image = models.ImageField(_l("Imágen"), upload_to="store/group/", blank=True,
+    null=True)
+
+
+    class Meta:
+        verbose_name = _("Grupo")
+        verbose_name_plural = _("Grupos")
+        ordering = ["name"]
+
+    
+    def __str__(self):
+        return self.name
+
+    def clean(self):
+        self.name = " ".join(self.name.split()).upper()
+
+    def GetImg(self):
+        if self.image:
+            return self.image.url
+        return self.IMG_DEFAULT
+
+
+
+
+class Brand(models.Model):
+    """
+    Marcas de artículos.
+    
+    """
+    IMG_DEFAULT = "/static/img/base/info.svg"
+
+    name = models.CharField(_l("Nombre"), max_length=100, unique=True)
+
+    description = models.CharField(_l("Descripción"), max_length=500, blank=True)
+
+    image = models.ImageField(_l("Imágen"), upload_to="store/brand/", blank=True,
+    null=True)
+
+
+    class Meta:
+        verbose_name = _("Marca")
+        verbose_name_plural = _("Marcas")
+        ordering = ["name"]
+
+    
+    def __str__(self):
+        return self.name
+
+    def clean(self):
+        self.name = " ".join(self.name.split()).upper()
+
+    def GetImg(self):
+        if self.image:
+            return self.image.url
+        return self.IMG_DEFAULT

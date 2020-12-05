@@ -6,28 +6,5 @@
 
 
 {% block content %}
-<div class="container">
-    <h2 class="text-center">Productos <strong>Destacados</strong></h2>
-    <hr>
-    <div class="row">
-        {% for obj in store.featured_items %}
-        <div class="col col-12 col-md-4 col-lg-3 mb-4">
-            <div class="w-100">
-                <a class="item btn btn-light btn-block text-center border rounded-0 shadow-sm" href="{{ obj.get_absolute_url }}">
-                    <div class="">
-                        <img src="{% if obj.GetFirstImageField %}{{ obj.GetFirstImageField|thumbnail_url:'256crop' }}{% else %}{{ obj.GetImg }}{% endif %}" alt="{{ obj }}" class="w-100 h-auto">
-                        <hr>
-                        <h3>{{ obj }}</h3>
-                        <div class="font-size-small">{{ obj.description|truncatechars:50 }}</div>
-                        <div>{{ obj.price|intcomma }}</div>
-                    </div>
-                </a>
-                <div>
-                    <button class="btn btn-secondary btn-block rounded-0 shadow-sm" onclick="javascript:alert('Aun no disponible')">Añadir al carrito</button>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
+
 {% endblock content %}

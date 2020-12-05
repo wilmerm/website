@@ -1,7 +1,9 @@
 <!-- {# Plantilla base.html #} -->
 {% load i18n %}
+{% load humanize %}
 {% load thumbnail %}
 {% load base %}
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -10,9 +12,9 @@
     <link rel="icon" type="image/any" href="{% if base.setting.icon %}{{ base.setting.icon|thumbnail_url:'icon' }}{% else %}'/static/img/base/logo.png'{% endif %}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{{ description }}">
-    <meta name="keywords" content="{{ keywords }}">
-    <meta name="author" content="{{ author }}">
+    <meta name="description" content="{% firstof description base.setting.description %}">
+    <meta name="keywords" content="{% firstof keywords description base.setting.description %}">
+    <meta name="author" content="{{ unolet.author }}">
 
     <!-- OG Meta Tags to improve the way the post looks when you share the page on LinkedIn, Facebook, Google+ -->
 	<meta property="og:site_name" content="{{ site_name }}" /> 
@@ -71,13 +73,13 @@
 
     
     <!-- En construcción. -->
-    {% if settings.DEBUG == True %}
-    <div class="alert alert-warning alert-dismissible fade show container-fluid shadow-lg position-fixed bottom shadow-lg border z-index-3000 w-100 animate__animated animate__shakeY text-dark" role="alert" style="background-color: rgba(250, 235, 215, 0.638);">
+    {% if settings.DEBUG != True %}
+    <div class="alert alert-warning alert-dismissible fade show container-fluid shadow-lg position-fixed bottom shadow-lg border z-index-3000 animate__animated animate__shakeY text-dark" role="alert" style="background-color: rgba(250, 235, 215, 0.638);">
         <div class="row">
-            <div class="col col-2 p-0 m-0">
+            <div class="col col-2 col-md-2 p-0 m-0">
                 <img src="/static/img/miscelaneos/parlante.png" alt="" class="w-64px h-64px">
             </div>
-            <div class="col col-10">
+            <div class="col col-10 col-md-5">
                 <p class="h2 font-weight-bold">¡{{ base.setting.website_name }} próximamente!</p>
                 <strong>Alerta de sitio en construcción.</strong> Este sitio web está siendo construido por <a href="https://www.unolet.com" target="_blank">Unolet</a>.
             </div>
@@ -91,54 +93,40 @@
 
 
     <!-- Header. -->
-    <header class="d-none d-md-block border-bottom animate__animated animate__slideInDown">
+    <header class="border-bottom animate__animated animate__slideInDown">
         <!-- block header -->
         {% block header %}
         <div class="container-fluid sticky-top" style="position: absolute; z-index: 0; {% if base.setting.cover %}height: {{ base.setting.cover_height }}px; background-image: url('{{ base.setting.cover.url }}'); background-size: cover; filter: blur(8px); -webkit-filter: blur(8px);{% endif %}"></div>
         <!-- block cover -->
         {% block cover %}
-        <div class="container z-index-3000">
+        <div class="container z-index-3000 py-3">
             <div class="row">
-                <div class="col col-md-6 py-4 px-md-0 mx-md-0">
-                    <a href="{% url 'index' %}#" class="">
+                <div class="col col-12 col-sm-12 col-md-6 col-lg-4">
+                    <a href="{% url 'index' %}#">
                         {% if base.setting.logo %}
-                        <img src="{{ base.setting.logo|thumbnail_url:'256' }}" class="img-fluid" alt="{{ base.setting.website_name }}">
+                            <img src="{{ base.setting.logo|thumbnail_url:'768' }}" class="w-100">
                         {% else %}
-                        <span class="h1 font-weight-bold">{{ base.setting.website_name }}</span>
+                            <span class="h1 font-weight-bold">{{ base.setting.website_name }}</span>
                         {% endif %}
                     </a>
                 </div>
-                <div class="col col-md-3 py-4 px-md-0 mx-md-0">
-                    <a href="{% url 'index' %}#contact" class="btn btn-block text-left px-0">
-                        <div class="container-fluid p-0">
-                            <div class="row">
-                                <div class="col col-auto my-auto px-0">
-                                    {% svg 'telephone-fill' size="32px" %}
-                                </div>
-                                <div class="col col-10">
-                                    <div class="p-0 text-primary font-weight-bold text-truncate">LLÁMENOS AL {{ base.setting.phone1 }}</div>
-                                    <div class="p-0 text-muted">TELÉFONO CENTRAL</div>
-                                </div>
-                            </div>
+                <div class="col col-0 col-sm-0 col-md-0 col-lg-2"></div>
+                <div class="col col-12 col-sm-12 col-md-6 col-lg-6 pt-md-4 pr-0 text-center">
+                    <a href="{% url 'index' %}#contact" class="btn text-left">
+                        <div class="float-left py-1 px-2">{% svg 'telephone-fill' size='32px' %}</div>
+                        <div class="float-left">
+                            <div class="p-0 text-primary font-weight-bold">LLÁMENOS AL {{ base.setting.phone1 }}</div>
+                            <div class="p-0 text-muted small">TELÉFONO CENTRAL</div>
+                        </div>
+                    </a>
+                    <a href="{% url 'index' %}#section-schedule" class="btn text-left">
+                        <div class="float-left py-1 px-2">{% svg 'clock-fill' size='32px' fill="#ff9d00" %}</div>
+                        <div class="float-left">
+                            <div class="p-0 text-primary font-weight-bold" title="">HORARIO DE TRABAJO</div>
+                            <div class="p-0 text-muted small">LUNES - VIERNES 8:00AM - 6:00PM<br>SÁBADOS 8:30AM - 1:00PM</div>
                         </div>
                     </a>
                 </div>
-                <div class="col col-md-3 py-4 px-md-0 mx-md-0">
-                    <a href="{% url 'index' %}#section-schedule" class="btn btn-block text-left">
-                        <div class="container-fluid p-0">
-                            <div class="row">
-                                <div class="col col-auto my-auto px-0">
-                                    {% svg 'calendar2-week' size="32px" %}
-                                </div>
-                                <div class="col col-10">
-                                    <div class="p-0 text-primary font-weight-bold text-truncate" title="Lun-Sáb: 08:00am - 06:00pm">HORARIO DE TRABAJO</div>
-                                    <div class="p-0 text-muted">LUNES A SÁBADOS 8:00AM - 6:00PM</div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                
             </div>
         </div>
         {% endblock cover %}
@@ -157,7 +145,7 @@
         <nav class="navbar navbar-expand-lg px-md-0 py-3 navbar-light bg-white container animate__animated animate__fadeIn">
             <!-- Shop -->
             <a href="{% url 'store' %}" class="btn d-md-none" aria-label="Store">
-                {% svg 'cart4' size="24px" %}
+                {% svg 'cart-fill' size="24px" %}
             </a>
             <!-- Mobile button. -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -170,7 +158,7 @@
                     <a class="nav-link" href="{% url 'index' %}#">INICIO <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'store-item-list' %}">TIENDA</a>
+                    <a class="nav-link" href="{% url 'store-item-list' %}">PRODUCTOS</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'calcbtu' %}">CALCULADORA BTH/H</a>
@@ -205,7 +193,7 @@
                 </ul>
               <!-- Shop -->
               <a href="{% url 'store' %}" class="btn" aria-label="Store">
-                {% svg 'cart4' size="24px" %}
+                {% svg 'cart-fill' size="24px" %}
               </a>
               {% comment %}
               <!-- Search. -->
@@ -237,9 +225,9 @@
                 {% for obj in base.sliders %}
                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
                     <img src="{{ obj.image.url }}" alt="{{ obj }}" class="d-block w-100">
-                    <div class="carousel-caption d-none d-md-block" style="width: 100%; left: 0px; bottom: 0px; padding-bottom: 40px; background: rgb(255,255,255);background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);">
-                        <h5 class="h1 text-dark font-weight-bold animate__animated animate__fadeInDown animate__delay-1s animate__slow">{{ obj.title }}</h5>
-                        <p class="h3 text-dark animate__animated animate__fadeIn animate__delay-2s animate__slow">{{ obj.description }}</p>
+                    <div class="carousel-caption d-none d-md-block px-5" style="width: 100%; left: 0px; bottom: 0px; padding-bottom: 40px; background: rgb(255,255,255);background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);">
+                        <h5 class="display-2 text-shadow text-dark font-weight-bold animate__animated animate__fadeInDown animate__delay-1s animate__slow">{{ obj.title }}</h5>
+                        <p class="h3 px-4 text-dark animate__animated animate__fadeIn animate__delay-2s animate__slow">{{ obj.description }}</p>
                     </div>
                 </div>
                 {% endfor %}
@@ -260,10 +248,41 @@
 
 
 
+
+    {% block featured_items %}
+    <div class="container">
+        <h2 class="text-center d-none">Productos <strong>Destacados</strong></h2>
+        <div class="row">
+            {% for obj in store.featured_items|slice:":8" %}
+            <div class="col col-12 col-md-4 col-lg-3 mb-4">
+                <div class="w-100">
+                    <a class="item btn btn-light btn-block text-center border rounded-0 shadow-sm" href="{{ obj.get_absolute_url }}">
+                        <div class="">
+                            <img src="{% if obj.GetFirstImageField %}{{ obj.GetFirstImageField|thumbnail_url:'256crop-upscale' }}{% else %}{{ obj.GetImg }}{% endif %}" alt="{{ obj }}" class="w-100 h-auto">
+                            <hr>
+                            <h3 class="h4">{{ obj }}</h3>
+                            <div class="font-size-small">{{ obj.description|truncatechars:50 }}</div>
+                            <div class="text-primary font-weight-bold">${{ obj.price|intcomma }}</div>
+                        </div>
+                    </a>
+                    <div>
+                        <button class="btn btn-secondary btn-block rounded-0 shadow-sm" onclick="javascript:alert('Aun no disponible')">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endblock featured_items %}
+
+
+
+
     {% block brands %}
     <section id="marcas-representadas">
         <div class="container text-center p-4 mt-4">
-            <h2>Marcas <strong>Representadas</strong></h2>
+            <h2>Nuestras marcas</h2>
+            <p class="lead">Somos representantes de las siguientes marcas</p>
             <div class="text-center mx-auto my-4">
                 <div class="">
                     {% for obj in base.brands %}
@@ -585,9 +604,9 @@
     <!-- Content -->
     <main id="content" class="bg-white py-5">
         {% if messages %}
-        <div class="messages fixed-bottom w-100 p-4">
+        <div class="messages fixed-top w-100 p-5 mt-5">
             {% for message in messages %}
-            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} text-center shadow-lg lead">
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} p-4 text-center shadow-lg lead font-weight-bold">
                 {{ message }}
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -613,97 +632,72 @@
         {% block contact %}
         <div class="bg-light p-4" id="contact">
             <div class="container text-center text-md-left">
+                <h2>Formulario de Contacto</h2>
+                <hr>
                 <div class="row">
-                    <div class="col col-12 col-md-6 p-4">
-                        <h2 class="lead">Información</h2>
-                        <h3 class="h1">Contacta con <b>{{ base.setting.website_name }}</b></h3>
-                        <p class="lead">Ofrecemos servicio de <b>primera</b> en nuestros planes a clientes. 
-                            Siempre puede contar con los expertos de <b>{{ base.setting.website_name }}</b> 
-                            para llegar rápido y hacer bien el trabajo la primera vez.
-                            Utilizamos equipos de diagnóstico de última generación para encontrar la fuente 
-                            de sus problemas de aire acondicionado y solucionarlos rápidamente.
-                        </p>
-                        <div class="row mt-4">
-                            <div class="col col-12 col-md-4">
-                                <h4>{% svg 'telephone-fill' size='30' %} Central Telf.</h4>
-                                <hr class="d-none d-md-block">
-                                <div>Nuestra central:</div>
-                                <div class="text-primary h3">{{ base.setting.phone1 }}</div>
-                                <hr class="d-block d-md-none">
+                    <div class="col col-12 col-md-6">
+                        <form action="{% url 'contact' %}" method="GET">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">{% svg 'person-fill' size='100%' %}</span>
+                                </div>
+                                <input type="text" class="form-control form-control-lg" name="name" placeholder="NOMBRE" aria-label="NOMBRE" aria-describedby="basic-addon1">
                             </div>
-                            <div class="col col-12 col-md-4">
-                                <h4>{% svg 'envelope-open-fill' size='30' %} Email</h4>
-                                <hr class="d-none d-md-block">
-                                <div>Nuestro correo:</div>
-                                <div class="text-primary"><a class="text-primary" href="mailto:{{ base.setting.email }}">{{ base.setting.email }}</a> </div>
-                                <hr class="d-block d-md-none">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon2">{% svg 'telephone-fill' size='100%' %}</span>
+                                </div>
+                                <input type="text" class="form-control form-control-lg" name="phone" placeholder="TELÉFONO" aria-label="TELÉFONO" aria-describedby="basic-addon2">
                             </div>
-                            <div class="col col-12 col-md-4">
-                                <h4>{% svg 'geo-alt-fill' size='30' %} Dirección</h4>
-                                <hr class="d-none d-md-block">
-                                <div>Localización:</div>
-                                <div class="text-primary"><a class="text-primary" href="{% url 'index' %}#section-address">{{ base.setting.address }}</a></div>
-                                <hr class="d-block d-md-none">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon3">{% svg 'envelope-fill' size='100%' %}</span>
+                                </div>
+                                <input type="text" class="form-control form-control-lg" name="email" placeholder="EMAIL" aria-label="EMAIL" aria-describedby="basic-addon3">
                             </div>
-                        </div>
-                    </div>
-                    <div class="col col-12 col-md-6 p-4 bg-white">
-                        <h2 class="text-center">Solicitar <strong>visita</strong></h2>
-                        <form action="/solicitar-visita/">
-                            <div class="row mt-4">
-                                <div class="col col-6">
-                                    <input class="form-control form-control-lg bg-light2 border-0" type="text" name="name" placeholder="Su nombre">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon4">{% svg 'chat-fill' size='100%' %}</span>
                                 </div>
-                                <div class="col col-6">
-                                    <select name="service" class="form-control form-control-lg bg-light2 border-0">
-                                        <option value="">Tipo de servicio</option>
-                                        <option value="instalacion_central">Instalación central</option>
-                                        <option value="instalacion_central">Unidad de ventada</option>
-                                        <option value="instalacion_central">Instalación split</option>
-                                        <option value="instalacion_central">Mantenimiento, soporte, replaración</option>
-                                        <option value="instalacion_central">Otro</option>
-                                    </select>
-                                </div>
+                                <textarea class="form-control form-control-lg" name="message" placeholder="MENSAJE" aria-label="MENSAJE" aria-describedby="basic-addon4" rows="4"></textarea>
                             </div>
-                            <div class="row mt-3">
-                                <div class="col col-6">
-                                    <input class="form-control form-control-lg bg-light2 border-0" type="email" name="email" placeholder="Su email">
-                                </div>
-                                <div class="col col-6">
-                                    <select name="location" class="form-control form-control-lg bg-light2 border-0">
-                                        <option value="">Localidad</option>
-                                        <option value="instalacion_central">Santo Domingo</option>
-                                        <option value="instalacion_central">Santiago</option>
-                                        <option value="instalacion_central">Bávaro</option>
-                                        <option value="instalacion_central">Otro</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col col-6">
-                                    <input class="form-control form-control-lg bg-light2 border-0" type="phone" name="phone" placeholder="Teléfono">
-                                </div>
-                                <div class="col col-6">
-                                    <select name="warranty" class="form-control form-control-lg bg-light2 border-0">
-                                        <option value=RefriMorel"">Sin garantía</option>
-                                        <option value="instalacion_central">6 meses de garantía</option>
-                                        <option value="instalacion_central">1 año de garantía</option>
-                                        <option value="instalacion_central">2 años de garantía</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col col-12">
-                                    <textarea class="form-control bg-light2 border-0" name="message" id="" rows="5" placeholder="Su mensaje"></textarea>
-                                </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col col-0 col-md-6"></div>
-                                <div class="col col-12 col-md-6 text-right">
-                                    <input type="submit" class="btn btn-primary btn-block p-3" value="PROGRAMAR CITA">
-                                </div>
+                            <div>
+                                <input type="submit" class="btn btn-primary btn-block p-3" value="PROGRAMAR CITA">
                             </div>
                         </form>
+                    </div>
+                    <div class="col col-12 col-md-6">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col col-1">
+                                    {% svg 'geo-alt-fill' size="2rem" %}
+                                </div>
+                                <div class="col col-11">
+                                    <h3>Oficina Principal</h3>
+                                    <p class="lead">{{ base.setting.address }}</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col col-1">
+                                    {% svg 'telephone-fill' size="2rem" %}
+                                </div>
+                                <div class="col col-11">
+                                    <h3>Teléfono</h3>
+                                    <p class="lead">{{ base.setting.phone1 }}</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col col-1">
+                                    {% svg 'envelope-fill' size="2rem" %}
+                                </div>
+                                <div class="col col-11">
+                                    <h3>Email</h3>
+                                    <p class="lead">{{ base.setting.email }}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -719,7 +713,7 @@
                     <div class="text-center">
                         {% for obj in base.social_networks %}
                         <a class="btn btn-lg" href="{{ obj.url }}" target="_blank">
-                            <img src="{{ obj.GetImg }}" alt="{{ obj }}">
+                            {% svg obj.GetImg fill="#ffffff" size="64px" %}
                         </a>
                         {% endfor %}
                     </div>
@@ -729,6 +723,10 @@
         </div>
         {% endblock footer %}
         <hr>
+        <div>
+            <a href="{% url 'policy' %}">Términos y Condiciones de Uso</a>
+            <a href="{% url 'policy' %}">Términos y Condiciones del sitio web</a>
+        </div>
         <!-- Copyright. -->
         <div class="copyright text-center text-white p-4">
             © {% now "Y" %} {{ base.setting.website_name }} by <a class="text-white" href="{{ unolet.site.url }}" target="_blank"><b>{{ unolet.site.name }}</b></a>

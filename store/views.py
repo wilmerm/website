@@ -4,8 +4,8 @@ from django.views.generic import (ListView, CreateView, UpdateView,
 
 from fuente import (var, utils, text)
 
-from .models import Item
-
+from .models import Item, Brand, Group
+from .forms import ItemSearchForm
 
 
 
@@ -13,16 +13,27 @@ class ItemListView(ListView):
     """Listado de artículos."""
 
     model = Item
-    #paginate_by = 50
+    paginate_by = 50
 
     @utils.context_decorator()
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["form_search"] = ItemSearchForm(self.request.GET)
+        #context["brands"] = Brand.objects.all()
+        #context["groups"] = Group.objects.all()
         return context
 
     def get_queryset(self):
         q = self.request.GET.get("q")
+        brand =self.request.GET.get("brand")
+        group = self.request.GET.get("group")
         qs = self.model.objects.filter(is_active=True)
+
+        if brand:
+            qs = qs.filter(brand=brand)
+
+        if group:
+            qs = qs.filter(group=group)
 
         if q:
             qs = qs.filter(tags__contains=text.Text.GetTag(q))

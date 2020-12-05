@@ -170,17 +170,17 @@ class SocialNetwork(models.Model):
     )
 
     SOCIAL_NETWORK_ICONS = {
-        "facebook": "/static/img/social/facebook.svg",
-        "instagram": "/static/img/social/instagram.svg",
-        "linkedin": "/static/img/social/linkedin.svg",
-        "pinterest": "/static/img/social/pinterest.svg",
-        "snapchat": "/static/img/social/snapchat.svg",
-        "telegram": "/static/img/social/telegram.svg",
-        "tumblr": "/static/img/social/tumblr.svg",
-        "twitter": "/static/img/social/twitter.svg",
-        "vkontakte": "/static/img/social/vk.svg",
-        "whatsapp": "/static/img/social/whatsapp.svg",
-        "youtube": "/static/img/social/youtube.svg",
+        "facebook": "/static/img/social/facebook-rounded-fill.svg",
+        "instagram": "/static/img/social/instagram-rounded-fill.svg",
+        "linkedin": "/static/img/social/linkedin.svg-rounded-fill",
+        "pinterest": "/static/img/social/pinterest-rounded-fill.svg",
+        "snapchat": "/static/img/social/snapchat-rounded-fill.svg",
+        "telegram": "/static/img/social/telegram-rounded-fill.svg",
+        "tumblr": "/static/img/social/tumblr-rounded-fill.svg",
+        "twitter": "/static/img/social/twitter-rounded-fill.svg",
+        "vkontakte": "/static/img/social/vk-rounded-fill.svg",
+        "whatsapp": "/static/img/social/whatsapp-rounded-fill.svg",
+        "youtube": "/static/img/social/youtube-rounded-fill.svg",
     }
 
     social_network_name = models.CharField(_l("Red social"), max_length=20, 

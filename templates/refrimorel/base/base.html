@@ -10,9 +10,9 @@
     <link rel="icon" type="image/any" href="{% if base.setting.icon %}{{ base.setting.icon|thumbnail_url:'icon' }}{% else %}'/static/img/base/logo.png'{% endif %}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{{ description }}">
-    <meta name="keywords" content="{{ keywords }}">
-    <meta name="author" content="{{ author }}">
+    <meta name="description" content="{% firstof description base.setting.description %}">
+    <meta name="keywords" content="{% firstof keywords description base.setting.description %}">
+    <meta name="author" content="{{ unolet.author }}">
 
     <!-- OG Meta Tags to improve the way the post looks when you share the page on LinkedIn, Facebook, Google+ -->
 	<meta property="og:site_name" content="{{ site_name }}" /> 
@@ -617,9 +617,9 @@
     <!-- Content -->
     <main id="content" class="bg-white py-5">
         {% if messages %}
-        <div class="messages fixed-bottom w-100 p-4">
+        <div class="messages fixed-top w-100 p-5 mt-5">
             {% for message in messages %}
-            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} text-center shadow-lg lead">
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} p-4 text-center shadow-lg lead font-weight-bold">
                 {{ message }}
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -681,7 +681,7 @@
                     </div>
                     <div class="col col-12 col-md-6 p-4 bg-white">
                         <h2 class="text-center">Solicitar <strong>visita</strong></h2>
-                        <form action="/solicitar-visita/">
+                        <form action="{% url 'contact' %}" method="GET">
                             <div class="row mt-4">
                                 <div class="col col-6">
                                     <input class="form-control form-control-lg bg-light2 border-0" type="text" name="name" placeholder="Su nombre">
@@ -751,7 +751,7 @@
                     <div class="text-center">
                         {% for obj in base.social_networks %}
                         <a class="btn btn-lg" href="{{ obj.url }}" target="_blank">
-                            <img src="{{ obj.GetImg }}" alt="{{ obj }}">
+                            {% svg obj.GetImg fill="#ffffff" size="64px" %}
                         </a>
                         {% endfor %}
                     </div>

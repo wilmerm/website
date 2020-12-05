@@ -1,6 +1,7 @@
 {% extends 'base/base.html' %}
 {% load humanize %}
 {% load thumbnail %}
+{% load bootstrap4 %}
 {% load base %}
 
 
@@ -11,17 +12,24 @@
 {% block location %}{% endblock %}
 {% block about %}{% endblock %}
 {% block brochure %}{% endblock %}
+{% block featured_items %}{% endblock %}
 
 
 {% block content %}
-<form action="" method="GET" class="form-inline">
+<form action="" method="GET" class="">
     <div class="container">
         <div class="row">
-            <div class="col col-12 col-md-4 input-group">
-                <input class="form-control form-control-lg" type="search" name="q" placeholder="Buscar..." aria-label="Search">
-                <div class="input-group-append">
-                    <input class="btn btn-primary btn-lg" type="submit" value="Buscar">
-                </div>
+            <div class="col col-12 col-sm-6 col-md-4">
+                {% bootstrap_field form_search.q show_label=False size="large" %}
+            </div>
+            <div class="col col-12 col-sm-6 col-md-3">
+                {% bootstrap_field form_search.brand show_label=False size="large" %}
+            </div>
+            <div class="col col-12 col-sm-6 col-md-3">
+                {% bootstrap_field form_search.group show_label=False size="large" %}
+            </div>
+            <div class="col col-12 col-sm-6 col-md-2">
+                <input class="btn btn-primary btn-lg btn-block" type="submit" value="Buscar">
             </div>
         </div>
     </div>
@@ -31,15 +39,15 @@
 <div class="container">
     <div class="row">
         {% for obj in object_list %}
-        <div class="col col-12 col-md-4 col-lg-3 mb-4">
+        <div class="col col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
             <div class="w-100">
                 <a class="item btn btn-light btn-block text-center border rounded-0 shadow-sm" href="{{ obj.get_absolute_url }}">
-                    <div class="">
-                        <img src="{% if obj.GetFirstImageField %}{{ obj.GetFirstImageField|thumbnail_url:'256crop' }}{% else %}{{ obj.GetImg }}{% endif %}" alt="{{ obj }}" class="w-100 h-auto">
+                    <div>
+                        <img src="{% if obj.GetFirstImageField %}{{ obj.GetFirstImageField|thumbnail_url:'256crop-upscale' }}{% else %}{{ obj.GetImg }}{% endif %}" alt="{{ obj }}" class="w-100 h-auto bg-white">
                         <hr>
                         <h3>{{ obj }}</h3>
                         <div class="font-size-small">{{ obj.description|truncatechars:50 }}</div>
-                        <div>{{ obj.price|intcomma }}</div>
+                        <div class="font-weight-bold text-primary">{% if obj.price %}{{ obj.price|intcomma }}{% endif %}</div>
                     </div>
                 </a>
                 <div>
@@ -48,6 +56,10 @@
             </div>
         </div>
         {% endfor %}
+    </div>
+    <hr>
+    <div>
+        {% bootstrap_pagination page_obj %}
     </div>
 </div>
 {% endblock content %}

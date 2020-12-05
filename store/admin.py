@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.db import models
 from django.utils.translation import gettext as _
 
-from .models import Item
+from .models import Item, Group, Brand
 
 
 
@@ -26,8 +26,8 @@ class ItemAdmin(admin.ModelAdmin):
     
     fieldsets = (
         (None, {
-            "fields": ("codename", "name", "description", "price", "is_active", 
-            "is_featured")
+            "fields": ("codename", "name", "description", "group", "brand", 
+                        "price", "is_active", "is_featured")
         }),
         (_("Imagen"), {
             "fields": ("image1", "image2", "image3"),
@@ -55,3 +55,5 @@ class ItemAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Item, ItemAdmin)
+admin.site.register(Group)
+admin.site.register(Brand)

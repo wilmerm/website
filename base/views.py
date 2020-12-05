@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse, reverse_lazy
+from django.contrib import messages
 from django.views.generic import (ListView, CreateView, UpdateView, 
     DetailView, DeleteView, TemplateView)
 
@@ -80,3 +82,21 @@ class PolicyView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+
+
+
+
+
+def contact_view(request):
+    """
+    View para recibir mensajes desde la página de contacto.
+    """
+    name = request.GET.get("name")
+    phone = request.GET.get("phone")
+    email = request.GET.get("email")
+    message = request.GET.get("message")
+
+    messages.info(request, "¡Su mensaje a sido recibido! Estaremos en contacto "
+    "con usted lo más pronto posible.")
+
+    return redirect(reverse_lazy("index"))
