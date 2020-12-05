@@ -29,10 +29,10 @@ class Item(models.Model):
     blank=True)
 
     group = models.ManyToManyField("store.Group", verbose_name=_l("Grupo"), 
-    blank=True, null=True, help_text=_l("Categoría a la que pertenece."))
+    blank=True, help_text=_l("Categoría a la que pertenece."))
 
     brand = models.ForeignKey("store.Brand", verbose_name=_l("Marca"), 
-    blank=True, null=True, on_delete=models.CASCADE, 
+    blank=True, on_delete=models.CASCADE, 
     help_text=_l("Marca a la que pertenece."))
 
     image1 = models.ImageField(_l("Imágen 1"), upload_to="store/item/", 
