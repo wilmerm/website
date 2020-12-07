@@ -3,12 +3,16 @@ import datetime
 from django.db import models
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _l
+from django.utils.text import slugify
+from django.urls import reverse_lazy
 from django.core.exceptions import ValidationError
 from django.core.validators import (MinValueValidator, MaxValueValidator)
 
 from colorfield.fields import ColorField
 
 from fuente import text
+
+
 
 
 
@@ -20,7 +24,6 @@ class Item(models.Model):
 
     IMG_DEFAULT = "/static/img/base/articulo.svg"
 
-
     codename = models.CharField(_l("Referencia"), max_length=30, unique=True)
 
     name = models.CharField(_l("Nombre"), max_length=50, unique=True)
@@ -29,10 +32,10 @@ class Item(models.Model):
     blank=True)
 
     group = models.ManyToManyField("store.Group", verbose_name=_l("Grupo"), 
-    blank=True, help_text=_l("Categoría a la que pertenece."))
+    blank=True, null=True, help_text=_l("Categoría a la que pertenece."))
 
     brand = models.ForeignKey("store.Brand", verbose_name=_l("Marca"), 
-    blank=True, on_delete=models.CASCADE, 
+    blank=True, null=True, on_delete=models.CASCADE,
     help_text=_l("Marca a la que pertenece."))
 
     image1 = models.ImageField(_l("Imágen 1"), upload_to="store/item/", 
@@ -115,6 +118,8 @@ class Item(models.Model):
     count_sold = models.IntegerField(_l("Ventas"), default=0, editable=False)
 
 
+    slug = models.SlugField(unique=False, blank=True, null=True)
+
     tags = models.CharField(max_length=700, blank=True, editable=False)
 
 
@@ -128,14 +133,18 @@ class Item(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse_lazy("store-item-detail", kwargs={"slug": self.slug})
+
     def clean(self):
         self.codename = " ".join(self.codename.split()).upper()
         self.name = " ".join(self.name.split()).upper()
         self.description = " ".join(self.description.split())
 
+        self.slug = slugify(self.name)
+
         self.tags = text.Text.GetTags(self.codename, self.name, 
             self.description, combinate=True)
-
 
     def GetImg(self):
         field = self.GetFirstImageField()

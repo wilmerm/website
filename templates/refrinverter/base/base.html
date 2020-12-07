@@ -224,7 +224,7 @@
             <div class="carousel-inner">
                 {% for obj in base.sliders %}
                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                    <img src="{{ obj.image.url }}" alt="{{ obj }}" class="d-block w-100">
+                    <img src="{{ obj.image|thumbnail_url:'1024' }}" alt="{{ obj }}" class="d-block w-100">
                     <div class="carousel-caption d-none d-md-block px-5" style="width: 100%; left: 0px; bottom: 0px; padding-bottom: 40px; background: rgb(255,255,255);background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);">
                         <h5 class="display-2 text-shadow text-dark font-weight-bold animate__animated animate__fadeInDown animate__delay-1s animate__slow">{{ obj.title }}</h5>
                         <p class="h3 px-4 text-dark animate__animated animate__fadeIn animate__delay-2s animate__slow">{{ obj.description }}</p>

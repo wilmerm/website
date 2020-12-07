@@ -1,0 +1,67 @@
+{% extends 'base/base.html' %}
+{% load humanize %}
+{% load thumbnail %}
+{% load bootstrap4 %}
+{% load base %}
+
+
+
+{% block carousel %}{% endblock %}
+{% block schedule %}{% endblock %}
+{% block brands %}{% endblock %}
+{% block location %}{% endblock %}
+{% block about %}{% endblock %}
+{% block brochure %}{% endblock %}
+{% block featured_items %}{% endblock %}
+
+
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col col-12 col-md-5">
+            <img src="{{ object.GetImg }}" alt="{{ object }}" class="w-100">
+        </div>
+        <div class="col col-12 col-md-7">
+            <h1>{{ object }}</h1>
+            <p>{{ object.description }}</p>
+            {% if object.brand %}<div><b>Marca: </b>{{ object.brand }}</div>{% endif %}
+
+            {% if object.color1 or object.color2 %}
+            <div>
+                <b>Colores: </b>
+                {% if object.color1 %}<span style="background-color: {{ object.color1 }}">{{ object.color1 }}</span>{% endif %}
+                {% if object.color2 %}<span style="background-color: {{ object.color1 }}">{{ object.color2 }}</span>{% endif %}
+            </div>
+            {% endif %}
+            
+            {% if object.length_width or object.length_height or object.length_depth %}
+            <div>
+                <b>Dimensiones: </b>
+                {% if object.length_width %}<span>Ancho: {{ object.length_width }} {{ object.length_type }}</span>{% endif %}
+                {% if object.length_height %}<span>Alto: {{ object.length_height }} {{ object.length_type }}</span>{% endif %}
+                {% if object.length_depth %}<span>Largo: {{ object.length_depth }} {{ object.length_type }}</span>{% endif %}
+            </div>
+            {% endif %}
+
+            {% if object.weight %}<div><b>Peso: </b>{{ object.weight }} {{ object.weight_type }}</div>{% endif %}
+            {% if object.volumen %}<div><b>Volumen: </b>{{ object.volumen }} {{ object.volumen_type }}</div>{% endif %}
+
+            {% if object.material %}<div><b>Material: </b>{{ object.material }}</div>{% endif %}
+            {% if object.capacity %}<div><b>Capacidad: </b>{{ object.capacity|intcomma }} {{ object.capacity_type }}</div>{% endif %}
+            {% if object.price %}<div><b>Precio: </b>RD${{ object.price|intcomma }}</div>{% endif %}
+            
+            <hr>
+            <div>
+                <form action="">
+                    <input class="form-control form-control-lg w-128px float-left mr-2" type="number" name="cant" value="1" min="1">
+                    <a class="btn btn-Uprimary btn-lg" href="">
+                        {% svg 'cart' fill='#ffffff' %}
+                        Comprar
+                    </a>
+                </form>
+            </div>            
+        </div>
+    </div>
+</div>
+{% endblock content %}

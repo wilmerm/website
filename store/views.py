@@ -9,18 +9,19 @@ from .forms import ItemSearchForm
 
 
 
-class ItemListView(ListView):
-    """Listado de artículos."""
 
+
+class ItemListView(ListView):
+    """
+    Listado de artículos.
+    """
     model = Item
-    paginate_by = 50
+    paginate_by = 30
 
     @utils.context_decorator()
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["form_search"] = ItemSearchForm(self.request.GET)
-        #context["brands"] = Brand.objects.all()
-        #context["groups"] = Group.objects.all()
         return context
 
     def get_queryset(self):
@@ -39,3 +40,20 @@ class ItemListView(ListView):
             qs = qs.filter(tags__contains=text.Text.GetTag(q))
 
         return qs
+
+
+
+
+class ItemDetailView(DetailView):
+    """
+    Detalle de un artículo.
+    """
+    model = Item
+
+    @utils.context_decorator()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = str(self.object)
+        context["description"] = self.object.description
+        context["form_search"] = ItemSearchForm(self.request.GET)
+        return context
