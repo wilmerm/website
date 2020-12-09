@@ -106,10 +106,12 @@
         </div>
     </div>
 </div>
+{% endblock content %}
 
 
 
 
+{% block script %}
 <script>
     var item_imgs = document.querySelectorAll(".item-img");
     var item_thumb_imgs = document.querySelectorAll(".img-thumbnail");
@@ -170,6 +172,5 @@
         });
 
     }
-
 </script>
-{% endblock content %}
+{% endblock script %}

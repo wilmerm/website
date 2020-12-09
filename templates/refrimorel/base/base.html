@@ -795,32 +795,9 @@
                 $("#btnUp").removeClass("active");
             }
         });
-
-        
-
-
-        // // Activate Carousel
-        // $("#carousel1").carousel({
-        //     interval: 2000,
-        // });
-
-        // // Enable Carousel Indicators
-        // $(".item").click(function() {
-        //     $("#carousel1").carousel(1);
-        // });
-
-        // // Enable Carousel Controls
-        // $(".carousel-control-prev").click(function() {
-        //     $("#carousel1").carousel("prev");
-        // });
-
-        // $(".carousel-control-next").click(function() {
-        //     $("#carousel1").carousel("next");
-        // });
-
-        // $('#carousel1').on('slide.bs.carousel', function (direction, relatedTarget, from, to) {
-        //     //console.log(direction, relatedTarget, from, to);
-        // })
     </script>
+
+    {% block script %}
+    {% endblock script %}
 </body>
 </html>
