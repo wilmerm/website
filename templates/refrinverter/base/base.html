@@ -72,6 +72,7 @@
 <body class="bg-white p-0 m-0">
 
     
+    {# comment #}
     <!-- En construcción. -->
     {% if settings.DEBUG != True %}
     <div class="alert alert-warning alert-dismissible fade show container-fluid shadow-lg position-fixed bottom shadow-lg border z-index-3000 animate__animated animate__shakeY text-dark" role="alert" style="background-color: rgba(250, 235, 215, 0.638);">
@@ -89,6 +90,7 @@
         </button>
     </div>
     {% endif %}
+    {# endcomment #}
 
 
 
@@ -112,20 +114,26 @@
                 </div>
                 <div class="col col-0 col-sm-0 col-md-0 col-lg-2"></div>
                 <div class="col col-12 col-sm-12 col-md-6 col-lg-6 pt-md-4 pr-0 text-center">
-                    <a href="{% url 'index' %}#contact" class="btn text-left">
-                        <div class="float-left py-1 px-2">{% svg 'telephone-fill' size='32px' %}</div>
-                        <div class="float-left">
-                            <div class="p-0 text-primary font-weight-bold">LLÁMENOS AL {{ base.setting.phone1 }}</div>
-                            <div class="p-0 text-muted small">TELÉFONO CENTRAL</div>
+                    <div class="row">
+                        <div class="col col-12 col-md-6 m-0 p-0">
+                            <a href="{% url 'index' %}#contact" class="text-left">
+                                <div class="float-left py-1 pr-2 w-20 text-right">{% svg 'telephone-fill' size='32px' %}</div>
+                                <div class="float-left w-80">
+                                    <div class="p-0 text-primary font-weight-bold">LLÁMENOS AL {{ base.setting.phone1 }}</div>
+                                    <div class="p-0 text-muted small">TELÉFONO CENTRAL</div>
+                                </div>
+                            </a>
                         </div>
-                    </a>
-                    <a href="{% url 'index' %}#section-schedule" class="btn text-left">
-                        <div class="float-left py-1 px-2">{% svg 'clock-fill' size='32px' fill="#ff9d00" %}</div>
-                        <div class="float-left">
-                            <div class="p-0 text-primary font-weight-bold" title="">HORARIO DE TRABAJO</div>
-                            <div class="p-0 text-muted small">LUNES - VIERNES 8:00AM - 6:00PM<br>SÁBADOS 8:30AM - 1:00PM</div>
+                        <div class="col col-12 col-md-6 m-0 p-0">
+                            <a href="{% url 'index' %}#section-schedule" class=" text-left">
+                                <div class="float-left py-1 pr-2 w-20 text-right">{% svg 'clock-fill' size='32px' fill="#ff9d00" %}</div>
+                                <div class="float-left w-80">
+                                    <div class="p-0 text-primary font-weight-bold" title="">HORARIO DE TRABAJO</div>
+                                    <div class="p-0 text-muted small">{{ base.setting.schedule|safe }}</div>
+                                </div>
+                            </a>
                         </div>
-                    </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -142,7 +150,7 @@
     -->
     {% block navbar %}
     <div id="primary-navigation" class="bg-white sticky-top shadow-sm p-0">
-        <nav class="navbar navbar-expand-lg px-md-0 py-3 navbar-light bg-white container animate__animated animate__fadeIn">
+        <nav class="navbar navbar-expand-lg font-weight-bold px-md-0 py-3 navbar-light bg-white container animate__animated animate__fadeIn">
             <!-- Shop -->
             <a href="{% url 'store' %}" class="btn d-md-none" aria-label="Store">
                 {% svg 'cart-fill' size="24px" %}
@@ -423,157 +431,6 @@
                 {% endif %}
                 {% endwith %}
             </div>
-
-            <!-- Calendario (solo md) -->
-            {% comment %}
-            <div class="p-4 m-4 border shadow d-none d-md-block">
-                <div class="bg-primary p-4"><h2 class="display-4 text-white text-center">Nuestro Horario de <strong>Servicio</strong></h2></div>
-                <table class="table table-bordered border-0 d-none d-md-block">
-                    <thead class="thead-light">
-                        <th class=""></th>
-                        <th class="text-truncate" style="width: 12%">Lunes</th>
-                        <th class="text-truncate" style="width: 12%">Martes</th>
-                        <th class="text-truncate" style="width: 12%">Miércoles</th>
-                        <th class="text-truncate" style="width: 12%">Jueves</th>
-                        <th class="text-truncate" style="width: 12%">Viernes</th>
-                        <th class="text-truncate" style="width: 12%">Sábado</th>
-                        <th class="text-truncate" style="width: 12%">Domingo</th>
-                    </thead>
-                    <tbody>
-                        <!-- <tr id="schedule-hour-7">
-                            <th class="bg-light">07:00 a.m.</th>
-                            <td class="schedule-monday"></td>
-                            <td class="schedule-tuesday"></td>
-                            <td class="schedule-wednesday"></td>
-                            <td class="schedule-thursday"></td>
-                            <td class="schedule-friday"></td>
-                            <td class="schedule-saturday"></td>
-                            <td class="schedule-sunday"></td>
-                        </tr> -->
-                        <tr id="schedule-hour-8">
-                            <th class="bg-light">08:00 a.m.</th>
-                            <td class="schedule-monday bg-secondary animate__animated animate__bounce"></td>
-                            <td class="schedule-tuesday bg-secondary"></td>
-                            <td class="schedule-wednesday bg-secondary"></td>
-                            <td class="schedule-thursday bg-secondary"></td>
-                            <td class="schedule-friday bg-secondary"></td>
-                            <td class="schedule-saturday bg-secondary"></td>
-                            <td class="schedule-sunday"></td>
-                        </tr>
-                        <tr id="schedule-hour-9">
-                            <th class="bg-light">09:00 a.m.</th>
-                            <td class="schedule-monday bg-secondary"></td>
-                            <td class="schedule-tuesday bg-secondary"></td>
-                            <td class="schedule-wednesday bg-secondary"></td>
-                            <td class="schedule-thursday bg-secondary"></td>
-                            <td class="schedule-friday bg-secondary"></td>
-                            <td class="schedule-saturday bg-secondary"></td>
-                            <td class="schedule-sunday"></td>
-                        </tr>
-                        <tr id="schedule-hour-10">
-                            <th class="bg-light">10:00 a.m.</th>
-                            <td class="schedule-monday bg-secondary"></td>
-                            <td class="schedule-tuesday bg-secondary"></td>
-                            <td class="schedule-wednesday bg-secondary"></td>
-                            <td class="schedule-thursday bg-secondary"></td>
-                            <td class="schedule-friday bg-secondary"></td>
-                            <td class="schedule-saturday bg-secondary"></td>
-                            <td class="schedule-sunday"></td>
-                        </tr>
-                        <tr id="schedule-hour-11">
-                            <th class="bg-light">11:00 a.m.</th>
-                            <td class="schedule-monday bg-secondary"></td>
-                            <td class="schedule-tuesday bg-secondary"></td>
-                            <td class="schedule-wednesday bg-secondary"></td>
-                            <td class="schedule-thursday bg-secondary"></td>
-                            <td class="schedule-friday bg-secondary"></td>
-                            <td class="schedule-saturday bg-secondary"></td>
-                            <td class="schedule-sunday"></td>
-                        </tr>
-                        <tr id="schedule-hour-12">
-                            <th class="bg-light">12:00 a.m.</th>
-                            <td class="schedule-monday bg-secondary"></td>
-                            <td class="schedule-tuesday bg-secondary"></td>
-                            <td class="schedule-wednesday bg-secondary"></td>
-                            <td class="schedule-thursday bg-secondary"></td>
-                            <td class="schedule-friday bg-secondary"></td>
-                            <td class="schedule-saturday bg-secondary"></td>
-                            <td class="schedule-sunday"></td>
-                        </tr>
-                        <tr id="schedule-hour-13">
-                            <th class="bg-light">01:00 p.m.</th>
-                            <td class="schedule-monday bg-secondary"></td>
-                            <td class="schedule-tuesday bg-secondary"></td>
-                            <td class="schedule-wednesday bg-secondary"></td>
-                            <td class="schedule-thursday bg-secondary"></td>
-                            <td class="schedule-friday bg-secondary"></td>
-                            <td class="schedule-saturday bg-secondary"></td>
-                            <td class="schedule-sunday"></td>
-                        </tr>
-                        <tr id="schedule-hour-14">
-                            <th class="bg-light">02:00 p.m.</th>
-                            <td class="schedule-monday bg-secondary"></td>
-                            <td class="schedule-tuesday bg-secondary"></td>
-                            <td class="schedule-wednesday bg-secondary"></td>
-                            <td class="schedule-thursday bg-secondary"></td>
-                            <td class="schedule-friday bg-secondary"></td>
-                            <td class="schedule-saturday"></td>
-                            <td class="schedule-sunday"></td>
-                        </tr>
-                        <tr id="schedule-hour-15">
-                            <th class="bg-light">03:00 p.m.</th>
-                            <td class="schedule-monday bg-secondary"></td>
-                            <td class="schedule-tuesday bg-secondary"></td>
-                            <td class="schedule-wednesday bg-secondary"></td>
-                            <td class="schedule-thursday bg-secondary"></td>
-                            <td class="schedule-friday bg-secondary"></td>
-                            <td class="schedule-saturday"></td>
-                            <td class="schedule-sunday"></td>
-                        </tr>
-                        <tr id="schedule-hour-16">
-                            <th class="bg-light">04:00 p.m.</th>
-                            <td class="schedule-monday bg-secondary"></td>
-                            <td class="schedule-tuesday bg-secondary"></td>
-                            <td class="schedule-wednesday bg-secondary"></td>
-                            <td class="schedule-thursday bg-secondary"></td>
-                            <td class="schedule-friday bg-secondary"></td>
-                            <td class="schedule-saturday"></td>
-                            <td class="schedule-sunday"></td>
-                        </tr>
-                        <tr id="schedule-hour-17">
-                            <th class="bg-light">05:00 p.m.</th>
-                            <td class="schedule-monday bg-secondary"></td>
-                            <td class="schedule-tuesday bg-secondary"></td>
-                            <td class="schedule-wednesday bg-secondary"></td>
-                            <td class="schedule-thursday bg-secondary"></td>
-                            <td class="schedule-friday bg-secondary"></td>
-                            <td class="schedule-saturday"></td>
-                            <td class="schedule-sunday"></td>
-                        </tr>
-                        <tr id="schedule-hour-18">
-                            <th class="bg-light">06:00 p.m.</th>
-                            <td class="schedule-monday bg-secondary"></td>
-                            <td class="schedule-tuesday bg-secondary"></td>
-                            <td class="schedule-wednesday bg-secondary"></td>
-                            <td class="schedule-thursday bg-secondary"></td>
-                            <td class="schedule-friday bg-secondary"></td>
-                            <td class="schedule-saturday"></td>
-                            <td class="schedule-sunday"></td>
-                        </tr>
-                        <!-- <tr id="schedule-hour-19">
-                            <th class="bg-light">07:00 p.m.</th>
-                            <td class="schedule-monday"></td>
-                            <td class="schedule-tuesday"></td>
-                            <td class="schedule-wednesday"></td>
-                            <td class="schedule-thursday"></td>
-                            <td class="schedule-friday"></td>
-                            <td class="schedule-saturday"></td>
-                            <td class="schedule-sunday"></td>
-                        </tr> -->
-                    </tbody>
-                </table>
-            </div>
-            {% endcomment %}
         </div>
     </section>
     {% endblock schedule %}
@@ -588,13 +445,16 @@
     <div id="contact-phone1" class="container-fluid text-center bg-primary text-white py-5 d-md-none">
         <h3 class="h1 font-weight-bold">{% svg '/static/img/others/call-center-worker.svg' fill='#ffffff' %} {{ base.setting.phone1 }}</h3>
     </div>
-    <section id="section-address">
-        <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1299.7602939306498!2d-69.92500265593821!3d18.483637924251774!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8eaf89c7e96fa371%3A0x76010410d676fc5!2sRefrinverter!5e0!3m2!1ses-419!2sdo!4v1607041803665!5m2!1ses-419!2sdo" 
-            width="100%" height="450" frameborder="0" style="border:0;" 
-            allowfullscreen="" aria-hidden="false" tabindex="0">
-        </iframe>
-    </section>
+
+    {% if base.setting.embed_map_url %}
+        <section id="section-address">
+            <iframe 
+                src="{{ base.setting.embed_map_url }}" 
+                width="100%" height="450" frameborder="0" style="border:0;" 
+                allowfullscreen="" aria-hidden="false" tabindex="0">
+            </iframe>
+        </section>
+    {% endif %}
     {% endblock location %}
 
 

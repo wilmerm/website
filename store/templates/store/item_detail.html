@@ -19,10 +19,37 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col col-12 col-md-5">
-            <img src="{{ object.GetImg }}" alt="{{ object }}" class="w-100">
+        <div class="col col-12 col-md-6">
+            <div id="thumbnails" class="row border-bottom pb-1">
+                {% if object.image1 %}
+                <div class="col col-4">
+                    <img src="{{ object.image1|thumbnail_url:'128crop-upscale' }}" id="thumb-image1" alt="{{ object }}" data-img="image1" class="btn border img-thumbnail">
+                </div>
+                {% endif %}
+                {% if object.image2 %}
+                <div class="col col-4">
+                    <img src="{{ object.image2|thumbnail_url:'128crop-upscale' }}" id="thumb-image2" alt="{{ object }}" data-img="image2" class="btn border img-thumbnail">
+                </div>
+                {% endif %}
+                {% if object.image3 %}
+                <div class="col col-4">
+                    <img src="{{ object.image3|thumbnail_url:'128crop-upscale' }}" id="thumb-image3" alt="{{ object }}" data-img="image3" class="btn border img-thumbnail">
+                </div>
+                {% endif %}
+            </div>
+            <div>
+                {% if object.image1 %}
+                    <img src="{{ object.image1|thumbnail_url:'512' }}" id="image1" alt="{{ object }}" class="item-img w-100">
+                {% endif %}
+                {% if object.image2 %}
+                    <img src="{{ object.image2|thumbnail_url:'512' }}" id="image2" alt="{{ object }}" class="item-img w-100">
+                {% endif %}
+                {% if object.image3 %}
+                    <img src="{{ object.image3|thumbnail_url:'512' }}" id="image3" alt="{{ object }}" class="item-img w-100">
+                {% endif %}
+            </div>
         </div>
-        <div class="col col-12 col-md-7">
+        <div class="col col-12 col-md-6">
             <h1>{{ object }}</h1>
             <p>{{ object.description }}</p>
             {% if object.brand %}<div><b>Marca: </b>{{ object.brand }}</div>{% endif %}
@@ -53,15 +80,96 @@
             
             <hr>
             <div>
-                <form action="">
-                    <input class="form-control form-control-lg w-128px float-left mr-2" type="number" name="cant" value="1" min="1">
-                    <a class="btn btn-Uprimary btn-lg" href="">
-                        {% svg 'cart' fill='#ffffff' %}
-                        Comprar
-                    </a>
+                <form action="" method="POST" id="form-add-cart">
+                    {% csrf_token %}
+                    {% bootstrap_form_errors form_cart %}
+
+                    <div id="form-add-cart-message" class="alert alert-primary d-none">
+                        <span>{% svg 'info-circle-fill' size='32px' %}</span>
+                        <span class="message"></span>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col col-6">
+                            {% bootstrap_field form_cart.item_id show_label=False %}
+                            {% bootstrap_field form_cart.cant show_label=False %}
+                        </div>
+                        <div class="col col-6">
+                            <a class="btn btn-primary btn-lg font-size-large" href="javascript:addCart()">
+                                <span class="p-1">{% svg 'bag-plus-fill' fill='#ffffff' %}</span>
+                                <span>Comprar</span>
+                            </a>
+                        </div>
+                    </div>
                 </form>
             </div>            
         </div>
     </div>
 </div>
+
+
+
+
+<script>
+    var item_imgs = document.querySelectorAll(".item-img");
+    var item_thumb_imgs = document.querySelectorAll(".img-thumbnail");
+
+
+    // {# De solo haber una sola imagen, no mostramos los thumbnails #}
+    if (item_thumb_imgs.length == 1) {
+        document.getElementById("thumbnails").classList.add("d-none");
+    }
+
+
+    // {# Ocultamos las imágenes y mostramos solo la primera. #}
+    item_imgs.forEach(function(img) {
+        img.classList.add("d-none");
+    });
+
+    item_imgs[0].classList.remove("d-none");
+
+
+    // {# Añadimos el evento click a cada thubnail. #} 
+    item_thumb_imgs.forEach(function(thumb) {
+        
+        thumb.onclick = function(event) {
+
+            // {# Ocultamos las imágenes y mostramos solo la elegida. #}
+            item_imgs.forEach(function(img) {
+                img.classList.add("d-none");
+            });
+
+            let img = document.getElementById(thumb.dataset.img);
+            img.classList.remove("d-none");
+        }
+    });
+
+
+    // {# Valores predeterminados en el formulario de añadir al carrito. #}
+    document.getElementById("id_item_id").value = "{{ object.id }}";
+    document.getElementById("id_cant").value = 1;
+
+
+    // {# Agregar al carrito. #}
+    function addCart(event) {
+        var form = document.getElementById("form-add-cart");
+
+
+        
+        $.ajax({
+            type: "POST",
+            url: "{% url 'store-cart-add' %}",
+            data: $(form).serialize(),
+            dataType: "json",
+            success: function(data) {
+                var div_alert_msg = document.getElementById("form-add-cart-message");
+                var div_msg = div_alert_msg.querySelector(".message")
+                div_msg.innerText = data.message;
+                div_alert_msg.classList.remove("d-none");
+            },
+        });
+
+    }
+
+</script>
 {% endblock content %}

@@ -42,6 +42,7 @@ def validate_image_size(value):
 
 
 
+
 class Setting(models.Model):
     """
     Configuración del sitio.
@@ -58,10 +59,12 @@ class Setting(models.Model):
     logo = models.ImageField(_l("Logo"), blank=True, null=True, 
     upload_to="setting")
 
-    description = models.CharField(_l("Descripción"), max_length=200, blank=True,
-    help_text=_l("Breve descripción del sitio."))
+    description = models.CharField(_l("Descripción"), max_length=200, 
+    blank=True, help_text=_l("Breve descripción del sitio."))
+
 
     # Cover.
+
     cover = models.ImageField(_l("Portada"), blank=True, null=True, 
     upload_to="setting",
     help_text=_l("Imagen de portada que se mostraráen la parte superior."))
@@ -70,15 +73,21 @@ class Setting(models.Model):
     validators=[MinValueValidator(0), MaxValueValidator(512)],
     help_text=_l("Altura que tendrá la portada."))
 
-    phone1 = models.CharField(_l("Central telefónica"), max_length=20, blank=True)
+    phone1 = models.CharField(_l("Central telefónica"), max_length=20, 
+    blank=True)
     
-    phone2 = models.CharField(_l("Teléfono secundario"), max_length=20, blank=True)
+    phone2 = models.CharField(_l("Teléfono secundario"), max_length=20, 
+    blank=True)
 
     email = models.EmailField(_l("Correo electrónico"), blank=True)
 
-    address = models.CharField(_l("Dirección principal"), max_length=256, blank=True)
+    address = models.CharField(_l("Dirección principal"), max_length=256, 
+    blank=True)
 
-    
+    schedule = models.CharField(_l("Horario de trabajo"), max_length=150,
+    blank=True)
+
+
     # About.
 
     about_image_cover = models.ImageField(_l("Acerca de: Portada"), blank=True, 
@@ -87,12 +96,16 @@ class Setting(models.Model):
     about_image_footer = models.ImageField(_l("Acerca de: Imagen pie de página"), 
     blank=True, upload_to="about")
 
-    about_title = models.CharField(_l("Acerca de: Título"), max_length=70, blank=True)
+    about_title = models.CharField(_l("Acerca de: Título"), max_length=70, 
+    blank=True)
 
     about_content = models.TextField(_l("Acerca de: Contenido"), blank=True)
 
 
     # Others.
+
+    embed_map_url = models.URLField(_l("URL de Google Maps"), blank=True, 
+    help_text=_l("URL de la dirección de la empresa en Google Maps."))
 
     embed_promo_url = models.URLField(_l("URL de promoción incrustrada"), 
     blank=True, help_text=_l("URL del contenido externo que desea mostrar como "
@@ -103,6 +116,7 @@ class Setting(models.Model):
 
     class Meta:
         verbose_name = _("Ajustes")
+        verbose_name_plural = _("Ajustes")
 
     
     def __str__(self):

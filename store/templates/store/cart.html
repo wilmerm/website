@@ -1,0 +1,60 @@
+{% extends 'base/base.html' %}
+{% load humanize %}
+{% load thumbnail %}
+{% load bootstrap4 %}
+{% load base %}
+
+
+
+{% block carousel %}{% endblock %}
+{% block schedule %}{% endblock %}
+{% block brands %}{% endblock %}
+{% block location %}{% endblock %}
+{% block about %}{% endblock %}
+{% block brochure %}{% endblock %}
+{% block featured_items %}{% endblock %}
+
+
+
+{% block content %}
+<div class="container d-block d-sm-block d-md-none d-lg-none">
+    {% for item in request.session.cart.items.values %}
+    <div class="row">
+    </div>
+    {% endfor %}
+</div>
+
+<div class="container table-responsive">
+    <table class="table table-primary table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Nombre</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in request.session.cart.values %}
+            <tr>
+                <td><img src="{{ item.img }}" alt="" class="img-fluid"></td>
+                <td>{{ item.name }}</td>
+                <td class="text-right">{{ item.cant|intcomma }}</td>
+                <td class="text-right">{{ item.price|intcomma }}</td>
+                <td class="text-right">{{ item.subtotal|intcomma }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot >
+            <tr class="bg-light font-weight-bold">
+                <td></td>
+                <td></td>
+                <td class="text-right">{{ request.session.cart_total.cant|intcomma }}</td>
+                <td></td>
+                <td class="text-right">{{ request.session.cart_total.total|intcomma }}</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+{% endblock content %}
