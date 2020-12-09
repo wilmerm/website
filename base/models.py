@@ -104,8 +104,9 @@ class Setting(models.Model):
 
     # Others.
 
-    embed_map_url = models.URLField(_l("URL de Google Maps"), blank=True, 
-    help_text=_l("URL de la dirección de la empresa en Google Maps."))
+    embed_map_html = models.TextField(_l("Código inserción de mapa"), blank=True, 
+    help_text=_l("Código HTML/Javascript que se mostrará en una de las "
+    "partes de la página principal como el mapa."))
 
     embed_promo_url = models.URLField(_l("URL de promoción incrustrada"), 
     blank=True, help_text=_l("URL del contenido externo que desea mostrar como "
