@@ -5,9 +5,9 @@ NAME = "refrinverter"
 
 SECRET_KEY = ')i-)cyg((ap3*ad6(2#$001z9*b%qo$/-4c2+zm4tqbo~@|¬sz'
 
-#DEBUG = False
+DEBUG = False
 
-#ALLOWED_HOSTS = [f"www.{NAME}.com", f"{NAME}.com"]
+ALLOWED_HOSTS = [f"www.{NAME}.com", f"{NAME}.com"]
 
 DATABASES = {
     'default': {
