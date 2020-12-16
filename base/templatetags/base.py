@@ -1,12 +1,27 @@
 import os
+import datetime
+import re
 
 from django import template
 from django.conf import settings
+from fuente import text
+
 
 
 
 register = template.Library()
 
+
+
+
+@register.simple_tag
+def vue(content):
+    """
+    Devuelve el contenido encerrado en dos llaves {{content}}.
+    Útil para mostrar contenido de los frameworks VueJs y AngularJs.
+
+    """
+    return "{{" + content + "}}"
 
 
 
@@ -31,6 +46,9 @@ def svg(filename: str, size: str = None, fill: str = None,
         imagen.
 
     """
+    fill = fill or 'var(--primary)'
+
+
     if "/" in filename:
         path = filename
         if not ".svg" in path:
@@ -49,14 +67,30 @@ def svg(filename: str, size: str = None, fill: str = None,
         except (FileNotFoundError):
             svg = open(path2, "r").read()
 
-    if fill:
-        if not "!important" in fill:
-            fill = fill.strip() + " !important"
+    # Eliminamos los saltos de línea y espacios extras.
+    svg = " ".join(svg.replace("\n", " ").split())
 
     if not id:
-        id = f"id-svg-{filename}-fill-{fill}-size-{size}"
+        id = f"id-svg-{filename}-fill-{fill}-size-{size}-{datetime.datetime.today()}"
+        id = text.Text.FormatCodename(id)
 
-    id = "-".join(id.split()).replace("#", "").replace(".", "").replace("!", "")
+    if (not " width=" in svg) and (size != None):
+        svg = re.sub(r'<svg\s', f'<svg width="{size}" ', svg, count=1)
+    elif size != None:
+        svg = re.sub(r'\swidth=(["\']).*?["\']\s', f' width="{size}" ', svg, 
+        count=1)
+    
+    if (not " height=" in svg) and (size != None):
+        svg = re.sub(r'<svg\s', f'<svg height="{size}" ', svg, count=1)
+    elif size != None:
+        svg = re.sub(r'\sheight=(["\']).*?["\']\s', f' height="{size}" ', svg, 
+        count=1)
+
+    if (not " fill=" in svg):
+        svg = re.sub(r'<svg\s', f'<svg fill="{fill}" ', svg, count=1)
+    else:
+        svg = re.sub(r'\sfill=(["\']).*?["\']\s', f' fill="{fill}" ', svg, 
+        count=1)
 
     return {"svg": svg, "size": size, "fill": fill, "filename": filename, 
         "id": id}

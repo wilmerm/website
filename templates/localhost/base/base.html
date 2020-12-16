@@ -211,7 +211,7 @@
                 {% endcomment %}
                  <!-- Shop -->
                 <li class="nav-item d-none d-md-block">
-                    <a class="nav-link" href="{% url 'store' %}" aria-label="Store">{% svg 'cart4' size="24px" %}</a>
+                    <a class="nav-link" href="{% if request.session.cart %}{% url 'store-cart' %}{% else %}{% url 'store' %}{% endif %}" aria-label="Store">{% svg 'cart4' size="24px" %}</a>
                 </li>
               </ul>
               {% comment %}

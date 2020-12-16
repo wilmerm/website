@@ -1,0 +1,283 @@
+{% extends 'base/base.html' %}
+{% load thumbnail %}
+{% load base %}
+
+
+
+{% block styles %}
+{{ block.super }}
+<link rel="stylesheet" href="/static/css/instances/refrimorel.css">
+{% endblock styles %}
+
+
+
+{% block header %}
+<div class="container z-index-3000 border-bottom d-none d-md-block animate__animated animate__slideInDown">
+    <div class="row">
+        <div class="col col-md-3 pt-2 px-md-0 mx-md-0">
+            <a href="{% url 'index' %}#section-schedule" class="btn btn-block text-left">
+                <div class="container-fluid p-0">
+                    <div class="row">
+                        <div class="col col-auto my-auto px-0">
+                            {% svg 'calendar2-week' size="32px" %}
+                        </div>
+                        <div class="col col-10">
+                            <div class="p-0 text-primary font-weight-bold text-truncate" title="{{ base.setting.schedule|safe }}">{{ base.setting.schedule|safe }}</div>
+                            <div class="p-0 text-muted">Servicios y asistencia</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col col-md-3 pt-2 px-md-0 mx-md-0">
+            <a href="{% url 'index' %}#section-certification" class="btn btn-block text-left px-0">
+                <div class="container-fluid p-0">
+                    <div class="row">
+                        <div class="col col-auto my-auto px-0">
+                            {% svg 'patch-check-fll' size="32px" %}
+                        </div>
+                        <div class="col col-10">
+                            <div class="p-0 text-primary font-weight-bold text-truncate">Certificación & Garantía</div>
+                            <div class="p-0 text-muted">Registre sus productos</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col col-md-3 pt-2 px-md-0 mx-md-0">
+            <a href="{% url 'index' %}#contact" class="btn btn-block text-left px-0">
+                <div class="container-fluid p-0">
+                    <div class="row">
+                        <div class="col col-auto my-auto px-0">
+                            {% svg 'telephone-fill' size="32px" %}
+                        </div>
+                        <div class="col col-10">
+                            <div class="p-0 text-primary font-weight-bold text-truncate">Llámenos hoy {{ base.setting.phone1 }}</div>
+                            <div class="p-0 text-muted">Teléfono central</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col col-md-3 bg-primary pt-2 px-md-0 mx-md-0">
+            <a href="{% url 'index' %}#contact" class="btn btn-block text-left">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col col-auto my-auto px-0">
+                            {% svg 'calendar-day-fill' size="24px" fill="#fff" %}
+                        </div>
+                        <div class="col col-10">
+                            <div class="p-0 text-white font-weight-bold">CITA EVALUACIÓN A PROYECTOS</div>
+                            <!-- <div class="p-0 text-muted"></div> -->
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock header %}
+
+
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg px-md-0 py-1 navbar-light bg-white container animate__animated animate__fadeIn">
+
+    <!-- Logo. -->
+    <a class="navbar-brand animate__animated animate__heartBeat" href="{% url 'index' %}">
+        {% if base.setting.logo %}
+            <img src="{{ base.setting.logo|thumbnail_url:'256' }}" class="logo h-64px w-auto" alt="{{ base.setting.website_name }}">
+            <!-- <img src="{{ base.setting.logo|thumbnail_url:'128' }}" class="logo2 h-64px w-auto d-none animate__animated animate__fadeIn" alt="{{ base.setting.website_name }}"> -->
+        {% else %}
+            <div class="h1 font-weight-bold text-primary" style="white-space: normal;">{{ base.setting.website_name|truncatechars:70 }}</div>
+        {% endif %}
+    </a>
+
+    <!-- Shop -->
+    <a href="{% if request.session.cart %}{% url 'store-cart' %}{% else %}{% url 'store' %}{% endif %}" class="btn d-md-none" aria-label="Store">
+        {% svg 'cart4' size="24px" %}
+        {% if request.session.cart %}
+        <div v-if="cart.items" class="cart-length bg-success text-white font-weight-bold font-size-small rounded-circle top right shadow-sm p-1 px-2" style="position: absolute; top: 5px; right: 0px;">
+            {% vue 'cart.total.cant' %}
+        </div>
+        {% endif %}
+    </a>
+
+    <!-- Mobile button. -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Links. -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'index' %}#">Inicio <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'about' %}">Nosotros</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'store-item-list' %}">Tienda</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'brands' %}">Marcas</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'calcbtu' %}">Calculadora BTU</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'questions' %}">Preguntas frecuentes</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'policy' %}">Políticas</a>
+        </li>
+
+         <!-- Shop -->
+        <li class="nav-item d-none d-md-block">
+            <a class="nav-link" href="{% if request.session.cart %}{% url 'store-cart' %}{% else %}{% url 'store' %}{% endif %}" aria-label="Store">
+                {% svg 'cart4' size="24px" %}
+            </a>
+            <div v-if="cart.total.cant" 
+                class="cart-length bg-success text-white font-weight-bold font-size-small rounded-circle top right shadow-sm p-1 px-2 animate__animated animate__bounce" 
+                style="position: absolute; top: 5px; right: 0px;">
+                {% vue 'cart.total.cant' %}
+            </div>
+        </li>
+      </ul>
+    </div>
+</nav>
+{% endblock navbar %}
+
+
+
+
+{% block sections %}
+    {{ block.super }}
+{% endblock sections %}
+
+
+
+
+{% block content %}
+    {{ block.super }}
+{% endblock content %}
+
+
+
+
+{% block footer %}
+    {% block info %}
+    <div class="bg-light p-4" id="information">
+        <div class="container text-center text-md-left">
+            <div class="row">
+                <div class="col col-12 col-md-6 p-4">
+                    <h2 class="lead">Información</h2>
+                    <h3 class="h1">{{ base.setting.information_title|safe }}</h3>
+                    <div class="lead">{{ base.setting.information_content|safe }}</div>
+                    <div class="row mt-4">
+                        <div class="col col-12 col-md-4">
+                            <h4>{% svg 'telephone-fill' size='30' %} Central Telf.</h4>
+                            <hr class="d-none d-md-block">
+                            <div>Nuestra central:</div>
+                            <div class="text-primary h3">{{ base.setting.phone1 }}</div>
+                            <hr class="d-block d-md-none">
+                        </div>
+                        <div class="col col-12 col-md-4">
+                            <h4>{% svg 'envelope-open-fill' size='30' %} Email</h4>
+                            <hr class="d-none d-md-block">
+                            <div>Nuestro correo:</div>
+                            <div class="text-primary"><a class="text-primary" href="mailto:{{ base.setting.email }}">{{ base.setting.email }}</a> </div>
+                            <hr class="d-block d-md-none">
+                        </div>
+                        <div class="col col-12 col-md-4">
+                            <h4>{% svg 'geo-alt-fill' size='30' %} Dirección</h4>
+                            <hr class="d-none d-md-block">
+                            <div>Localización:</div>
+                            <div class="text-primary"><a class="text-primary" href="{% url 'index' %}#section-address">{{ base.setting.address }}</a></div>
+                            <hr class="d-block d-md-none">
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-12 col-md-6 p-4 bg-white">
+                    <h2 class="text-center">Solicitar <strong>visita</strong></h2>
+                    <form action="{% url 'contact' %}" method="GET">
+                        <div class="row mt-4">
+                            <div class="col col-6">
+                                <input class="form-control form-control-lg bg-light2 border-0" type="text" name="name" placeholder="Su nombre">
+                            </div>
+                            <div class="col col-6">
+                                <select name="service" class="form-control form-control-lg bg-light2 border-0">
+                                    <option value="">Tipo de servicio</option>
+                                    <option value="instalacion_central">Instalación central</option>
+                                    <option value="instalacion_central">Unidad de ventada</option>
+                                    <option value="instalacion_central">Instalación split</option>
+                                    <option value="instalacion_central">Mantenimiento, soporte, replaración</option>
+                                    <option value="instalacion_central">Otro</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col col-6">
+                                <input class="form-control form-control-lg bg-light2 border-0" type="email" name="email" placeholder="Su email">
+                            </div>
+                            <div class="col col-6">
+                                <select name="location" class="form-control form-control-lg bg-light2 border-0">
+                                    <option value="">Localidad</option>
+                                    <option value="instalacion_central">Santo Domingo</option>
+                                    <option value="instalacion_central">Santiago</option>
+                                    <option value="instalacion_central">Bávaro</option>
+                                    <option value="instalacion_central">Otro</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col col-6">
+                                <input class="form-control form-control-lg bg-light2 border-0" type="phone" name="phone" placeholder="Teléfono">
+                            </div>
+                            <div class="col col-6">
+                                <select name="warranty" class="form-control form-control-lg bg-light2 border-0">
+                                    <option value=RefriMorel"">Sin garantía</option>
+                                    <option value="instalacion_central">6 meses de garantía</option>
+                                    <option value="instalacion_central">1 año de garantía</option>
+                                    <option value="instalacion_central">2 años de garantía</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col col-12">
+                                <textarea class="form-control bg-light2 border-0" name="message" id="" rows="5" placeholder="Su mensaje"></textarea>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col col-0 col-md-6"></div>
+                            <div class="col col-12 col-md-6 text-right">
+                                <input type="submit" class="btn btn-primary btn-block p-3" value="PROGRAMAR CITA">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock info %}
+
+    {% block social_networks %}
+    <div class="container-fluid text-white p-4">
+        <div class="row">
+            <div class="col col-12 col-md-4"></div>
+            <div class="col col-12 col-md-4">
+                <!-- Social networks. -->
+                <div class="text-center">
+                    {% for obj in base.social_networks %}
+                    <a class="btn btn-lg" href="{{ obj.url }}" target="_blank">
+                        {% svg obj.GetImg fill="#ffffff" size="64px" %}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col col-12 col-md-4"></div>
+        </div>
+    </div>
+    {% endblock social_networks %}
+{% endblock footer %}

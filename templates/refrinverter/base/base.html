@@ -152,8 +152,13 @@
     <div id="primary-navigation" class="bg-white sticky-top shadow-sm p-0">
         <nav class="navbar navbar-expand-lg font-weight-bold px-md-0 py-3 navbar-light bg-white container animate__animated animate__fadeIn">
             <!-- Shop -->
-            <a href="{% url 'store' %}" class="btn d-md-none" aria-label="Store">
+            <a href="{% if request.session.cart %}{% url 'store-cart' %}{% else %}{% url 'store' %}{% endif %}" class="btn d-md-none" aria-label="Store">
                 {% svg 'cart-fill' size="24px" %}
+                {% if request.session.cart %}
+                <div class="cart-length bg-success text-white font-weight-bold font-size-small rounded-circle top right shadow-sm p-1 px-2" style="position: absolute; top: 5px; right: 0px;">
+                    {{ request.session.cart_total.cant }}
+                </div>
+            {% endif %}
             </a>
             <!-- Mobile button. -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -200,8 +205,13 @@
                 {% endcomment %}
                 </ul>
               <!-- Shop -->
-              <a href="{% url 'store' %}" class="btn" aria-label="Store">
+              <a href="{% if request.session.cart %}{% url 'store-cart' %}{% else %}{% url 'store' %}{% endif %}" class="btn" aria-label="Store">
                 {% svg 'cart-fill' size="24px" %}
+                {% if request.session.cart %}
+                    <div class="cart-length bg-success text-white font-weight-bold font-size-small rounded-circle top right shadow-sm p-1 px-2" style="position: absolute; top: 5px; right: 0px;">
+                        {{ request.session.cart_total.cant }}
+                    </div>
+                {% endif %}
               </a>
               {% comment %}
               <!-- Search. -->

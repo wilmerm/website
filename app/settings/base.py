@@ -38,14 +38,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sites', # Requerida por django-allauth
+
     # Proyecto.
     'base',
+    'user',
     'store',
+
     # Externas.
     'bootstrap4',
     'easy_thumbnails',
     'colorfield',
-    
+    'tinymce', 
 ]
 
 MIDDLEWARE = [
@@ -113,6 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -133,12 +138,15 @@ DECIMAL_SEPARATOR = "."
 
 
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
+    BASE_DIR / "base/static",
+    BASE_DIR / "store/static",
     '/var/www/static/',
 ]
 
@@ -150,6 +158,14 @@ MEDIA_ROOT = BASE_DIR / "media"
 DATA_UPLOAD_MAX_MEMORY_SIZE = 15728640 # 15 MB
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 20480 # 20 KB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 2621440 # 2.5 MB
+
+
+
+SITE_ID = 1
+
+AUTH_USER_MODEL = "user.User"
+
+
 
 
 # Aplicación 'easy_thumbnails'
@@ -182,3 +198,5 @@ THUMBNAIL_ALIASES = {
         '1024x768crop': {'size': (1024, 768), 'crop': "smart"},
     },
 }
+
+

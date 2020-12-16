@@ -13,10 +13,10 @@ from django.utils.translation import gettext as _
 from django.db.utils import OperationalError
 
 from base.models import (Setting, AdvancedSetting, SocialNetwork, Slide,
-Schedule, Brand, Question, SampleImage, SampleVideo)
+Schedule, BrandRepresented, Question, SampleImage, SampleVideo)
 
 try:
-    from store.models import Item
+    from store.models import Item, StoreSetting
 except (ImportError):
     pass
 
@@ -64,7 +64,7 @@ class Base:
     @classmethod
     def brands(self, request=None):
         try:
-            return Brand.objects.all()
+            return BrandRepresented.objects.all()
         except (OperationalError) as e:
             print(e)
 
@@ -97,6 +97,13 @@ class Store:
     def items(self, request=None):
         try:
             return Item.objects.filter(is_active=True)
+        except (NameError) as e:
+            print(e)
+
+    @classmethod
+    def setting(self, request=None):
+        try:
+            return StoreSetting.objects.last()
         except (NameError) as e:
             print(e)
 

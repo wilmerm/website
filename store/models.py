@@ -1,11 +1,13 @@
 import datetime
 
 from django.db import models
+from django.contrib.sites.models import Site
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _l
 from django.utils.text import slugify
+from django.utils import timezone
 from django.urls import reverse_lazy
-from django.core.exceptions import ValidationError
+from django.core.exceptions import (ValidationError)
 from django.core.validators import (MinValueValidator, MaxValueValidator)
 
 from colorfield.fields import ColorField
@@ -24,15 +26,18 @@ class Item(models.Model):
 
     IMG_DEFAULT = "/static/img/base/articulo.svg"
 
-    codename = models.CharField(_l("Referencia"), max_length=30, unique=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  
+    blank=True, null=True)
 
-    name = models.CharField(_l("Nombre"), max_length=50, unique=True)
+    codename = models.CharField(_l("Referencia"), max_length=30)
+
+    name = models.CharField(_l("Nombre"), max_length=50)
 
     description = models.CharField(_l("Descripción"), max_length=700, 
     blank=True)
 
     group = models.ManyToManyField("store.Group", verbose_name=_l("Grupo"), 
-    blank=True, null=True, help_text=_l("Categoría a la que pertenece."))
+    blank=True, help_text=_l("Categoría a la que pertenece."))
 
     brand = models.ForeignKey("store.Brand", verbose_name=_l("Marca"), 
     blank=True, null=True, on_delete=models.CASCADE,
@@ -105,6 +110,11 @@ class Item(models.Model):
     validators=[MinValueValidator(0)])
 
     
+    # Contabilidad.
+
+    pay_tax = models.BooleanField(_("Paga impuesto"), default=True)
+
+    
     # Estadísticas.
 
     count_search = models.IntegerField(_l("Búsquedas"), default=0, 
@@ -123,11 +133,14 @@ class Item(models.Model):
     tags = models.CharField(max_length=700, blank=True, editable=False)
 
 
-
     class Meta:
         verbose_name = _("Artículo")
         verbose_name_plural = _("Artículos")
         ordering = ["-is_featured", "-available"]
+        constraints = [
+            models.UniqueConstraint(fields=["site", "codename"], 
+            name='unique_item'),
+        ]
 
 
     def __str__(self):
@@ -137,9 +150,16 @@ class Item(models.Model):
         return reverse_lazy("store-item-detail", kwargs={"slug": self.slug})
 
     def clean(self):
+        if not self.pk:
+            self.site = Site.objects.get_current()
+
         self.codename = " ".join(self.codename.split()).upper()
         self.name = " ".join(self.name.split()).upper()
         self.description = " ".join(self.description.split())
+
+        if Item.objects.filter(
+            site=self.site, codename=self.codename).exclude(pk=self.pk):
+            raise ValidationError(_("Ya existe un artículo con esta referencia."))
 
         self.slug = slugify(self.name)
 
@@ -157,6 +177,53 @@ class Item(models.Model):
     def GetFirstImageField(self):
         return (self.image1 or self.image2 or self.image3)
 
+    def CalculateAmount(self, quantity=1, price=None, tax=None, 
+    tax_included=True, parse=None, rounded=None):
+        """
+        Calcula el importe según la cantidad, precio e impuesto indicado.
+
+        Parameters:
+            quantity (int): Cantidad de artículos.
+
+            price (Decimal): Precio (default self.price).
+
+            tax (int or float or Decimal): Impuesto a calcular 
+            (default StoreSetting.objects.last().tax).
+
+        """
+        quantity = quantity or 1
+        price = price or self.price
+        tax_included = bool(tax_included)
+        
+        try:
+            tax = tax or StoreSetting.objects.last().tax
+        except (AttributeError):
+            tax = None
+
+        amount = price * quantity
+        tax_amount = 0
+        total = 0
+
+        if tax:
+            if tax_included:
+                tax_amount = amount - (amount / ((tax / 100) + 1))
+                amount = amount - tax_amount
+            else:
+                tax_amount = (amount * ((tax / 100) + 1)) - amount
+
+        total = amount + tax_amount
+
+        if parse:
+            amount = parse(amount)
+            tax_amount = parse(tax_amount)
+            total = parse(total)
+        
+        if rounded:
+            amount = round(amount, 2)
+            tax_amount = round(tax_amount, 2)
+            total = round(total, 2)
+
+        return (amount, tax_amount, total)
 
 
 
@@ -168,7 +235,10 @@ class Group(models.Model):
     """
     IMG_DEFAULT = "/static/img/base/articulo.svg"
 
-    name = models.CharField(_l("Nombre"), max_length=100, unique=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  
+    blank=True, null=True)
+
+    name = models.CharField(_l("Nombre"), max_length=100)
 
     description = models.CharField(_l("Descripción"), max_length=500, blank=True)
 
@@ -180,13 +250,23 @@ class Group(models.Model):
         verbose_name = _("Grupo")
         verbose_name_plural = _("Grupos")
         ordering = ["name"]
+        constraints = [
+            models.UniqueConstraint(fields=["site", "name"], name="unique_group")
+        ]
 
     
     def __str__(self):
         return self.name
 
     def clean(self):
+        if not self.pk:
+            self.site = Site.objects.get_current()
+
         self.name = " ".join(self.name.split()).upper()
+
+        if Group.objects.filter(
+            site=self.site, name=self.name).exclude(pk=self.pk):
+            raise ValidationError(_("Ya existe un grupo con este nombre."))
 
     def GetImg(self):
         if self.image:
@@ -203,7 +283,10 @@ class Brand(models.Model):
     """
     IMG_DEFAULT = "/static/img/base/info.svg"
 
-    name = models.CharField(_l("Nombre"), max_length=100, unique=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  
+    blank=True, null=True)
+
+    name = models.CharField(_l("Nombre"), max_length=100)
 
     description = models.CharField(_l("Descripción"), max_length=500, blank=True)
 
@@ -215,15 +298,248 @@ class Brand(models.Model):
         verbose_name = _("Marca")
         verbose_name_plural = _("Marcas")
         ordering = ["name"]
+        constraints = [
+            models.UniqueConstraint(fields=["site", "name"], name="unique_brand")
+        ]
 
     
     def __str__(self):
         return self.name
 
     def clean(self):
+        if not self.pk:
+            self.site = Site.objects.get_current()
+
         self.name = " ".join(self.name.split()).upper()
+
+        if Brand.objects.filter(
+            site=self.site, name=self.name).exclude(pk=self.pk):
+            raise ValidationError(_("Ya existe una marca con este nombre."))
 
     def GetImg(self):
         if self.image:
             return self.image.url
         return self.IMG_DEFAULT
+
+
+
+
+
+
+class Order(models.Model):
+    """
+    Orden de compra.
+
+    """
+    PROCESS = "PROCESS"
+    COMPLETE = "COMPLETE"
+    STATUS_CHOICES = (
+        (PROCESS, _("En proceso")),
+        (COMPLETE, _("Completado")),
+    )
+    
+    CASH = "CASH"
+    CREDIT_CARD = "CREDIT_CARD"
+    BANK_ACCOUNT = "BANK_ACCOUNT"
+    OTHER = "OTHER"
+    PAYMENT_METHOD_CHOICES = (
+        (CASH, _("Efectivo")),
+        (CREDIT_CARD, _("Tarjeta de crédito")),
+        (BANK_ACCOUNT, _("Cuenta de banco")),
+        (OTHER, _("Otro")),
+    )
+
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  
+    blank=True, null=True)
+
+    number = models.CharField(_l("Número"), max_length=20, blank=True)
+
+    user = models.ForeignKey("user.User", on_delete=models.CASCADE, blank=True,
+    null=True)
+
+    note = models.CharField(_l("Comentario"), max_length=700, blank=True)
+
+    address = models.CharField(_l("Dirección"), max_length=700, blank=True)
+
+    phone = models.CharField(_l("Teléfonos"), max_length=30, blank=True)
+
+    payment_method = models.CharField(_l("Forma de pago"), max_length=20, 
+    choices=PAYMENT_METHOD_CHOICES, default=CASH)
+
+    create_date = models.DateTimeField(_("Creación"), auto_now_add=True,
+    editable=False)
+
+    create_user = models.ForeignKey("user.User", 
+    verbose_name=_l("Usuario creó"), on_delete=models.SET_NULL, null=True, 
+    blank=True, editable=False, related_name="order_create_user")
+
+    update_date = models.DateTimeField(_("Modificación"), auto_now=True, 
+    editable=False)
+
+    update_user = models.ForeignKey("user.User", 
+    verbose_name=_l("Usuario modificó"), on_delete=models.SET_NULL, null=True, 
+    blank=True, editable=False, related_name="order_update_user")
+
+    status = models.CharField(_l("Estado"), max_length=20, blank=True,
+    choices=STATUS_CHOICES, default=PROCESS)
+
+    status_date = models.DateTimeField(_l("Fecha del último estado"), 
+    blank=True, null=True)
+
+    accepted_policies = models.BooleanField(default=False,
+    verbose_name=_l("Estoy de acuerdo con las políticas del sitio"),
+    help_text=_("Al marcar esta casilla usted acepta y está de acuerdo con "
+    "las políticas del sitio para compras en línea."))
+
+    
+    class Meta:
+        verbose_name = _("Orden")
+        verbose_name_plural = _("Ordenes")
+        constraints = [
+            models.UniqueConstraint(fields=["site", "number"], name="unique_order")
+        ]
+
+    
+    def __str__(self):
+        return f"{self._meta.verbose_name} {self.number}"
+
+    def get_absolute_url(self):
+        return reverse_lazy("store-order-detail", kwargs={"pk": self.pk})
+
+    def clean(self):
+
+        if not self.pk:
+            self.site = Site.objects.get_current()
+            
+            try:
+                self.user = self.user or self.create_user
+            except (Order.user.RelatedObjectDoesNotExist):
+                self.user = self.create_user
+
+            # siteid + today + count
+            number = "%s%s%s" % (self.site.id, 
+                timezone.now().strftime("%Y%m%d%H%M%S"), 
+                Order.objects.count())
+        else:
+            this = Order.objects.get(pk=self.pk)
+            if this.status != self.status:
+                self.status_date = timezone.now()
+
+        
+        self.number = number[:20]
+
+
+
+
+
+class OrderNote(models.Model):
+    """
+    Notas y comentarios de ordenes.
+
+    """
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+
+    title = models.CharField(_l("Título"), max_length=100)
+
+    content = models.CharField(_l("Contenido"), max_length=700)
+
+    create_date = models.DateTimeField(_("Creación"), auto_now_add=True,
+    editable=False)
+
+    create_user = models.ForeignKey("user.User", 
+    verbose_name=_l("Usuario creó"), on_delete=models.SET_NULL, null=True, 
+    blank=True, editable=False, related_name="ordernote_create_user")
+
+    class Meta:
+        verbose_name = _("Nota de orden")
+        verbose_name_plural = _("Notas de ordenes")
+
+    
+    def __str__(self):
+        return f"{self.order}: {self.title}"
+
+
+
+
+class Mov(models.Model):
+    """
+    Movimiento de inventario.
+
+    """
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+
+    cant = models.IntegerField(_l("Cantidad"))
+
+    price = models.DecimalField(_l("Precio"), max_digits=17, decimal_places=2)
+
+    tax = models.DecimalField(_l("Impuestos"), max_digits=17, decimal_places=2,
+    default=0)
+
+    amount = models.DecimalField(_l("Importe"), max_digits=17, decimal_places=2,
+    default=0, blank=True)
+
+    total = models.DecimalField(_l("Importe"), max_digits=17, decimal_places=2,
+    default=0, blank=True)
+
+    create_date = models.DateTimeField(_("Creación"), auto_now_add=True,
+    editable=False)
+
+    create_user = models.ForeignKey("user.User", 
+    verbose_name=_l("Usuario creó"), on_delete=models.SET_NULL, null=True, 
+    blank=True, editable=False, related_name="mov_create_user")
+
+    update_date = models.DateTimeField(_("Modificación"), auto_now=True, 
+    editable=False)
+
+    update_user = models.ForeignKey("user.User", 
+    verbose_name=_l("Usuario modificó"), on_delete=models.SET_NULL, null=True, 
+    blank=True, editable=False, related_name="mov_update_user")
+
+
+    class Meta:
+        verbose_name = _("Movimiento")
+        verbose_name_plural = _("Movimientos")
+
+
+    def __str__(self):
+        return f"{self.order}: {self.item}"
+
+    def clean(self):
+        self.amount = self.price * self.cant
+        self.total = self.amount + self.tax
+
+
+
+
+
+class StoreSetting(models.Model):
+    """
+    Configuración de la tienda.
+    
+    """
+    site = models.OneToOneField(Site, on_delete=models.CASCADE, editable=False,  
+    blank=True, null=True)
+
+    tax = models.DecimalField(_("Impuesto porcentaje"), decimal_places=2, 
+    max_digits=5, help_text=_("Porcentaje de impuesto a cargar a los artículos."))
+
+    currency_symbol = models.CharField(_("Moneda"), max_length=5, blank=True,
+    help_text=_l("Símbolo de la moneda en que están los precios de los items."))
+
+
+    class Meta:
+        verbose_name = _("Configuración de tienda")
+        verbose_name_plural = _("Configuración de tienda")
+
+    
+    def __str__(self):
+        return self._meta.verbose_name
+
+    def clean(self):
+        if not self.pk:
+            self.site = Site.objects.get_current()
+
+        if StoreSetting.objects.filter(site=self.site):
+            raise ValidationError(_("Ya existe una configuración de artículos."))

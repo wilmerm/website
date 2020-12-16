@@ -94,18 +94,30 @@
     border-color: var(--primary);
 }
 
-
 .bg-secondary {
     background-color: var(--secondary) !important;
     border-color: var(--secondary);
 }
-
 
 .bg-tertiary {
     background-color: var(--tertiary) !important;
     border-color: var(--tertiary);
 }
 
+.bg-primary-contrast {
+    background-color: var(--primary-contrast) !important;
+    border-color: var(--primary-contrast);
+}
+
+.bg-secondary-contrast {
+    background-color: var(--secondary-contrast) !important;
+    border-color: var(--secondary-contrast);
+}
+
+.bg-tertiary-contrast {
+    background-color: var(--tertiary-contrast) !important;
+    border-color: var(--tertiary-contrast);
+}
 
 
 .text-primary {
@@ -120,7 +132,77 @@
     color: var(--tertiary) !important;
 }
 
+.text-primary-contrast {
+    color: var(--primary-contrast) !important;
+}
 
+.text-secondary-contrast {
+    color: var(--secondary-contrast) !important;
+}
+
+.text-tertiary-contrast {
+    color: var(--tertiary-contrast) !important;
+}
+
+
+.border-1 {
+    border-width: 1px;
+}
+
+.border-2 {
+    border-width: 2px;
+}
+
+.border-3 {
+    border-width: 3px;
+}
+
+.border-4 {
+    border-width: 4px;
+}
+
+
+.border-primary {
+    border-color: var(--primary) !important;
+}
+
+.border-secondary {
+border-color: var(--secondary) !important;
+}
+
+.border-tertiary {
+    border-color: var(--tertiary) !important;
+}
+
+
+
+.alert-primary {
+    background-color: var(--primary) !important;
+    color: var(--primary-contrast);
+}
+
+.alert-secondary {
+    background-color: var(--secondary) !important;
+    color: var(--secondary-contrast);
+}
+
+.alert-tertiary {
+    background-color: var(--tertiary) !important;
+    color: var(--tertiary-contrast);
+}
+
+
+.alert-primary svg {
+    fill: var(--primary-contrast);
+}
+
+.alert-secondary svg {
+    fill: var(--secondary-contrast);
+}
+
+.alert-tertiary svg {
+    fill: var(--tertiary-contrast);
+}
 
 
 
@@ -137,15 +219,15 @@ h3 {
 }
 
 h4 {
-    font-size: 1.2rem !important;
+    font-size: 1.3rem !important;
 }
 
 h5 {
-    font-size: 0.9rem !important;
+    font-size: 1.1rem !important;
 }
 
 h6 {
-    font-size: 0.7rem !important;
+    font-size: 0.9rem !important;
 }
 
 
@@ -202,4 +284,22 @@ h6 {
 .h6 svg {
     font-size: 0.7rem !important;
     width: 0.7rem; height: 0.7rem;
+}
+
+
+
+.display-1 {
+    font-size: 4.5rem !important;
+}
+
+.display-2 {
+    font-size: 4rem !important;
+}
+
+.display-3 {
+    font-size: 3.5rem !important;
+}
+
+.display-4 {
+    font-size: 3rem !important;
 }

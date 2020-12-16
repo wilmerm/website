@@ -1,22 +1,6 @@
-
 <!-- {# inclusion_tag: svg() #} -->
 <!-- SVG {{ filename }} -->
-
-
-
-<style>
-    #{{ id }} svg {
-        {% if size %}width: {{ size }} !important; height: {{ size }} !important;{% endif %}
-        fill: {% firstof fill 'var(--primary)' '#505050' %};
-    }
-</style>
-
 <span id="{{ id }}">
-    {{ svg|safe }}
+    {% autoescape off %}{{ svg }}{% endautoescape %}
 </span>
-
-<script>
-    let svg = document.querySelector("#{{ id }} svg");
-    //svg.style.fill = "red";
-</script>
 <!-- End SVG {{ filename }} -->

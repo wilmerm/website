@@ -1,0 +1,76 @@
+{% extends 'store/base.html' %}
+{% load humanize %}
+{% load i18n %}
+{% load bootstrap4 %}
+{% load base %}
+
+
+
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col col-12 col-md-6">
+            <div class="table-responsive">
+                <table class="table table-sm table-primary">
+                    <thead>
+                        <tr>
+                            <th>{% trans 'Artículo' %}</th>
+                            <th>{% trans 'Cantidad' %}</th>
+                            <th>{% trans 'Total' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in request.session.cart.values %}
+                        <tr>
+                            <td class="text-truncate">{{ item.name }}</td>
+                            <td class="text-right">{{ item.cant|intcomma }}</td>
+                            <td class="text-right">{{ item.total|intcomma }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <table class="table border font-size-large">
+                <tbody>
+                    <tr>
+                        <th>{% trans 'Subtotal: ' %}</th>
+                        <td class="text-right">{{ request.session.cart_total.subtotal|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans 'Impuestos: ' %}</th>
+                        <td class="text-right">{{ request.session.cart_total.tax|intcomma }}</td>
+                    </tr>
+                    <tr class="bg-primary text-primary-contrast">
+                        <th>{% trans 'Total: ' %}</th>
+                        <td class="text-right font-weight-bold">{{ request.session.cart_total.total|intcomma }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col col-12 col-md-6 bg-light border py-4 shadow-sm">
+            <h1>{% trans 'Cree su orden' %}</h1>
+            <hr>
+            <div><strong>{% trans 'Su nombre: ' %}</strong>{{ user.get_full_name }}</div>
+            <div><strong>{% trans 'Correo electrónico: ' %}</strong>{{ user.email }}</div>
+            <hr>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col col-12">
+                        {% bootstrap_form_errors form %}
+                        {% bootstrap_form form size="large" %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-12">
+                        <input class="btn btn-success btn-lg p-3 font-size-large mr-1" type="submit" value="{% trans 'Enviar orden' %}">
+                        <a class="btn btn-outline-primary btn-lg p-3 font-size-large mr-1" href="{% url 'store-cart' %}">{% trans 'Editar carrito' %}</a>
+                        <a class="btn btn-outline-primary btn-lg p-3 font-size-large" href="{% url 'store-cart' %}">{% trans 'Seguir comprando' %}</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

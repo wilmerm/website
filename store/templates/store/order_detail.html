@@ -1,0 +1,18 @@
+{% extends 'store/base.html' %}
+{% load humanize %}
+{% load i18n %}
+{% load thumbnail %}
+{% load bootstrap4 %}
+{% load base %}
+
+
+
+
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center">{{ object }}</h1>
+    <div class="text-center font-size-large">{{ object.get_status_display }}</div>
+    <hr>
+</div>
+{% endblock content %}

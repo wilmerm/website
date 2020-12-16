@@ -1,0 +1,46 @@
+{% extends 'base/base.html' %}
+{% load bootstrap4 %}
+{% load base %}
+{% load i18n %}
+
+
+
+{% block carousel %}{% endblock %}
+{% block schedule %}{% endblock %}
+{% block brands %}{% endblock %}
+{% block location %}{% endblock %}
+{% block about %}{% endblock %}
+{% block brochure %}{% endblock %}
+{% block featured_items %}{% endblock %}
+
+
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col col-12 col-sm-8 col-md-6">
+            <div class="bg-light p-4">
+                <h2>Iniciar sessión</h2>
+            </div>
+        </div>
+        <div class="col col-12 col-sm-4 col-md-6">
+            <div class="bg-warning p-4">
+                <h2>Regístrate</h2>
+                <p class="lead">{{ base.setting.registration_message|safe }}</p>
+                <a href="{% url ''"></a>
+                <hr>
+                <div class="text-center">
+                    <a class="btn btn-light btn-lg" href="" title="{% trans 'Utiliza tu cuenta de Google para registrarte con nosotros.' %}">
+                        <img src="/static/img/social/google.svg" alt="Google" class="w-32px h-32px">
+                        {% trans 'Registrase con Google' %}
+                    </a>
+                    <a class="btn btn-light btn-lg" href="" title="{% trans 'Utiliza tu cuenta de Facebook para registrarte con nosotros.' %}">
+                        <img src="/static/img/social/facebook.svg" alt="Facebook" class="w-32px h-32px">
+                        {% trans 'Registrase con Facebook' %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

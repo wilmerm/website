@@ -1,12 +1,14 @@
 import datetime
 
 from django.db import models
+from django.contrib.sites.models import Site
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _l
 from django.core.exceptions import ValidationError
 from django.core.validators import (MinValueValidator, MaxValueValidator)
 
 from colorfield.fields import ColorField
+
 
 
 
@@ -24,6 +26,8 @@ def validate_video_size(value):
     f"{size/1024/1024} MB, este tiene {round(filesize/1024/1024)} MB")
 
     return value
+
+
 
 
 def validate_image_size(value):
@@ -48,6 +52,14 @@ class Setting(models.Model):
     Configuración del sitio.
 
     """
+
+    REGISTRATION_MESSAGE_DEFAULT = _l("Si aún no estás registrado, por favor, "
+    "cree una cuenta con nosotros.")
+
+
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, 
+    null=True)
+
     website_name = models.CharField(_l("Nombre del sitio"), max_length=70, 
     help_text=_l("Nombre de este sitio. "))
 
@@ -73,6 +85,9 @@ class Setting(models.Model):
     validators=[MinValueValidator(0), MaxValueValidator(512)],
     help_text=_l("Altura que tendrá la portada."))
 
+
+    # Contacts, address and schedule
+
     phone1 = models.CharField(_l("Central telefónica"), max_length=20, 
     blank=True)
     
@@ -90,16 +105,34 @@ class Setting(models.Model):
 
     # About.
 
+    about_title = models.CharField(_l("Acerca de: Título"), max_length=70, 
+    blank=True)
+
+    about_content = models.TextField(_l("Acerca de: Contenido"), blank=True)
+
     about_image_cover = models.ImageField(_l("Acerca de: Portada"), blank=True, 
     upload_to="about")
     
     about_image_footer = models.ImageField(_l("Acerca de: Imagen pie de página"), 
     blank=True, upload_to="about")
 
-    about_title = models.CharField(_l("Acerca de: Título"), max_length=70, 
-    blank=True)
 
-    about_content = models.TextField(_l("Acerca de: Contenido"), blank=True)
+    # Information.
+
+    information_title = models.CharField(_l("Información: Título"), 
+    max_length=70, blank=True, default=_l("Póngase en contacto con nostros"))
+
+    information_content = models.TextField(_l("Información: Contenido"), 
+    blank=True, default=_l("Póngase en contacto con nostros ahora mismo."))
+
+
+    # Registration.
+
+    registration_message = models.TextField(_l("Mensaje para nuevos registros"),
+    blank=True, default=REGISTRATION_MESSAGE_DEFAULT, 
+    help_text=_l("Mensaje que se muestra a los usuarios en la página de "
+    "inicio de sessión, invitándolos a que, de no estar registrados, que se "
+    "registren."))
 
 
     # Others.
@@ -121,15 +154,27 @@ class Setting(models.Model):
 
     
     def __str__(self):
-        return _("Ajuste")
+        return _(f"Ajustes para {self.site}")
 
     
     def clean(self):
-        # Solo existirá una configuración.
+        # Solo existirá una configuración por sitio.
+        current_site = Site.objects.get_current()
+
         if not self.pk:
-            if Setting.objects.count():
-                raise ValidationError(_("Ya existe una configuración. Puede "
-                "modificar la configuración que ya está creada."))
+            if Setting.objects.filter(site=current_site).count():
+                raise ValidationError(_("Ya existe una configuración para "
+                f"{current_site}. Puede modificarla"))
+
+            self.site = Site.objects.get_current()
+
+    @classmethod
+    def GetForCurrentSite(self):
+        """
+        Obtiene la configuración del sitio actual.
+
+        """
+        return Setting.objects.filter(site=Site.objects.get_current()).last()
 
 
 
@@ -141,25 +186,28 @@ class AdvancedSetting(models.Model):
 
     """
 
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
 
+    class Meta:
+        verbose_name = _("Configuración avanzada")
+        verbose_name_plural = _("Configuración avanzada")
 
-# class Navbar(models.Model):
-#     """
-#     Barra de navegación.
     
-#     """
-#     background_color = ColorField(verbose_name=_l("Color de fondo"), 
-#     default="#FFFFFF")
+    def __str__(self):
+        return f"Configuración avanzada para {self.site}"
 
-#     background_opacity = models.IntegerField(_l("Opacidad del fondo"), 
-#     default=1)
-    
-#     foreground_color = ColorField(_l("Color del texto"), default="#303030")
+    def clean(self):
+        if not self.pk:
+            self.site = Site.objects.get_current()
 
-#     is_fixed = models.BooleanField(_l("Fijar"), default=True,
-#     help_text=_l("Fija la barra de navegación en la parte superior."))
-
-#     logo = models.ImageField(_l("Logo"), blank=True)
+    @classmethod
+    def GetForCurrentSite(self):
+        """
+        Obtiene la configuración avanzada del sitio actual.
+        
+        """
+        return AdvancedSetting.objects.filter(
+            site=Site.objects.get_current()).last()
 
 
 
@@ -198,6 +246,8 @@ class SocialNetwork(models.Model):
         "youtube": "/static/img/social/youtube-rounded-fill.svg",
     }
 
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
+
     social_network_name = models.CharField(_l("Red social"), max_length=20, 
     unique=True, choices=SOCIAL_NETWORK_CHOICES)
 
@@ -218,8 +268,20 @@ class SocialNetwork(models.Model):
     def __str__(self):
         return self.social_network_name
 
+    def clean(self):
+        if not self.pk:
+            self.site = Site.objects.get_current()
+
     def GetImg(self):
         return self.SOCIAL_NETWORK_ICONS[self.social_network_name]
+
+    @classmethod
+    def GetAllForCurrentSite(self):
+        """
+        Obtiene los registros para el sitio actual.
+        
+        """
+        return SocialNetwork.objects.filter(site=Site.objects.get_current())
     
 
 
@@ -231,6 +293,8 @@ class Slide(models.Model):
     Diapositiva para un carrusel de imágenes.
     
     """
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
+
     image = models.ImageField(_l("Imagen"), upload_to="slide")
 
     title = models.CharField(_l("Título"), max_length=70, blank=True)
@@ -255,13 +319,24 @@ class Slide(models.Model):
 
     def clean(self):
         # Limitamos los registros de diapositivas a 100.
-        if (not self.pk) and (Slide.objects.count() >= 100):
-            raise ValidationError(_("Se ha alcanzado el número máximo de "
-            "diapositivas registradas. Intente eliminar o modificar las que ya "
-            "están registradas."))
+        if not self.pk:
+            if Slide.objects.count() >= 100:
+                raise ValidationError(_("Se ha alcanzado el número máximo de "
+                "diapositivas registradas. Intente eliminar o modificar las "
+                "que ya están registradas."))
+            
+            self.site = Site.objects.get_current()
         
     def GetImg(self):
         return self.image.url
+
+    @classmethod
+    def GetAllForCurrentSite(self):
+        """
+        Obtiene los registros para el sitio actual.
+        
+        """
+        return Slide.objects.filter(site=Site.objects.get_current())
 
 
 
@@ -272,6 +347,8 @@ class Schedule(models.Model):
     Horario de servicio.
 
     """
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
+
     monday = models.BooleanField(_l("Lunes"), default=True)
 
     monday_ini = models.TimeField(_("Lunes: desde"), null=True, blank=True,
@@ -350,6 +427,16 @@ class Schedule(models.Model):
             if Schedule.objects.count():
                 raise ValidationError(_("Ya existe el horario."))
 
+            self.site = Site.objects.get_current()
+
+    @classmethod
+    def GetAllForCurrentSite(self):
+        """
+        Obtiene los registros para el sitio actual.
+        
+        """
+        return Schedule.objects.filter(site=Site.objects.get_current())
+
 
     def GetRangeForDay(self):
         return {
@@ -393,11 +480,13 @@ class Schedule(models.Model):
 
 
 
-class Brand(models.Model):
+class BrandRepresented(models.Model):
     """
     Marcas representadas.
     
     """
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
+
     name = models.CharField(_l("Nombre"), max_length=100)
 
     image = models.ImageField(_l("Imagen"), upload_to="brand", 
@@ -427,9 +516,20 @@ class Brand(models.Model):
     def __str__(self):
         return self.name
 
+    def clean(self):
+        if not self.pk:
+            self.site = Site.objects.get_current()
+
     def GetImg(self):
         return self.image.url
 
+    @classmethod
+    def GetAllForCurrentSite(self):
+        """
+        Obtiene los registros para el sitio actual.
+        
+        """
+        return BrandRepresented.objects.filter(site=Site.objects.get_current())
 
 
 
@@ -440,6 +540,8 @@ class Question(models.Model):
     Preguntas y respuestas.
 
     """
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
+
     question = models.CharField(_l("Pregunta"), max_length=100, unique=True)
 
     answer = models.CharField(_l("Respuesta"), max_length=700)
@@ -453,6 +555,18 @@ class Question(models.Model):
     def __str__(self):
         return self.question
 
+    def clean(self):
+        if not self.pk:
+            self.site = Site.objects.get_current()
+
+    @classmethod
+    def GetAllForCurrentSite(self):
+        """
+        Obtiene los registros para el sitio actual.
+        
+        """
+        return Question.objects.filter(site=Site.objects.get_current())
+
     
 
 
@@ -465,6 +579,8 @@ class SampleImage(models.Model):
     """
 
     RECORD_LIMIT = 50 # Número máximo de registros que se pueden registrar.
+
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
 
     title = models.CharField(_l("Título"), max_length=70, blank=True)
 
@@ -487,8 +603,20 @@ class SampleImage(models.Model):
         return self.title or f"Imágen: {self.id}"
 
     def clean(self):
-        if SampleVideo.objects.count() >= self.RECORD_LIMIT:
+        if SampleVideo.objects.filter(
+            site=Site.objects.get_current()).count() > self.RECORD_LIMIT:
             raise ValidationError(_("Se alcanzó el máximo de imágenes subidas."))
+        
+        if not self.pk:
+            self.site = Site.objects.get_current()
+
+    @classmethod
+    def GetAllForCurrentSite(self):
+        """
+        Obtiene los registros para el sitio actual.
+        
+        """
+        return SampleImage.objects.filter(site=Site.objects.get_current())
 
 
 
@@ -500,6 +628,8 @@ class SampleVideo(models.Model):
     
     """
     RECORD_LIMIT = 5 # Número máximo de registros que se pueden registrar.
+
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
 
     title = models.CharField(_l("Título"), max_length=70, blank=True)
 
@@ -522,5 +652,17 @@ class SampleVideo(models.Model):
         return self.title or f"Video: {self.id}"
 
     def clean(self):
-        if SampleVideo.objects.count() >= self.RECORD_LIMIT:
+        if SampleVideo.objects.filter(
+            site=Site.objects.get_current()).count() > self.RECORD_LIMIT:
             raise ValidationError(_("Se alcanzó el máximo de videos subidos."))
+
+        if not self.pk:
+            self.site = Site.objects.get_current()
+
+    @classmethod
+    def GetAllForCurrentSite(self):
+        """
+        Obtiene los registros para el sitio actual.
+        
+        """
+        return SampleVideo.objects.filter(site=Site.objects.get_current())

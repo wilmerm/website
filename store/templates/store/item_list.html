@@ -1,4 +1,4 @@
-{% extends 'base/base.html' %}
+{% extends 'store/base.html' %}
 {% load humanize %}
 {% load thumbnail %}
 {% load bootstrap4 %}
@@ -6,17 +6,8 @@
 
 
 
-{% block carousel %}{% endblock %}
-{% block schedule %}{% endblock %}
-{% block brands %}{% endblock %}
-{% block location %}{% endblock %}
-{% block about %}{% endblock %}
-{% block brochure %}{% endblock %}
-{% block featured_items %}{% endblock %}
-
-
 {% block content %}
-<form action="" method="GET" class="">
+<form action="{% url 'store-item-list' %}" method="GET" class="">
     <div class="container">
         <div class="row">
             <div class="col col-12 col-sm-6 col-md-4">

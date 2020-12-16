@@ -1,0 +1,9 @@
+{% extends 'base/base_site.html' %}
+
+
+{% block sections %}
+{{ block.super }}
+<div v-if="alert.message" class="container mt-2 alert alert-warning alert-dismissible fade show font-size-large shadow-sm animate__animated animate__bounceIn text-center border" role="alert">
+    <strong>{% vue 'alert.title' %}</strong> {% vue 'alert.message' %}
+  </div>
+{% endblock sections %}
