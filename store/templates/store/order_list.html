@@ -1,0 +1,50 @@
+{% extends 'store/base.html' %}
+{% load humanize %}
+{% load i18n %}
+{% load thumbnail %}
+{% load bootstrap4 %}
+{% load base %}
+
+
+
+{% block meta_robots_content %}noindex,nofollow{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center">{% trans 'Mis ordenes' %}</h1>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>{% trans 'Número' %}</th>
+                    <th>{% trans 'Fecha' %}</th>
+                    <th>{% trans 'Estatus' %}</th>
+                    <th>{% trans 'Importe' %}</th>
+                    <th>{% trans 'Impuestos' %}</th>
+                    <th>{% trans 'Total' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in object_list %}
+                <tr>
+                    <td><a href="{{ obj.get_absolute_url }}">{{ obj.number }}</a></td>
+                    <td>{{ obj.create_date }}</td>
+                    <td>{{ obj.get_status_display }}</td>
+                    <td class="text-right">{{ obj.amount|intcomma }}</td>
+                    <td class="text-right">{{ obj.tax|intcomma }}</td>
+                    <td class="text-right">{{ obj.total|intcomma }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div>
+        {% bootstrap_pagination page_obj %}
+    </div>
+    <div class="d-print-none">
+        <a class="btn btn-primary font-size-large mr-1" href="{% url 'store-item-list' %}">{% trans 'Continuar comprando' %}</a>
+        <button class="btn btn-secondary font-size-large mr-1" onclick="window.print()">{% trans 'Imprimir' %}</button>
+    </div>
+</div>
+{% endblock content %}

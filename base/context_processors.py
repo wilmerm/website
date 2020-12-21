@@ -9,6 +9,7 @@ parte de TEMPLATES -- OPTIONS -- context_procesors
 """
 
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.utils.translation import gettext as _
 from django.db.utils import OperationalError
 
@@ -24,68 +25,76 @@ except (ImportError):
 
 
 
+get_current_site = Site.objects.get_current
+
+
+
+
 class Base:
+
+    def __str__(self):
+        return self.setting().website_name or "base"
 
     @classmethod
     def social_networks(self, request=None):
         try:
-            return SocialNetwork.objects.all()
+            return SocialNetwork.on_site.all()
         except (OperationalError) as e:
             print(e)
         
     @classmethod
     def setting(self, request=None):
         try:
-            return Setting.objects.last()
+            return Setting.on_site.last()
         except (OperationalError) as e:
             print(e)
 
     @classmethod
     def advanced_setting(self, request=None):
         try:
-            return AdvancedSetting.objects.last()
+            return AdvancedSetting.on_site.last()
         except (OperationalError) as e:
             print(e)
 
     @classmethod
     def sliders(self, request=None):
         try:
-            return Slide.objects.filter(is_active=True)
+            return Slide.on_site.filter(is_active=True)
         except (OperationalError) as e:
             print(e)
 
     @classmethod
     def schedule(self, request=None):
         try:
-            return Schedule.objects.last()
+            return Schedule.on_site.last()
         except (OperationalError) as e:
             print(e)
 
     @classmethod
     def brands(self, request=None):
         try:
-            return BrandRepresented.objects.all()
+            return BrandRepresented.on_site.all()
         except (OperationalError) as e:
             print(e)
 
     @classmethod
     def questions(self, request=None):
         try:
-            return Question.objects.all()
+            return Question.on_site.all()
         except (OperationalError) as e:
             print(e)
 
     @classmethod
     def sample_images(self, request=None):
         try:
-            return SampleImage.objects.all()
+            return SampleImage.on_site.all()
         except (OperationalError) as e:
             print(e)
 
     @classmethod
     def sample_videos(self, request=None):
         try:
-            return SampleVideo.objects.all()
+            return SampleVideo.on_site.all()
         except (OperationalError) as e:
             print(e)
 
@@ -93,24 +102,32 @@ class Base:
 
 class Store:
 
+    def __bool__(self):
+        try:
+            StoreSetting
+        except (NameError):
+            return False
+        return True
+
     @classmethod
     def items(self, request=None):
         try:
-            return Item.objects.filter(is_active=True)
+            return Item.objects.filter(site=get_current_site(), is_active=True)
         except (NameError) as e:
             print(e)
 
     @classmethod
     def setting(self, request=None):
         try:
-            return StoreSetting.objects.last()
+            return StoreSetting.objects.filter(site=get_current_site())
         except (NameError) as e:
             print(e)
 
     @classmethod
     def featured_items(self, request=None):
         try:
-            return Item.objects.filter(is_active=True, is_featured=True)
+            return Item.objects.filter(site=get_current_site(), is_active=True, 
+            is_featured=True)
         except (NameError) as e:
             print(e)
 

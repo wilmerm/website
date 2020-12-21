@@ -2,6 +2,7 @@ import datetime
 
 from django.db import models
 from django.contrib.sites.models import Site
+from django.contrib.sites.managers import CurrentSiteManager
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _l
 from django.utils.text import slugify
@@ -127,10 +128,13 @@ class Item(models.Model):
 
     count_sold = models.IntegerField(_l("Ventas"), default=0, editable=False)
 
-
     slug = models.SlugField(unique=False, blank=True, null=True)
 
     tags = models.CharField(max_length=700, blank=True, editable=False)
+
+
+    objects = models.Manager()
+    on_site = CurrentSiteManager()
 
 
     class Meta:
@@ -147,7 +151,11 @@ class Item(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse_lazy("store-item-detail", kwargs={"slug": self.slug})
+        # Importante que la url esté conformada por el pk, ya que el slug lo 
+        # hemos establecido no único debido a que dos sites diferentes pueden
+        # concidir con el mismo slug.
+        return reverse_lazy("store-item-detail", 
+            kwargs={"pk": self.pk, "slug": self.slug})
 
     def clean(self):
         if not self.pk:
@@ -246,6 +254,10 @@ class Group(models.Model):
     null=True)
 
 
+    objects = models.Manager()
+    on_site = CurrentSiteManager()
+
+
     class Meta:
         verbose_name = _("Grupo")
         verbose_name_plural = _("Grupos")
@@ -292,6 +304,10 @@ class Brand(models.Model):
 
     image = models.ImageField(_l("Imágen"), upload_to="store/brand/", blank=True,
     null=True)
+
+    
+    objects = models.Manager()
+    on_site = CurrentSiteManager()
 
 
     class Meta:
@@ -392,6 +408,24 @@ class Order(models.Model):
     "las políticas del sitio para compras en línea."))
 
     
+    # Campos de consultas que serán actualizados cada vez que se guarde un 
+    # movimiento de esta orden.
+
+    amount = models.DecimalField(_l("Importe"), max_digits=17, decimal_places=2,
+    blank=True, null=True)
+
+    tax = models.DecimalField(_l("Impuestos"), max_digits=17, decimal_places=2,
+    blank=True, null=True)
+
+    total = models.DecimalField(_l("Total"), max_digits=17, decimal_places=2,
+    blank=True, null=True)
+
+
+    
+    objects = models.Manager()
+    on_site = CurrentSiteManager()
+
+    
     class Meta:
         verbose_name = _("Orden")
         verbose_name_plural = _("Ordenes")
@@ -420,14 +454,66 @@ class Order(models.Model):
             number = "%s%s%s" % (self.site.id, 
                 timezone.now().strftime("%Y%m%d%H%M%S"), 
                 Order.objects.count())
+            self.number = number[:20]
         else:
             this = Order.objects.get(pk=self.pk)
             if this.status != self.status:
                 self.status_date = timezone.now()
+            
+    def save(self, *args, **kwargs):
+        try:
+            kwargs.pop("no_update_fields")
+        except (KeyError):
+            self.update_all()
 
-        
-        self.number = number[:20]
+        return super().save(*args, **kwargs)
 
+    def get_movs(self):
+        """
+        Obtiene los movimientos de esta orden.
+
+        """
+        return Mov.objects.filter(order=self)
+
+    def update_amount(self, queryset=None):
+        """
+        Actualiza el campo 'amount' y retorna su valor.
+
+        """
+        queryset = queryset or self.get_movs()
+        self.amount = queryset.aggregate(models.Sum("amount"))["amount__sum"] or 0
+        return self.amount
+
+    def update_tax(self, queryset=None):
+        """
+        Actualiza el campo 'tax' y retorna su valor.
+
+        """
+        queryset = queryset or self.get_movs()
+        self.tax = queryset.aggregate(models.Sum("tax"))["tax__sum"] or 0
+        return self.tax
+
+    def update_total(self, queryset):
+        """
+        Actualiza el campo 'total' y retorna su valor.
+
+        """
+        queryset = queryset or self.get_movs()
+        self.total = queryset.aggregate(models.Sum("total"))["total__sum"] or 0
+        return self.total
+
+    def update_all(self, queryset=None):
+        """
+        Actualiza todas los campos actualizables, y retorna un diccionario con 
+        sus valores.
+
+        """
+        queryset = queryset or self.get_movs()
+        return {
+            "amount": self.update_amount(queryset),
+            "tax": self.update_tax(queryset),
+            "total": self.update_total(queryset),
+        }
 
 
 
@@ -449,6 +535,7 @@ class OrderNote(models.Model):
     create_user = models.ForeignKey("user.User", 
     verbose_name=_l("Usuario creó"), on_delete=models.SET_NULL, null=True, 
     blank=True, editable=False, related_name="ordernote_create_user")
+
 
     class Meta:
         verbose_name = _("Nota de orden")
@@ -527,6 +614,10 @@ class StoreSetting(models.Model):
 
     currency_symbol = models.CharField(_("Moneda"), max_length=5, blank=True,
     help_text=_l("Símbolo de la moneda en que están los precios de los items."))
+
+    
+    objects = models.Manager()
+    on_site = CurrentSiteManager()
 
 
     class Meta:

@@ -118,6 +118,21 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 
+AUTHENTICATION_BACKENDS = [
+    'user.authentication.AuthByEmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
+LOGIN_REDIRECT_URL = "/accounts/profile/"
+#LOGOUT_REDIRECT_URL = "/"
+
+# https://developers.google.com/identity/sign-in/web/backend-auth
+# Usado para el inicio o registro de sessión a través de Google Api,
+# en el módulo user.authentication
+GOOGLE_API_CLIENT_ID = "632095761113-vl3obm2vtre59mihchjoa7nt2mkpopl5.apps.googleusercontent.com"
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -165,6 +180,12 @@ SITE_ID = 1
 
 AUTH_USER_MODEL = "user.User"
 
+
+EMAIL_HOST = None # 'smtp.googlemail.com'
+EMAIL_PORT = None # 587
+EMAIL_HOST_USER = None
+EMAIL_HOST_PASSWORD = None
+EMAIL_USE_TLS = True
 
 
 

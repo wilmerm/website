@@ -18,7 +18,6 @@ get_current_site = Site.objects.get_current
 
 @admin.register(Setting)
 class SettingAdmin(admin.ModelAdmin):
-    list_display = ("__str__",)
     search_fields = ("website_name__icontains",)
 
     fieldsets = (
@@ -42,6 +41,11 @@ class SettingAdmin(admin.ModelAdmin):
             'fields': ('embed_map_html', 'embed_promo_url'),
         }),
     )
+
+    def get_list_display(self, request):
+        if request.user.is_superuser:
+            return ("__str__", "site")
+        return ("__str__",)
 
     def get_queryset(self, request):
         if request.user.is_superuser:
@@ -67,7 +71,11 @@ class SettingAdmin(admin.ModelAdmin):
 
 @admin.register(AdvancedSetting)
 class AdvancedSettingAdmin(admin.ModelAdmin):
-    list_display = ('__str__',)
+
+    def get_list_display(self, request):
+        if request.user.is_superuser:
+            return ("__str__", "site")
+        return ("__str__",)
 
     def get_queryset(self, request):
         if request.user.is_superuser:
@@ -83,9 +91,14 @@ class AdvancedSettingAdmin(admin.ModelAdmin):
 
 @admin.register(SocialNetwork)
 class SocialNetworkAdmin(admin.ModelAdmin):
-    list_display = ('get_icon', '__str__', 'index', 'get_url')
+    list_display = ('get_icon', '__str__', 'index', 'get_url', 'site')
     search_fields = ('social_network_name__istartswith', 'url__icontains')
     list_display_links = ('get_icon', '__str__')
+
+    def get_list_display(self, request):
+        if request.user.is_superuser:
+            return ('get_icon', '__str__', 'index', 'get_url', 'site')
+        return ('get_icon', '__str__', 'index', 'get_url')
 
     def get_queryset(self, request):
         if request.user.is_superuser:
@@ -108,8 +121,13 @@ class SocialNetworkAdmin(admin.ModelAdmin):
 
 @admin.register(Slide)
 class SlideAdmin(admin.ModelAdmin):
-    list_display = ('get_image', 'get_text')
+    list_display = ('get_image', 'get_text', 'site')
     search_fields = ('title__icontains',)
+
+    def get_list_display(self, request):
+        if request.user.is_superuser:
+            return ('get_image', 'get_text', 'site')
+        return ('get_image', 'get_text')
 
     def get_queryset(self, request):
         if request.user.is_superuser:
@@ -131,10 +149,13 @@ class SlideAdmin(admin.ModelAdmin):
 
 
 
-
 @admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
-    list_display = ('__str__',)
+
+    def get_list_display(self, request):
+        if request.user.is_superuser:
+            return ("__str__", "site")
+        return ("__str__",)
 
     def get_queryset(self, request):
         if request.user.is_superuser:
@@ -150,8 +171,12 @@ class ScheduleAdmin(admin.ModelAdmin):
 
 @admin.register(BrandRepresented)
 class BrandRepresentedAdmin(admin.ModelAdmin):
-    list_display = ('__str__',)
     search_fields = ('name',)
+
+    def get_list_display(self, request):
+        if request.user.is_superuser:
+            return ("__str__", "site")
+        return ("__str__",)
 
     def get_queryset(self, request):
         if request.user.is_superuser:
@@ -167,8 +192,12 @@ class BrandRepresentedAdmin(admin.ModelAdmin):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('__str__',)
     search_fields = ('question__icontains', 'answer__icontains')
+
+    def get_list_display(self, request):
+        if request.user.is_superuser:
+            return ("__str__", "site")
+        return ("__str__",)
 
     def get_queryset(self, request):
         if request.user.is_superuser:
@@ -188,6 +217,11 @@ class QuestionAdmin(admin.ModelAdmin):
 class SampleImageAdmin(admin.ModelAdmin):
     list_display = ('get_image', 'title', 'description')
     search_fields = ('title__icontains',)
+
+    def get_list_display(self, request):
+        if request.user.is_superuser:
+            return ('get_image', 'title', 'description', "site")
+        return ('get_image', 'title', 'description')
 
     def get_queryset(self, request):
         if request.user.is_superuser:
@@ -209,6 +243,11 @@ class SampleImageAdmin(admin.ModelAdmin):
 class SampleVideoAdmin(admin.ModelAdmin):
     list_display = ('title', 'description')
     search_fields = ('title__icontains',)
+
+    def get_list_display(self, request):
+        if request.user.is_superuser:
+            return ('title', 'description', 'site')
+        return ('title', 'description')
 
     def get_queryset(self, request):
         if request.user.is_superuser:

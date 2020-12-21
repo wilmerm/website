@@ -1,7 +1,7 @@
 import datetime
 
 from django.db import models
-from django.contrib.sites.models import Site
+from django.contrib.sites.models import Site, SiteManager
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _l
 from django.core.exceptions import ValidationError
@@ -131,7 +131,7 @@ class Setting(models.Model):
     registration_message = models.TextField(_l("Mensaje para nuevos registros"),
     blank=True, default=REGISTRATION_MESSAGE_DEFAULT, 
     help_text=_l("Mensaje que se muestra a los usuarios en la página de "
-    "inicio de sessión, invitándolos a que, de no estar registrados, que se "
+    "inicio de sesión, invitándolos a que, de no estar registrados, que se "
     "registren."))
 
 
@@ -147,6 +147,8 @@ class Setting(models.Model):
     "video en Youtube, una imagen, o un contenido html."))
 
 
+    objects = models.Manager()
+    on_site = SiteManager()
 
     class Meta:
         verbose_name = _("Ajustes")
@@ -187,6 +189,9 @@ class AdvancedSetting(models.Model):
     """
 
     site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
+
+    objects = models.Manager()
+    on_site = SiteManager()
 
     class Meta:
         verbose_name = _("Configuración avanzada")
@@ -249,7 +254,7 @@ class SocialNetwork(models.Model):
     site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
 
     social_network_name = models.CharField(_l("Red social"), max_length=20, 
-    unique=True, choices=SOCIAL_NETWORK_CHOICES)
+    choices=SOCIAL_NETWORK_CHOICES)
 
     url = models.URLField(_l("URL"), unique=True, 
     help_text=_l("Enlace hacia su perfil en esta red social."))
@@ -258,6 +263,8 @@ class SocialNetwork(models.Model):
     validators=[MinValueValidator(-99), MaxValueValidator(99)],
     help_text=_l("Ordena los links de las redes sociales acorde a este indice."))
 
+    objects = models.Manager()
+    on_site = SiteManager()
 
     class Meta:
         verbose_name = _("Red social")
@@ -307,6 +314,8 @@ class Slide(models.Model):
 
     is_active = models.BooleanField(_l("Activa"), default=True)
 
+    objects = models.Manager()
+    on_site = SiteManager()
 
     class Meta:
         verbose_name = _("Diapositiva")
@@ -411,6 +420,8 @@ class Schedule(models.Model):
     sunday_end = models.TimeField(_("Sunday: hasta"), null=True, blank=True,
     default=datetime.time(12, 0))
 
+    objects = models.Manager()
+    on_site = SiteManager()
 
     class Meta:
         verbose_name = _("Horario de servicio")
@@ -506,6 +517,8 @@ class BrandRepresented(models.Model):
     "junto a las demás. Las marcas se mostrarán en orden en función de su "
     "indice, de mejor a mayor."))
 
+    objects = models.Manager()
+    on_site = SiteManager()
 
     class Meta:
         verbose_name = _("Marca")
@@ -546,6 +559,8 @@ class Question(models.Model):
 
     answer = models.CharField(_l("Respuesta"), max_length=700)
 
+    objects = models.Manager()
+    on_site = SiteManager()
 
     class Meta:
         verbose_name = _("Pregunta")
@@ -592,6 +607,8 @@ class SampleImage(models.Model):
     index = models.IntegerField(_l("Indice"), default=0, help_text=_l("Orden "
     "en que será mostrada la imagen con respecto a otra."))
 
+    objects = models.Manager()
+    on_site = SiteManager()
 
     class Meta:
         verbose_name = _("Imagen de muestra")
@@ -641,7 +658,9 @@ class SampleVideo(models.Model):
     index = models.IntegerField(_l("Indice"), default=0, help_text=_l("Orden "
     "en que será mostrado el video con respecto a otro."))
 
-
+    objects = models.Manager()
+    on_site = SiteManager()
+    
     class Meta:
         verbose_name = _("Video de muestra")
         verbose_name_plural = _("Videos de muestra")

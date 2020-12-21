@@ -1,10 +1,14 @@
 from django import forms
 from django.utils.translation import gettext as _
+from django.contrib.sites.models import Site
 
 #from dal import autocomplete
 
 from .models import Item, Brand, Group, Order, OrderNote, Mov
 
+
+# Método que obtiene el site actual.
+get_current_site = Site.objects.get_current
 
 
 
@@ -17,11 +21,20 @@ class ItemSearchForm(forms.Form):
     q = forms.CharField(max_length=50, required=False, widget=forms.TextInput(
         attrs={"type": "search", "placeholder": _('Buscar...')}))
     
-    brand = forms.ModelChoiceField(queryset=Brand.objects.all(), 
-    empty_label=_("Todas las marcas"), label=_("Marca"), required=False)
+    # Queryset filtrado por el site actual.
+    brand = forms.ModelChoiceField(empty_label=_("Todas las marcas"), 
+    label=_("Marca"), required=False, 
+    queryset=Brand.on_site.all())
 
-    group = forms.ModelChoiceField(queryset=Group.objects.all(), 
-    empty_label=_("Todas los grupos"), label=_("Grupo"), required=False)
+    # Queryset filtrador por el site actual.
+    group = forms.ModelChoiceField(empty_label=_("Todas los grupos"), 
+    label=_("Grupo"), required=False, 
+    queryset=Group.on_site.all())
+
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
 
 
 
@@ -30,7 +43,7 @@ class ItemSearchForm(forms.Form):
 class ItemCartForm(forms.Form):
     """
     Añade un nuevo artículo al carrito.
-    El carrito es almacenado en las sessión actual.
+    El carrito es almacenado en las sesión actual.
 
     """
     item_id = forms.IntegerField(widget=forms.HiddenInput())
@@ -70,7 +83,6 @@ class OrderForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         user = request.user
-        profile = user.GetProfileOrCreate()
         cart = request.session.get("cart")
         cart_total = request.session.get("cart_total")
 
@@ -80,6 +92,6 @@ class OrderForm(forms.ModelForm):
             "placeholder": _("Comentario adicional (opcional).")})
 
         self.fields["accepted_policies"].required = True
-        self.fields["address"].initial = profile.address
-        self.fields["phone"].initial = profile.phone1
+        self.fields["address"].initial = user.address
+        self.fields["phone"].initial = user.phone1
         

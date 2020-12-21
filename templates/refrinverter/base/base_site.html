@@ -1,0 +1,254 @@
+{% extends 'base/base.html' %}
+{% load i18n %}
+{% load thumbnail %}
+{% load base %}
+
+
+
+{% block styles %}
+{{ block.super }}
+<link rel="stylesheet" href="/static/css/instances/refrinverter.css">
+{% endblock styles %}
+
+
+
+{% block header %}
+<!-- Header. -->
+<header class="border-bottom animate__animated animate__slideInDown">
+    <!-- block header -->
+    <div class="container-fluid sticky-top" style="position: absolute; z-index: 0; {% if base.setting.cover %}height: {{ base.setting.cover_height }}px; background-image: url('{{ base.setting.cover.url }}'); background-size: cover; filter: blur(8px); -webkit-filter: blur(8px);{% endif %}"></div>
+    <!-- block cover -->
+    {% block cover %}
+    <div class="container z-index-3000 py-3">
+        <div class="row text-center text-md-left">
+            <div class="col col-12 col-sm-12 col-md-6 col-lg-4">
+                <a href="{% url 'index' %}#" class="">
+                    {% if base.setting.logo %}
+                        <img src="{{ base.setting.logo|thumbnail_url:'768' }}" class="w-100">
+                    {% else %}
+                        <span class="h1 font-weight-bold btn text-primary">{{ base.setting.website_name }}</span>
+                    {% endif %}
+                </a>
+            </div>
+            <div class="col col-0 col-sm-0 col-md-0 col-lg-2"></div>
+            <div class="col col-12 col-sm-12 col-md-6 col-lg-6 pt-md-4 pr-0 text-center d-print-none">
+                <div class="row">
+                    <div class="col col-12 col-md-6 m-0 p-0">
+                        <a href="{% url 'index' %}#contact" class="text-left">
+                            <div class="float-left py-1 pr-2 w-20 text-right">{% svg 'telephone-fill' size='32px' %}</div>
+                            <div class="float-left w-80">
+                                <div class="p-0 text-primary font-weight-bold">LLÁMENOS AL {{ base.setting.phone1 }}</div>
+                                <div class="p-0 text-muted small">TELÉFONO CENTRAL</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col col-12 col-md-6 m-0 p-0">
+                        <a href="{% url 'index' %}#section-schedule" class="text-left">
+                            <div class="float-left py-1 pr-2 w-20 text-right">{% svg 'clock-fill' size='32px' fill="#ff9d00" %}</div>
+                            <div class="float-left w-80">
+                                <div class="p-0 text-primary font-weight-bold" title="">HORARIO DE TRABAJO</div>
+                                <div class="p-0 text-muted small">{{ base.setting.schedule|safe }}</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock cover %}
+</header>
+{% endblock header %}
+
+
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg font-weight-bold px-md-0 py-3 navbar-light bg-white container animate__animated animate__fadeIn">
+    <!-- Shop -->
+    <div class="nav-item d-block d-lg-none">
+        <a class="nav-link" href="{% if request.session.cart %}{% url 'store-cart' %}{% else %}{% url 'store' %}{% endif %}" aria-label="Store">
+            {% svg 'cart-fill' size="24px" %}
+        </a>
+        <div v-if="cart.total.cant" 
+            class="cart-length bg-success text-white font-weight-bold font-size-small rounded-circle top right shadow-sm p-1 px-2 animate__animated animate__bounce" 
+            style="position: absolute; top: 5px; right: 0px;">
+            {% vue 'cart.total.cant' %}
+        </div>
+    </div>
+    <!-- Mobile button. -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- Links. -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'index' %}#">INICIO <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'store-item-list' %}">PRODUCTOS</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'calcbtu' %}">CALCULADORA BTH/H</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'brands' %}">MARCAS</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'index' %}#information">CONTACTO</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'about' %}">SOBRE NOSOTROS</a>
+            </li>
+        </ul>
+        {% if store %}
+        <!-- {# Mi cuenta #} -->
+        <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle btn btn-primary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% trans 'Mi cuenta' %}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% if user.is_authenticated %}
+                    <div class="dropdown-item-text">{{ user }}</div>
+                    <a class="dropdown-item" href="{% url 'user-profile' %}">{% trans 'Perfil' %}</a>
+                    <a class="dropdown-item" href="{% url 'store-order-list' %}">{% trans 'Mis ordenes' %}</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'logout' %}">{% trans 'Salir' %}</a>
+                {% else %}
+                    <a class="dropdown-item" href="{% url 'login' %}">{% trans 'Iniciar sesión' %}</a>
+                {% endif %}
+            </div>
+        </div>
+        <!-- {# Shop #} -->
+        <div class="nav-item d-none d-lg-block">
+            <a class="nav-link" href="{% if request.session.cart %}{% url 'store-cart' %}{% else %}{% url 'store' %}{% endif %}" aria-label="Store">
+                {% svg 'cart-fill' size="24px" %}
+            </a>
+            <div v-if="cart.total.cant" 
+                class="cart-length bg-success text-white font-weight-bold font-size-small rounded-circle top right shadow-sm p-1 px-2 animate__animated animate__bounce" 
+                style="position: absolute; top: 5px; right: 0px;">
+                {% vue 'cart.total.cant' %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</nav>
+{% endblock navbar %}
+
+
+
+
+{% block sections %}
+    {{ block.super }}
+{% endblock sections %}
+
+
+
+
+{% block content %}
+    {{ block.super }}
+{% endblock content %}
+
+
+
+
+{% block footer %}
+    {% block info %}
+    <div class="bg-light p-4" id="information">
+        <div class="container text-center text-md-left">
+            <h2>Formulario de Contacto</h2>
+            <hr>
+            <div class="row">
+                <div class="col col-12 col-md-6">
+                    <form action="{% url 'contact' %}" method="GET">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">{% svg 'person-fill' size='1rem' %}</span>
+                            </div>
+                            <input type="text" class="form-control form-control-lg" name="name" placeholder="NOMBRE" aria-label="NOMBRE" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon2">{% svg 'telephone-fill' size='1rem' %}</span>
+                            </div>
+                            <input type="text" class="form-control form-control-lg" name="phone" placeholder="TELÉFONO" aria-label="TELÉFONO" aria-describedby="basic-addon2">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon3">{% svg 'envelope-fill' size='1rem' %}</span>
+                            </div>
+                            <input type="text" class="form-control form-control-lg" name="email" placeholder="EMAIL" aria-label="EMAIL" aria-describedby="basic-addon3">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon4">{% svg 'chat-fill' size='1rem' %}</span>
+                            </div>
+                            <textarea class="form-control form-control-lg" name="message" placeholder="MENSAJE" aria-label="MENSAJE" aria-describedby="basic-addon4" rows="4"></textarea>
+                        </div>
+                        <div>
+                            <input type="submit" class="btn btn-primary btn-block p-3" value="PROGRAMAR CITA">
+                        </div>
+                    </form>
+                </div>
+                <div class="col col-12 col-md-6">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col col-1">
+                                {% svg 'geo-alt-fill' size="2rem" %}
+                            </div>
+                            <div class="col col-11">
+                                <h3>Oficina Principal</h3>
+                                <p class="lead">{{ base.setting.address }}</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col col-1">
+                                {% svg 'telephone-fill' size="2rem" %}
+                            </div>
+                            <div class="col col-11">
+                                <h3>Teléfono</h3>
+                                <p class="lead">{{ base.setting.phone1 }}</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col col-1">
+                                {% svg 'envelope-fill' size="2rem" %}
+                            </div>
+                            <div class="col col-11">
+                                <h3>Email</h3>
+                                <p class="lead">{{ base.setting.email }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock info %}
+
+    {% block social_networks %}
+    <div class="container-fluid text-white p-4">
+        <div class="row">
+            <div class="col col-12 col-md-4"></div>
+            <div class="col col-12 col-md-4">
+                <!-- Social networks. -->
+                <div class="text-center">
+                    {% for obj in base.social_networks %}
+                    <a class="btn btn-lg" href="{{ obj.url }}" target="_blank">
+                        {% svg obj.GetImg fill="#ffffff" size="64px" %}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col col-12 col-md-4"></div>
+        </div>
+    </div>
+    {% endblock social_networks %}
+
+    {% block policy %}
+    <div class="text-center">
+        <a class="text-primary-contrast text-muted font-size-small" href="{% url 'policy' %}">Términos y Condiciones del sitio web</a>
+    </div>
+    {% endblock policy %}
+{% endblock footer %}

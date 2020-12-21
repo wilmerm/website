@@ -1,0 +1,68 @@
+{% extends 'base/base_site.html' %}
+{% load i18n %}
+{% load base %}
+
+
+
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mb-3">{% trans 'Mi Cuenta en' %} <strong>{{ base.setting.website_name }}</strong></h1>
+    
+    {% if user.is_authenticated %}
+        <div class="row">
+            <div class="col col-12 col-sm-4 col-md-2">
+                <img src="{{ user.GetImg }}" alt="" class="img-thumbnail img-fluid w-100 h-auto">
+            </div>
+            <div class="col col-12 col-sm-8 col-md-10">
+                <h2>{{ user.get_full_name }}</h2>
+                <div class="p-2">
+                    {% svg 'envelope-fill' size='1rem' %}
+                    <span class="pl-2">{{ user.email }}</span>
+                </div>
+                {% if user.address %}
+                <div class="p-2">
+                    {% svg 'geo-alt-fill' size='1rem' %}
+                    <span class="pl-2">{{ user.address }}</span>
+                </div>
+                {% endif %}
+                {% if user.phone1 %}
+                <div class="p-2">
+                    {% svg 'telephone-fill' size='1rem' %}
+                    <span class="pl-2">{{ user.phone1 }}</span>
+                </div>
+                {% endif %}
+                {% if user.phone2 %}
+                <div class="p-2">
+                    {% svg 'phone-fill' size='1rem' %}
+                    <span class="pl-2">{{ user.phone2 }}</span>
+                </div>
+                {% endif %}
+                <hr>
+                <div class="p-2">
+                    {% svg 'calendar-fill' size='1rem' %}
+                    <span class="pl-2">{% trans 'Miembro desde: ' %}{{ user.date_joined }}</span>
+                </div>
+                <hr>
+                <div>
+                    <a class="btn btn-outline-primary mr-1" href="{% url 'user-profile-update' %}">{% trans 'Modificar perfil' %}</a>
+                    <a class="btn btn-outline-primary" href="{% url 'password_change' %}">{% trans 'Cambiar contraseña' %}</a>
+                    {% if store %}
+                        {% if user.order_set.all %}
+                        <a class="btn btn-outline-primary mr-1" href="{% url 'store-order-list' %}">{% trans 'Mis ordenes' %}</a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="p-4 font-size-large text-center">
+            {% trans '' %}
+            <div>
+                <a class="btn btn-outline-primary font-size-large m-1" href="{% url 'login' %}">{% trans 'Iniciar sessión' %}</a>            
+                <a class="btn btn-primary font-size-large m-1" href="{% url 'login' %}">{% trans 'Registrarme' %}</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock content %}

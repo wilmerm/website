@@ -38,7 +38,7 @@ function showLoader(duration=40000) {
 
 
 // {# Actiava o desactiva el modo oscuro, enviado una señal al servidor #}
-// {# el modo oscuro se establece en una variable de la sessión actual del usuario. #}
+// {# el modo oscuro se establece en una variable de la sesión actual del usuario. #}
 // {# y la plantilla html carga o no el archivo darkmode-1.1.css en función de si esta variable es True o False #}
 function activeDarkMode() {
     var xhttp = new XMLHttpRequest();

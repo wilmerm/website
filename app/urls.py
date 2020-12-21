@@ -23,13 +23,12 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('accounts/user/', include('user.urls')),
-    #path('accounts/', include('allauth.urls')),
     path('', include('base.urls')),
     path('tienda/', include('store.urls')),
 
-
+    # En la siguiente línea se incluye la aplicación local 'user' la cual a 
+    # su vez hace referencia a 'django.contrib.auth.urls',
+    path('accounts/', include('user.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

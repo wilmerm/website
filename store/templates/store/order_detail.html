@@ -7,12 +7,70 @@
 
 
 
+{% block meta_robots_content %}noindex,nofollow{% endblock %}
+
 
 
 {% block content %}
 <div class="container">
     <h1 class="text-center">{{ object }}</h1>
-    <div class="text-center font-size-large">{{ object.get_status_display }}</div>
+    <div class="alert alert-warning text-center font-size-large">{{ object.get_status_display }}</div>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{% trans 'Artículo' %}</th>
+                    <th>{% trans 'Cantidad' %}</th>
+                    <th>{% trans 'Precio' %}</th>
+                    <th>{% trans 'Importe' %}</th>
+                    <th>{% trans 'Impuestos' %}</th>
+                    <th>{% trans 'Total' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in object.get_movs %}
+                <tr>
+                    <td>{{ forloop.count }}</td>
+                    <td>{{ obj.item }}</td>
+                    <td class="text-right">{{ obj.cant|intcomma }}</td>
+                    <td class="text-right">{{ obj.price|intcomma }}</td>
+                    <td class="text-right">{{ obj.amount|intcomma }}</td>
+                    <td class="text-right">{{ obj.tax|intcomma }}</td>
+                    <td class="text-right">{{ obj.total|intcomma }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <div class="col col-4 col-sm-6"></div>
+        <div class="col col-8 col-sm-6">
+            <table class="table table-bordered">
+                <tbody>
+                    {% with object.update_all as totals %}
+                    <tr>
+                        <th>{% trans 'Importe' %}</th>
+                        <td class="text-right">{{ totals.amount|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans 'Impuestos' %}</th>
+                        <td class="text-right">{{ totals.tax|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans 'Total' %}</th>
+                        <td class="text-right">{{ totals.total|intcomma }}</td>
+                    </tr>
+                    {% endwith %}
+                </tbody>
+            </table>
+        </div>
+    </div>
     <hr>
+    <div class="d-print-none">
+        <a class="btn btn-primary font-size-large mr-1" href="{% url 'store-item-list' %}">{% trans 'Continuar comprando' %}</a>
+        <a class="btn btn-primary font-size-large mr-1" href="{% url 'store-order-list' %}">{% trans 'Mis ordenes' %}</a>
+        <button class="btn btn-secondary font-size-large mr-1" onclick="window.print()">{% trans 'Imprimir' %}</button>
+    </div>
 </div>
 {% endblock content %}

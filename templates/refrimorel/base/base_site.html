@@ -1,4 +1,5 @@
 {% extends 'base/base.html' %}
+{% load i18n %}
 {% load thumbnail %}
 {% load base %}
 
@@ -93,6 +94,7 @@
         {% endif %}
     </a>
 
+    {% if store %}
     <!-- Shop -->
     <a href="{% if request.session.cart %}{% url 'store-cart' %}{% else %}{% url 'store' %}{% endif %}" class="btn d-md-none" aria-label="Store">
         {% svg 'cart4' size="24px" %}
@@ -102,6 +104,7 @@
         </div>
         {% endif %}
     </a>
+    {% endif %}
 
     <!-- Mobile button. -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -133,7 +136,25 @@
             <a class="nav-link" href="{% url 'policy' %}">Políticas</a>
         </li>
 
-         <!-- Shop -->
+        {% if store %}
+        <!-- {# Mi cuenta #} -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-primary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% trans 'Mi cuenta' %}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% if user.is_authenticated %}
+                    <div class="dropdown-item-text">{{ user }}</div>
+                    <a class="dropdown-item" href="{% url 'user-profile' %}">{% trans 'Perfil' %}</a>
+                    <a class="dropdown-item" href="{% url 'store-order-list' %}">{% trans 'Mis ordenes' %}</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'logout' %}">{% trans 'Salir' %}</a>
+                {% else %}
+                    <a class="dropdown-item" href="{% url 'login' %}">{% trans 'Iniciar sesión' %}</a>
+                {% endif %}
+            </div>
+        </li>
+        <!-- {# Shop. #} -->
         <li class="nav-item d-none d-md-block">
             <a class="nav-link" href="{% if request.session.cart %}{% url 'store-cart' %}{% else %}{% url 'store' %}{% endif %}" aria-label="Store">
                 {% svg 'cart4' size="24px" %}
@@ -144,6 +165,7 @@
                 {% vue 'cart.total.cant' %}
             </div>
         </li>
+        {% endif %}
       </ul>
     </div>
 </nav>

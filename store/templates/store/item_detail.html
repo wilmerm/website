@@ -141,13 +141,13 @@
         img.classList.add("d-none");
     });
 
-    item_imgs[0].classList.remove("d-none");
+    try {
+        item_imgs[0].classList.remove("d-none");
+    } catch (error) {}
 
 
     // {# Añadimos el evento click a cada thubnail. #} 
     item_thumb_imgs.forEach(function(thumb) {
-
-        console.log(thumb);
         
         thumb.onclick = function(event) {
 

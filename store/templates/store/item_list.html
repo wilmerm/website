@@ -1,5 +1,6 @@
 {% extends 'store/base.html' %}
 {% load humanize %}
+{% load i18n %}
 {% load thumbnail %}
 {% load bootstrap4 %}
 {% load base %}
@@ -26,8 +27,10 @@
     </div>
 </form>
 <hr>
-
 <div class="container">
+    {% if not object_list %}
+    <div class="alert alert-secondary text-secondary-contrast font-size-large text-center">{% trans 'No se encontraron artículos.' %}</div>
+    {% endif %}
     <div class="row">
         {% for obj in object_list %}
         <div class="col col-12 col-sm-6 col-md-4 col-lg-3 mb-4">

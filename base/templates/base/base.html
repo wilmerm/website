@@ -9,6 +9,7 @@
     <title>{% if title %}{{ title }} |{% endif %} {{ base.setting.website_name|truncatechars:30 }} {% if settings.DEBUG %}(Debug){% endif %}</title>
     <link rel="icon" type="image/any" href="{% if base.setting.icon %}{{ base.setting.icon|thumbnail_url:'icon' }}{% else %}'/static/img/base/logo.png'{% endif %}">
     <meta charset="UTF-8">
+    <meta name="robots" content="{% block meta_robots_content %}index,follow{% endblock %}" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{{ description }}">
     <meta name="keywords" content="{{ keywords }}">
@@ -23,6 +24,9 @@
 	<meta property="og:url" content="" /> <!-- where do you want your post to link to -->
     <meta property="og:type" content="article" />
     
+    <!-- {# Google Developerr Sigin #} -->
+    <!-- App Unolet Sites -->
+    <meta name="google-signin-client_id" content="632095761113-vl3obm2vtre59mihchjoa7nt2mkpopl5.apps.googleusercontent.com">
 
     {% if settings.DEBUG == True %}
         <!-- Utilizamos las versiones almacenadas localmente, para reducir la 
@@ -39,12 +43,12 @@
     {% if settings.DEBUG == True %}
         <!-- Utilizamos las versiones almacenadas localmente, para reducir la 
         carga del Internet al recargar sin caché. -->
+        <script src="/static/external/jquery/jquery-3.5.1.slim.min.js"></script>
         <script src="/static/external/vuejs/vue3/vue.3.0.4.js"></script>
-        <script src="/static/external/jquery/jquery-3.5.1.min.js"></script>
         <script src="/static/external/bootstrap/js/bootstrap.bundle.js"></script>
     {% else %}
-        <script src="https://unpkg.com/vue@3.0.4/dist/vue.global.prod.js"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/vue@3.0.4/dist/vue.global.prod.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
     {% endif %}
     <script src="/static/js/utils-1.1.js"></script>
@@ -72,8 +76,9 @@
             opacity: 0.6;
         }
         #btnUp:hover {
-            opacity: 1;|
+            opacity: 1;
         }
+
     </style>
     {% endblock styles %}
 
@@ -86,16 +91,16 @@
 <body id="store" class="{% block body_class %}bg-white p-0 m-0{% endblock body_class %}">
 
     
+    <!-- block header -->
+    {% block header %}
     <!-- Header. -->
     <header>
-        <!-- block header -->
-        {% block header %}
-            <!-- block cover -->
-            {% block cover %}
-                <div class="container-fluid sticky-top" style="position: absolute; z-index: 0; {% if base.setting.cover %}height: {{ base.setting.cover_height }}px; background-image: url('{{ base.setting.cover.url }}'); background-size: cover; filter: blur(8px); -webkit-filter: blur(8px);{% endif %}"></div>
-            {% endblock cover %}
-        {% endblock header %}
+        <!-- block cover -->
+        {% block cover %}
+            <div class="container-fluid sticky-top" style="position: absolute; z-index: 0; {% if base.setting.cover %}height: {{ base.setting.cover_height }}px; background-image: url('{{ base.setting.cover.url }}'); background-size: cover; filter: blur(8px); -webkit-filter: blur(8px);{% endif %}"></div>
+        {% endblock cover %}
     </header>
+    {% endblock header %}
 
 
 
@@ -202,7 +207,7 @@
         {% endblock messages %}
         
         {% block btnup %}
-        <a id="btnUp" class="btn btn-primary rounded-circle font-weight-bold shadow-lg m-2 p-4 position-fixed z-index-5000 bottom right" href="#">
+        <a id="btnUp" class="btn btn-primary rounded-circle font-weight-bold shadow-lg m-2 p-4 position-fixed z-index-5000 bottom right d-print-none" href="#">
             {% svg 'arrow-bar-up' fill='#ffffff' size='32px' %}
         </a>
         {% endblock btnup %}
@@ -215,7 +220,7 @@
 
 
     <!-- Footer. -->
-    <footer class="bg-primary">
+    <footer class="bg-primary d-print-none">
 
         <!-- block footer. -->
         {% block footer %}
@@ -236,7 +241,10 @@
 
 
     <script>
-       document.documentElement.dataset.scroll = window.scrollY;
+
+        // Muestra el botón de subir al top de la página cuando el 
+        // scroll alcanza determinada posición. 
+        document.documentElement.dataset.scroll = window.scrollY;
         document.addEventListener('scroll', () => {
             document.documentElement.dataset.scroll = window.scrollY;
 
@@ -250,15 +258,24 @@
 
 
 
+
+
+        // {# Método de conveniencia para solicitar datos al servidor. #}
         function sendData(url, type="GET", dataType="json", data=null, success=null) {
-            $.ajax({
-                url: url,
-                type: type,
-                data: data,
-                dataType: dataType,
-                success: success,
-            });
+            try {
+                $.ajax({
+                    url: url,
+                    type: type,
+                    data: data,
+                    dataType: dataType,
+                    success: success,
+                });
+            } catch (error) {
+                console.log('sendData()');
+                console.warn(error);
+            }
         }
+
 
 
 
@@ -304,7 +321,6 @@
 
             methods: {
 
-
                 // Se usa la función intcomma del módulo base.js.
                 intcomma(num) {
                     return intcomma(num);
@@ -316,11 +332,8 @@
                     let cant = document.getElementById("id_cant").value;
                     let url = "{% url 'store-cart-add' %}";
                     let formdata = $("#form-add-cart").serialize();
-                    console.log(formdata);
-
                     sendData(url, "POST", "json", formdata, this.getData);
                 },
-
 
 
                 // Se llamará como un evento que invoca a su vez a 'updateItem'.
@@ -364,7 +377,6 @@
                 },
 
 
-
                 // Lo mismo que getData pero solo muestra mensaje en caso de error.
                 getDataWithoutAlert(data) {
                     if (data.error) {
@@ -376,7 +388,6 @@
                 },
 
 
-                
                 // Muestra un mensaje en pantalla por el tiempo indicado.
                 showAlert(message="", time=5000) {
                     this.alert.message = message;
@@ -385,13 +396,12 @@
                         this.alert.message = "";
                     }, time);
                 },
-
-
             }
         }
 
         Vue.createApp(App).mount("#app");
     </script>
+    
     {% block scripts %}
     {% endblock scripts %}
 

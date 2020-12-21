@@ -1,0 +1,42 @@
+{% extends 'base/base_site.html' %}
+{% load i18n %}
+{% load base %}
+
+
+
+
+
+
+{% block head %}
+<script src="https://apis.google.com/js/platform.js?"></script>
+<!--{% comment %} 
+    Este elemento llamará a onGoogleSignOut cuando la librería de Google esté 
+    completamente cargada. Pero al ser un botón signin (no encontramos otra forma)
+    lo ocultamos. 
+{% endcomment %}-->
+<div class="g-signin2 d-none" data-longtitle="true" data-onsuccess="onGoogleSignOut"></div>
+<script>
+    // {% comment %}
+    // Al cerrar la sesión, también procuramos cerrar la sesión iniciada 
+    // mediante la API de Google.
+    // {% endcomment %}
+    onGoogleSignOut = function() {
+        console.log("onGoogleSignOut()");
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function() {
+            console.log('Google SignOut Ok.');
+        });
+    }
+</script>
+{% endblock head %}
+
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center">{% trans 'Se ha cerrado su sesión' %}</h1>
+    <div class="text-center mt-4">
+        <a class="btn btn-primary font-size-large mr-1" href="{% url 'login' %}">{% trans 'Iniciar nuevamente' %}</a>
+        <a class="btn btn-primary font-size-large" href="{% url 'index' %}">{% trans 'Ir a la página de inicio' %}</a>
+    </div>
+</div>
+{% endblock content %}

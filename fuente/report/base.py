@@ -30,7 +30,7 @@ class ReportDoesNotExist(ReportError):
 
 class ReportsGenerates():
     """
-    Guarda instancias de los reportes generados para la sessión actual.
+    Guarda instancias de los reportes generados para la sesión actual.
 
     Útil para cuando un usuario ha generado un reporte, pero salió de la página,
     etc., dejango el reporte generandose en el servidor. Pues cuando el usuario

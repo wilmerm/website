@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, Http404
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
+from django.contrib.sites.models import Site
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.utils.translation import gettext as _
 from django.urls import reverse_lazy
@@ -15,6 +16,11 @@ from fuente import (var, utils, text)
 from .models import Item, Brand, Group, Order, Mov
 from .forms import ItemSearchForm, ItemCartForm, OrderForm
 
+
+
+
+# Método que obtiene el sitio actual.
+get_current_site = Site.objects.get_current
 
 
 
@@ -36,7 +42,9 @@ class ItemListView(ListView):
         q = self.request.GET.get("q")
         brand =self.request.GET.get("brand")
         group = self.request.GET.get("group")
-        qs = self.model.objects.filter(is_active=True)
+
+        # Se muestran solo los artículos del site actual.
+        qs = self.model.objects.filter(site=get_current_site(), is_active=True)
 
         if brand:
             qs = qs.filter(brand=brand)
@@ -67,13 +75,19 @@ class ItemDetailView(DetailView):
         context["form_cart"] = ItemCartForm(item=self.object)
         return context
 
+    def dispatch(self, request, *args, **kwargs):
+        # El artículo debe pertenecer al site actual.
+        if self.get_object().site != get_current_site():
+            return HttpResponseRedirect(reverse_lazy("store-item-list"))
+        return super().dispatch(request, *args, **kwargs)
+
 
 
 
 class OrderCreateView(LoginRequiredMixin, CreateView):
     """
     Crea una orden de compra a partir de los datos almacenados en el carrito de 
-    la sessión actual: request.session['cart'] y request.session['cart_total']
+    la sesión actual: request.session['cart'] y request.session['cart_total']
     """
     model = Order
     form_class = OrderForm
@@ -97,7 +111,7 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         form.instance.create_user = self.request.user
         form.instance.user = self.request.user
 
-        # Eliminamos el carrito de la sessión.
+        # Eliminamos el carrito de la sesión.
         self.request.session["cart"] = {}
         self.request.session["cart_total"] = {}
 
@@ -112,7 +126,7 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
 
 class OrderDetailView(LoginRequiredMixin, DetailView):
     """
-    Detalle de una orden.
+    Detalle de una orden del usuario actual.
     """
     model = Order
 
@@ -121,7 +135,31 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         return context
 
+    def dispatch(self, request, *args, **kwargs):
+        order = self.get_object()
+        if order.user != request.user:
+            raise Http404
+        return super().dispatch(request, *args, **kwargs)
 
+
+
+
+
+class OrderListView(LoginRequiredMixin, ListView):
+    """
+    Listado de ordenes del usuario actual.
+    """
+    model = Order
+    paginate_by = 20
+
+    @utils.context_decorator()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def get_queryset(self):
+        return Order.on_site.filter(user=self.request.user)
+    
 
 
 
@@ -288,7 +326,7 @@ def cart_update(request):
 
 def cart_get(request):
     """
-    Obtiene el carrito de la sessión actual.
+    Obtiene el carrito de la sesión actual.
     
     """
     cart = request.session.get("cart") or {}

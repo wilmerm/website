@@ -1,0 +1,39 @@
+{% extends 'base/base_site.html' %}
+{% load i18n %}
+{% load bootstrap4 %}
+{% load base %}
+
+
+
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mb-3">{% trans 'Actualice sus datos a continuación' %}</h1>
+    <h2 class="text-center">{{ object }}</h2>
+    <hr>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+        <div class="row">
+            <div class="col col-12 col-sm-6">{% bootstrap_field form.first_name %}</div>
+            <div class="col col-12 col-sm-6">{% bootstrap_field form.last_name %}</div>
+        </div>
+        <div class="row">
+            <div class="col col-12 col-sm-4">{% bootstrap_field form.phone1 %}</div>
+            <div class="col col-12 col-sm-4">{% bootstrap_field form.phone2 %}</div>
+        </div>
+        <div class="row">
+            <div class="col col-12">{% bootstrap_field form.address %}</div>
+        </div>
+        <div class="row">
+            <div class="col col-12 col-sm-8">
+                <input class="btn btn-success mr-1" type="submit" value="{% trans 'Guardar' %}">
+                <a class="btn btn-outline-primary" href="{% url 'password_change' %}">{% trans 'Cambiar contraseña' %}</a>
+            </div>
+            <div class="col col-12 col-sm-4 text-right">
+                <a class="btn btn-outline-danger right" href="">{% trans 'Eliminar' %}</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}

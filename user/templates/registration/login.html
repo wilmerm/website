@@ -1,0 +1,151 @@
+{% extends 'base/base_site.html' %}
+{% load i18n %}
+{% load bootstrap4 %}
+{% load base %}
+
+
+
+{% block head %}
+<script src="https://apis.google.com/js/platform.js?" async defer></script>
+<script>
+    // {% comment %}
+    // Google Developer.
+    // Autenticación de usuarios con Google. 
+    // Cuando el usuario hace click en el botón de Google en cuestión y
+    // da permiso, se tomarán los siguiente datos desde su cuenta de Google.
+    // https://developers.google.com/identity/sign-in/web/backend-auth
+    // {% endcomment %}
+
+    var xhr = new XMLHttpRequest();
+    var id_token = null;
+
+    function onGoogleSignIn(googleUser) {
+
+
+
+        console.log("onGoogleSignIn");
+        // {% comment %}
+        // var profile = googleUser.getBasicProfile();
+        // console.log("id_token: " + googleUser.getAuthResponse().id_token);
+        // console.log('getId(): ' + profile.getId()); // {# Do not send to your backend! Use an ID token instead. #}
+        // console.log('getName(): ' + profile.getName());
+        // console.log('getImageUrl(): ' + profile.getImageUrl());
+        // console.log('getEmail(): ' + profile.getEmail()); // {# This is null if the 'email' scope is not present. #}
+        // {% endcomment %}
+        // {# Envíe el token de identificación a su servidor. #}
+        // {# Después de que un usuario inicie sesión correctamente, #}
+        // {# obtenga el token de identificación del usuario: #}
+        id_token = googleUser.getAuthResponse().id_token;
+
+        // {# Luego, envíe el token de ID a su servidor con una solicitud HTTPS POST: #}
+
+        
+        xhr.open('POST', "{% url 'user-google-signin' %}");
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('X-CSRFToken', "{{ csrf_token }}");
+
+        xhr.onload = function() {
+            let json = JSON.parse(xhr.responseText);
+
+            if (json.userid) {
+                window.location.href = "{% url 'user-profile' %}";
+            } else if (json.error) {
+                alert(json.message);
+            } else {
+                console.warn(json);
+            }
+        };
+
+        xhr.send('idtoken=' + id_token);
+        console.log("xhr.responseText: ", xhr.responseText);
+        
+        // {% comment %}
+        // Después de recibir el token de ID por HTTPS POST, debe verificar
+        // la integridad del token. Para verificar que el token sea válido,
+        // asegúrese de que se cumplen los siguientes criterios:
+        // https://developers.google.com/identity/sign-in/web/backend-auth#verify-the-integrity-of-the-id-token
+        //
+        // En lugar de escribir su propio código para realizar estos pasos de 
+        // verificación, le recomendamos encarecidamente que utilice una 
+        // biblioteca cliente API de Google para su plataforma o una biblioteca 
+        // JWT de uso general. Para el desarrollo y la depuración, puede llamar 
+        // a nuestro tokeninfo punto final de validación.
+        //
+        // Para validar un token de ID en Python, use la función 
+        // verify_oauth2_token . Por ejemplo:
+        //
+        // from google.oauth2 import id_token
+        // from google.auth.transport import requests
+        //
+        // # (Receive token by HTTPS POST)
+        // # ...
+        //
+        // try:
+        //     # Specify the CLIENT_ID of the app that accesses the backend:
+        //     idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
+        //
+        //     # Or, if multiple clients access the backend server:
+        //     # idinfo = id_token.verify_oauth2_token(token, requests.Request())
+        //     # if idinfo['aud'] not in [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]:
+        //     #     raise ValueError('Could not verify audience.')
+        //
+        //     # If auth request is from a G Suite domain:
+        //     # if idinfo['hd'] != GSUITE_DOMAIN_NAME:
+        //     #     raise ValueError('Wrong hosted domain.')
+        //
+        //     # ID token is valid. Get the user's Google Account ID from the decoded token.
+        //     userid = idinfo['sub']
+        // except ValueError:
+        //     # Invalid token
+        //     pass
+        // {% endcomment %}
+    }
+</script>
+{% endblock head %}
+
+
+
+
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col col-12 col-sm-8 col-md-6">
+            <div class="bg-light p-4 border">
+                <h2>Iniciar sesión</h2>
+                <hr>
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <input class="btn btn-primary mr-1" type="submit" value="{% trans 'Iniciar sesión' %}">
+                    <a class="btn btn-outline-primary" href="{% url 'password_reset' %}">{% trans 'Olvidé mi contraseña' %}</a>
+                </form>
+            </div>
+        </div>
+        <div class="col col-12 col-sm-4 col-md-6">
+            <div class="bg-warning p-4 border border-warning">
+                <h2>{% trans 'Ingresa con Google' %}</h2>
+                <div class="lead">{% trans 'Utiliza tu cuenta de Google para ingresar a' %} {{ base.setting.website_name }}.</div>
+                <div class="g-signin2" data-longtitle="true" data-onsuccess="onGoogleSignIn"></div>
+                <hr>
+                <h2>{% trans 'Regístrate' %}</h2>
+                <div class="lead">{{ base.setting.registration_message|safe }}</div>
+                <a href="{% url ''"></a>
+                <div class="text-center">
+                    <a class="btn btn-lg btn-primary font-size-large w-100">{% trans 'Crear una cuenta' %}</a>
+                    
+                    <!-- <a class="btn btn-light btn-lg" href="" title="{% trans 'Utiliza tu cuenta de Google para registrarte con nosotros.' %}">
+                        <img src="/static/img/social/google.svg" alt="Google" class="w-32px h-32px">
+                        {% trans 'Registrase con Google' %}
+                    </a> -->
+                    <!-- <a class="btn btn-light btn-lg" href="" title="{% trans 'Utiliza tu cuenta de Facebook para registrarte con nosotros.' %}">
+                        <img src="/static/img/social/facebook.svg" alt="Facebook" class="w-32px h-32px">
+                        {% trans 'Registrase con Facebook' %}
+                    </a> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
