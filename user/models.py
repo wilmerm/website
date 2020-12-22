@@ -1,5 +1,6 @@
 
 from django.db import models
+
 from django.contrib.sites.models import Site
 from django.contrib.sites.managers import CurrentSiteManager
 from django.contrib.auth.models import AbstractUser, UserManager
@@ -8,10 +9,6 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _l
 from django.urls import reverse_lazy
-#from django.db.models.signals import post_save
-#from django.dispatch import receiver
-#from django.contrib.auth.hashers import makepassword
-
 
 from fuente import text
 
@@ -19,6 +16,7 @@ from fuente import text
 
 # Obtiene el site actual.
 get_current_site = Site.objects.get_current
+
 
 
 
@@ -33,8 +31,8 @@ class User(AbstractUser):
    
     username_validator = UnicodeUsernameValidator()
 
-    site = site = models.ForeignKey(Site, on_delete=models.PROTECT, 
-    editable=False, default=get_current_site)
+    site = models.ForeignKey(Site, on_delete=models.PROTECT, editable=False, 
+    null=True, blank=True)
 
     phone1 = models.CharField(_l("Teléfono principal"), max_length=20, blank=True)
 
@@ -98,7 +96,7 @@ class User(AbstractUser):
         # El email debe ser único para cada site.
         if User.objects.filter(site=self.site, email=self.email).exclude(pk=self.pk):
             raise ValidationError(_("Ya existe otro usuario con este correo "
-            "electrónico. Puede intentar iniciar sesión en su lugar."))
+            f"electrónico {self.email}. Puede intentar iniciar sesión en su lugar."))
 
 
     def save(self, *args, **kwargs):
@@ -110,7 +108,8 @@ class User(AbstractUser):
         # sesión con el email.Entonces el nombre de usuario lo estable el 
         # sistema y no será mostrado al usuario, en le haremos creer que el 
         # nombre de usuario es su email, el cual será único para cada sitio.
-        self.username = "%s_%s" % (self.site.id, self.pk)
+        site_id = getattr(self.site, "id", 0)
+        self.username = "%s_%s" % (site_id, self.pk)
         
         return super().save(*args, **kwargs)
     

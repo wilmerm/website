@@ -5,6 +5,7 @@ Autenticación de usuario personalizada.
 
 from django.conf import settings
 from django.utils.translation import gettext
+from django.contrib import messages
 
 try:
     from google.oauth2 import id_token
@@ -12,7 +13,7 @@ try:
 except (ImportError) as e:
     print(e)
 
-from .models import User
+from .models import User, get_current_site
 
 
 
@@ -24,24 +25,45 @@ class AuthByEmailBackend:
 
     """
     def authenticate(self, request, username=None, password=None):
-
+        """
+        En nuestro modelo User hemos definido un manejador 'on_site' que
+        que sería igual a: User.objects.filter(site=Site.objects.get_current())
+        También determinamos que el email será único solo para el site en actual.
+        
+        """
         try:
-            # En nuestro modelo User hemos definido un manejador 'on_site' que
-            # que sería igual a:
-            # User.objects.filter(site=Site.objects.get_current())
-            # También determinamos que el email será 
-            # único solo para el site en actual.
+            # Primero buscamos un usuario común para el sitio actual.
             user = User.on_site.get(email=username)
-            if user.check_password(password):
-                return user
         except (User.DoesNotExist):
-            return None
+            # Al no encontrar un usuario común en el sitio actual, entonces
+            # intentaremos encontrar un superusuario con el mismo email.
+            # Un superusuario tiene permiso de aceder a cualquier sitio.
+            try:
+                # Probamos con el campo email
+                user = User.objects.get(email=username)
+            except (User.DoesNotExist):
+                try:
+                    # Probamos con el campo username.
+                    user = User.objects.get(username=username)
+                except (User.DoesNotExist):
+                    return None
+            # En este punto hemos encontrado un superusuario. 
+        if user.check_password(password):
+            return user
+
+        return None
 
     def get_user(self, user_id):
         try:
-            return User.on_site.get(pk=user_id)
+            user = User.objects.get(pk=user_id)
         except (User.DoesNotExist):
             return None
+
+        # Si el usuario pertenece al sitio actual o es superusuario.
+        if (user.site == get_current_site()) or (user.is_superuser):
+            return user
+
+        return None
 
 
 

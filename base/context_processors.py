@@ -24,9 +24,12 @@ except (ImportError):
 
 
 
-
-get_current_site = Site.objects.get_current
-
+# Obtiene el site actual.
+def get_current_site(request=None):
+    try:
+        return Site.objects.get_current()
+    except (NameError) as e:
+        print(e)
 
 
 
@@ -159,6 +162,8 @@ CONTEXT = {
     "base": Base,
 
     "store": Store,
+
+    "get_current_site": get_current_site,
 
 }
 

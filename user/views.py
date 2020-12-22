@@ -6,6 +6,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.shortcuts import render, redirect
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.views.generic import (CreateView, UpdateView, ListView)
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
@@ -56,11 +57,12 @@ def google_signin_view(request):
     except (ValueError) as e:
         if request.user.is_superuser:
             return JsonResponse({"error": True, "message": str(e)})
-        return JsonResponse({})
+        return JsonResponse({"error": True, "message": "Ha ocurrido un error, "
+        "inténtelo nuevamente."})
 
     print("google_signin_view(request): ", google_user)
 
-    # En este punto el usuario se ha validado correctamente.
+    # En este punto el usuario se ha validado correctamente en Google.
     idinfo = google_user["idinfo"]
     user = None
 
@@ -88,12 +90,13 @@ def google_signin_view(request):
             # Registramos el usuario.
 
             # Generamos una contraseña aleatoria.
-            sr = "a b c d e f g h i j k l m n o p k r s t u v w k y z A B C D "
-            "E F G H I J K L M N O P Q R S T U V W X Y Z 0 1 2 3 4 5 6 7 8 9"
-            random.shuffle(sr.split())
-            pwd = sr[:10]
+            sr = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            pwd = "".join([random.choice(sr) for i in range(10)])
 
+            # Método Django para crear el usuario.
             user = User.objects.create_user(username=idinfo["email"], password=pwd)
+            # En la línea anterior el user ya adquirió un pk.
+            user.site = get_current_site(request)
             user.initial_password = pwd
             user.email = idinfo["email"]
             user.first_name = idinfo["given_name"]
@@ -101,8 +104,11 @@ def google_signin_view(request):
             user.image_url = idinfo["picture"]
             user.google_userid = idinfo["sub"]
             user.is_active = True
-            user.clean()
-            user.save()
+            try:
+                user.clean()
+                user.save()
+            except (ValidationError) as e:
+                return JsonResponse({"error": True, "message": e.message})
 
             google_user["initial_password"] = pwd
             messages.success(request, _("¡Su cuenta ha sido creada correctamente!"))

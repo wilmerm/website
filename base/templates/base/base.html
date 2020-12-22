@@ -4,7 +4,7 @@
 {% load base %}
 
 <!DOCTYPE html>
-<html lang="es" id="app">
+<html lang="es">
 <head>
     <title>{% if title %}{{ title }} |{% endif %} {{ base.setting.website_name|truncatechars:30 }} {% if settings.DEBUG %}(Debug){% endif %}</title>
     <link rel="icon" type="image/any" href="{% if base.setting.icon %}{{ base.setting.icon|thumbnail_url:'icon' }}{% else %}'/static/img/base/logo.png'{% endif %}">
@@ -88,7 +88,7 @@
 </head>
 
 
-<body id="store" class="{% block body_class %}bg-white p-0 m-0{% endblock body_class %}">
+<body id="app" class="{% block body_class %}bg-white p-0 m-0{% endblock body_class %}">
 
 
     <div class="alert alert-primary font-size-large p-5 border-0 text-center shadow animate__animated animate__heartBeat animate__slower">

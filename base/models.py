@@ -57,8 +57,8 @@ class Setting(models.Model):
     "cree una cuenta con nosotros.")
 
 
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, 
-    null=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  
+    blank=True, null=True)
 
     website_name = models.CharField(_l("Nombre del sitio"), max_length=70, 
     help_text=_l("Nombre de este sitio. "))
