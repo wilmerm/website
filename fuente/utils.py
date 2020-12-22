@@ -27,7 +27,7 @@ from django.contrib.auth.decorators import (login_required, permission_required,
 try:
     from simple_history.models import HistoricalRecords
 except (ImportError) as e:
-    print(e)
+    print("fuente.utils", e)
 
 from fuente import (var, html, text, json, report)
 import fuente

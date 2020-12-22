@@ -1,17 +1,10 @@
-{% extends 'base/base.html' %}
+{% extends 'base/base_site.html' %}
+{% load i18n %}
 {% load thumbnail %}
 {% load base %}
 
 
 
-
-
-{% block carousel %}{% endblock %}
-{% block schedule %}{% endblock %}
-{% block brands %}{% endblock %}
-{% block location %}{% endblock %}
-{% block about %}{% endblock %}
-{% block brochure %}{% endblock %}
 
 
 {% block content %}
@@ -22,7 +15,7 @@
         {% for obj in base.questions %}
         <div class="col col-12 col-md-6">
             <h2 class="text-primary">{{ obj.question }}</h2>
-            <p>{{ obj.answer }}</p>
+            <div>{{ obj.answer|safe }}</div>
         </div>
         {% endfor %}
     </div>

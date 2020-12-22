@@ -6,13 +6,6 @@ Autenticación de usuario personalizada.
 from django.conf import settings
 from django.utils.translation import gettext
 from django.contrib import messages
-
-try:
-    from google.oauth2 import id_token
-    from google.auth.transport import requests
-except (ImportError) as e:
-    print(e)
-
 from .models import User, get_current_site
 
 
