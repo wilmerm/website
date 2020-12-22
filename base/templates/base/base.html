@@ -43,11 +43,11 @@
     {% if settings.DEBUG == True %}
         <!-- Utilizamos las versiones almacenadas localmente, para reducir la 
         carga del Internet al recargar sin caché. -->
-        <script src="/static/external/jquery/jquery-3.5.1.slim.min.js"></script>
+        <script src="/static/external/jquery/jquery-3.5.1.min.js"></script>
         <script src="/static/external/vuejs/vue3/vue.3.0.4.js"></script>
         <script src="/static/external/bootstrap/js/bootstrap.bundle.js"></script>
     {% else %}
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3.0.4/dist/vue.global.prod.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
     {% endif %}
@@ -89,6 +89,12 @@
 
 
 <body id="store" class="{% block body_class %}bg-white p-0 m-0{% endblock body_class %}">
+
+
+    <div class="alert alert-primary font-size-large p-5 border-0 text-center shadow animate__animated animate__heartBeat animate__slower">
+        <strong>Sitio en construcción. </strong>
+        <span>Estamos actualizando este sitio web. En breves minutos estará disponible nuevamente.</span>
+    </div>
 
     
     <!-- block header -->
@@ -272,7 +278,7 @@
                 });
             } catch (error) {
                 console.log('sendData()');
-                console.warn(error);
+                console.error(error);
             }
         }
 

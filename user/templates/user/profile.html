@@ -46,7 +46,7 @@
                 <hr>
                 <div>
                     <a class="btn btn-outline-primary mr-1" href="{% url 'user-profile-update' %}">{% trans 'Modificar perfil' %}</a>
-                    <a class="btn btn-outline-primary" href="{% url 'password_change' %}">{% trans 'Cambiar contraseña' %}</a>
+                    <a class="btn btn-outline-primary mr-1" href="{% url 'password_change' %}">{% trans 'Cambiar contraseña' %}</a>
                     {% if store %}
                         {% if user.order_set.all %}
                         <a class="btn btn-outline-primary mr-1" href="{% url 'store-order-list' %}">{% trans 'Mis ordenes' %}</a>

@@ -44,7 +44,7 @@
     </div>
     <div class="d-print-none">
         <a class="btn btn-primary font-size-large mr-1" href="{% url 'store-item-list' %}">{% trans 'Continuar comprando' %}</a>
-        <button class="btn btn-secondary font-size-large mr-1" onclick="window.print()">{% trans 'Imprimir' %}</button>
+        <button class="btn btn-outline-primary font-size-large mr-1" onclick="window.print()" aria-label="Print" title="{% trans 'Imprimir' %}">{% svg 'printer-fill' size="1rem" %}</button>
     </div>
 </div>
 {% endblock content %}

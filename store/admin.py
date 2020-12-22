@@ -201,4 +201,9 @@ class StoreSettingAdmin(admin.ModelAdmin):
             return StoreSetting.objects.all()
         return StoreSetting.objects.filter(site=get_current_site())
 
+    def get_form(self, request, obj, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields["policies"].widget = forms.Textarea()
+        return form
+
 

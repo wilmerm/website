@@ -31,6 +31,9 @@ get_current_site = Site.objects.get_current
 
 
 class Base:
+    """
+    Métodos abreviadas para la aplicación 'base'.
+    """
 
     def __str__(self):
         return self.setting().website_name or "base"
@@ -101,6 +104,12 @@ class Base:
 
 
 class Store:
+    """
+    Métodos abreviados para la aplicación 'store'.
+    """
+
+    def __str__(self):
+        return "%s Store" % (Base())
 
     def __bool__(self):
         try:
@@ -112,22 +121,21 @@ class Store:
     @classmethod
     def items(self, request=None):
         try:
-            return Item.objects.filter(site=get_current_site(), is_active=True)
+            return Item.on_site.filter(is_active=True)
         except (NameError) as e:
             print(e)
 
     @classmethod
     def setting(self, request=None):
         try:
-            return StoreSetting.objects.filter(site=get_current_site())
+            return StoreSetting.on_site.last()
         except (NameError) as e:
             print(e)
 
     @classmethod
     def featured_items(self, request=None):
         try:
-            return Item.objects.filter(site=get_current_site(), is_active=True, 
-            is_featured=True)
+            return Item.on_site.filter(is_active=True, is_featured=True)
         except (NameError) as e:
             print(e)
 

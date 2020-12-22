@@ -594,8 +594,13 @@ class Mov(models.Model):
         return f"{self.order}: {self.item}"
 
     def clean(self):
-        self.amount = self.price * self.cant
-        self.total = self.amount + self.tax
+        if self.item.pay_tax:
+            self.amount, self.tax, self.total = self.item.CalculateAmount(
+                self.cant, self.price)
+        else:
+            self.amount = self.price * self.cant
+            self.total = self.amount
+        
 
 
 
@@ -615,6 +620,11 @@ class StoreSetting(models.Model):
     currency_symbol = models.CharField(_("Moneda"), max_length=5, blank=True,
     help_text=_l("Símbolo de la moneda en que están los precios de los items."))
 
+    policies = models.CharField(_l("Políticas de la tienda en línea"), 
+    max_length=700, blank=True, help_text=_l("Texto que contine una versión "
+    "corta de las políticas, términos y condiciones de al compara a través de "
+    "la tienda en línea. Este texto aparecerá en las ordenes impresas que "
+    "realicen los clientes a través la tienda en línea."))
     
     objects = models.Manager()
     on_site = CurrentSiteManager()
@@ -632,5 +642,6 @@ class StoreSetting(models.Model):
         if not self.pk:
             self.site = Site.objects.get_current()
 
-        if StoreSetting.objects.filter(site=self.site):
-            raise ValidationError(_("Ya existe una configuración de artículos."))
+            if StoreSetting.on_site.all():
+                raise ValidationError(
+                    _("Ya existe una configuración de artículos."))

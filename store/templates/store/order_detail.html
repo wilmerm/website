@@ -31,7 +31,7 @@
             <tbody>
                 {% for obj in object.get_movs %}
                 <tr>
-                    <td>{{ forloop.count }}</td>
+                    <td>{{ forloop.counter }}</td>
                     <td>{{ obj.item }}</td>
                     <td class="text-right">{{ obj.cant|intcomma }}</td>
                     <td class="text-right">{{ obj.price|intcomma }}</td>
@@ -44,22 +44,22 @@
         </table>
     </div>
     <div class="row">
-        <div class="col col-4 col-sm-6"></div>
-        <div class="col col-8 col-sm-6">
+        <div class="col col-5"></div>
+        <div class="col col-7">
             <table class="table table-bordered">
                 <tbody>
                     {% with object.update_all as totals %}
                     <tr>
                         <th>{% trans 'Importe' %}</th>
-                        <td class="text-right">{{ totals.amount|intcomma }}</td>
+                        <td class="text-right">{{ totals.amount|floatformat:2|intcomma }}</td>
                     </tr>
                     <tr>
                         <th>{% trans 'Impuestos' %}</th>
-                        <td class="text-right">{{ totals.tax|intcomma }}</td>
+                        <td class="text-right">{{ totals.tax|floatformat:2|intcomma }}</td>
                     </tr>
-                    <tr>
+                    <tr class="bg-light font-size-large">
                         <th>{% trans 'Total' %}</th>
-                        <td class="text-right">{{ totals.total|intcomma }}</td>
+                        <td class="text-right font-weight-bold">{{ store.setting.currency_symbol }} {{ totals.total|floatformat:2|intcomma }}</td>
                     </tr>
                     {% endwith %}
                 </tbody>
@@ -67,10 +67,34 @@
         </div>
     </div>
     <hr>
-    <div class="d-print-none">
+    <div class="row">
+        <div class="col col-6">
+            <div><strong>{% trans 'Número: ' %}</strong>{{ object.number }}</div>
+            <div><strong>{% trans 'Comentario: ' %}</strong>{{ object.note }}</div>
+            <div><strong>{% trans 'Dirección: ' %}</strong>{{ object.address }}</div>
+            <div><strong>{% trans 'Teléfono: ' %}</strong>{{ object.phone }}</div>
+        </div>
+        <div class="col col-6">
+            <div><strong>{% trans 'Fecha: ' %}</strong>{{ object.create_date }}</div>
+            <div><strong>{% trans 'Estatus: ' %}</strong>{{ object.get_status_display }}</div>
+            <div><strong>{% trans 'Fecha del último estatus: ' %}</strong>{{ object.status_date }}</div>
+            <div><strong>{% trans 'Forma de pago: ' %}</strong>{{ object.get_payment_method_display }}</div>
+        </div>
+    </div>
+    <div class="row mt-1">
+        <pre class="small border-0">{{ store.setting.policies }}</pre>
+    </div>
+    <div class="row mt-5">
+        <div class="col col-5 border-top"></div>
+        <div class="col col-2"></div>
+        <div class="col col-5 border-top text-center">
+            {{ object.user }}
+        </div>
+    </div>
+    <div class="d-print-none mt-5">
         <a class="btn btn-primary font-size-large mr-1" href="{% url 'store-item-list' %}">{% trans 'Continuar comprando' %}</a>
         <a class="btn btn-primary font-size-large mr-1" href="{% url 'store-order-list' %}">{% trans 'Mis ordenes' %}</a>
-        <button class="btn btn-secondary font-size-large mr-1" onclick="window.print()">{% trans 'Imprimir' %}</button>
+        <button class="btn btn-outline-primary font-size-large mr-1" onclick="window.print()" aria-label="Print" title="{% trans 'Imprimir' %}">{% svg 'printer-fill' size="1rem" %}</button>
     </div>
 </div>
 {% endblock content %}

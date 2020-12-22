@@ -20,9 +20,6 @@ class UserAdmin(DjangoUserAdmin):
     search_fields = ('email__istartswith', 'first_name__istartswith', 
         'last_name__istartswith')
 
-    list_display = ('get_image', 'get_text', 
-    'is_superuser', 'is_staff')
-
     fieldsets = (
         (None, {
             'fields': ('username', 'password', 'initial_password', 'google_userid', 'image_url'),
@@ -39,11 +36,16 @@ class UserAdmin(DjangoUserAdmin):
         }),
     )
 
-    readonly_fields = ('google_userid', 'username', 'initial_password', 
+    readonly_fields = ('google_userid', 'initial_password', 
         'image_url', 'email', 'first_name', 'last_name', 'phone1', 'phone2', 
         'address', 'last_login', 'date_joined')
 
     ordering = ('email',)
+
+    def get_list_display(self, request):
+        if request.user.is_superuser:
+            return ('get_image', 'get_text', 'is_superuser', 'is_staff', 'site')
+        return ('get_image', 'get_text', 'is_superuser', 'is_staff')
 
     def get_image(self, obj):
         return format_html(
