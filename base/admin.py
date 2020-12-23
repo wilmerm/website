@@ -7,7 +7,7 @@ from django import forms
 from tinymce.widgets import TinyMCE
 
 from base.models import (Setting, AdvancedSetting, SocialNetwork, Slide, 
-Schedule, BrandRepresented, Question, SampleImage, SampleVideo)
+Schedule, BrandRepresented, Question, SampleImage, SampleVideo, VisitCounter)
 
 
 
@@ -50,7 +50,7 @@ class SettingAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         if request.user.is_superuser:
             return Setting.objects.all()
-        return Setting.objects.filter(site=get_current_site())
+        return Setting.on_site.all()
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -80,7 +80,7 @@ class AdvancedSettingAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         if request.user.is_superuser:
             return AdvancedSetting.objects.all()
-        return AdvancedSetting.objects.filter(site=get_current_site())
+        return AdvancedSetting.on_site.all()
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -103,7 +103,7 @@ class SocialNetworkAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         if request.user.is_superuser:
             return SocialNetwork.objects.all()
-        return SocialNetwork.objects.filter(site=get_current_site())
+        return SocialNetwork.on_site.all()
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -132,7 +132,7 @@ class SlideAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         if request.user.is_superuser:
             return Slide.objects.all()
-        return Slide.objects.filter(site=get_current_site())
+        return Slide.on_site.all()
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -160,7 +160,7 @@ class ScheduleAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         if request.user.is_superuser:
             return Schedule.objects.all()
-        return Schedule.objects.filter(site=get_current_site())
+        return Schedule.on_site.all()
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -181,7 +181,7 @@ class BrandRepresentedAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         if request.user.is_superuser:
             return BrandRepresented.objects.all()
-        return BrandRepresented.objects.filter(site=get_current_site())
+        return BrandRepresented.on_site.all()
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -202,7 +202,7 @@ class QuestionAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         if request.user.is_superuser:
             return Question.objects.all()
-        return Question.objects.filter(site=get_current_site())
+        return Question.on_site.all()
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -215,7 +215,6 @@ class QuestionAdmin(admin.ModelAdmin):
 
 @admin.register(SampleImage)
 class SampleImageAdmin(admin.ModelAdmin):
-    list_display = ('get_image', 'title', 'description')
     search_fields = ('title__icontains',)
 
     def get_list_display(self, request):
@@ -226,7 +225,7 @@ class SampleImageAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         if request.user.is_superuser:
             return SampleImage.objects.all()
-        return SampleImage.objects.filter(site=get_current_site())
+        return SampleImage.on_site.all()
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -241,7 +240,6 @@ class SampleImageAdmin(admin.ModelAdmin):
 
 @admin.register(SampleVideo)
 class SampleVideoAdmin(admin.ModelAdmin):
-    list_display = ('title', 'description')
     search_fields = ('title__icontains',)
 
     def get_list_display(self, request):
@@ -252,7 +250,7 @@ class SampleVideoAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         if request.user.is_superuser:
             return SampleVideo.objects.all()
-        return SampleVideo.objects.filter(site=get_current_site())
+        return SampleVideo.on_site.all()
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -262,3 +260,16 @@ class SampleVideoAdmin(admin.ModelAdmin):
 
 
 
+@admin.register(VisitCounter)
+class VisitCounterAdmin(admin.ModelAdmin):
+    readonly_fields = ("site", "urlpath", "count", "date")
+    list_display = ("get_url", "count", "date")
+    list_filter = ("urlpath", "date")
+    
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return VisitCounter.objects.all()
+        return VisitCounter.on_site.all()
+
+    def get_url(self, obj):
+        return "%s%s" % (obj.site, obj.urlpath)

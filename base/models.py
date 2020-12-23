@@ -2,15 +2,17 @@ import datetime
 
 from django.db import models
 from django.contrib.sites.models import Site
+from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.sites.managers import CurrentSiteManager
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _l
+from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.core.validators import (MinValueValidator, MaxValueValidator)
 
 from colorfield.fields import ColorField
 
-
+from user.models import User
 
 
 
@@ -189,7 +191,8 @@ class AdvancedSetting(models.Model):
 
     """
 
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False, 
+    blank=True, null=True)
 
     objects = models.Manager()
     on_site = CurrentSiteManager()
@@ -252,7 +255,8 @@ class SocialNetwork(models.Model):
         "youtube": "/static/img/social/youtube-rounded-fill.svg",
     }
 
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False, 
+    blank=True, null=True)
 
     social_network_name = models.CharField(_l("Red social"), max_length=20, 
     choices=SOCIAL_NETWORK_CHOICES)
@@ -301,7 +305,8 @@ class Slide(models.Model):
     Diapositiva para un carrusel de imágenes.
     
     """
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False, 
+    blank=True, null=True)
 
     image = models.ImageField(_l("Imagen"), upload_to="slide")
 
@@ -357,7 +362,8 @@ class Schedule(models.Model):
     Horario de servicio.
 
     """
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False, 
+    blank=True, null=True)
 
     monday = models.BooleanField(_l("Lunes"), default=True)
 
@@ -497,7 +503,8 @@ class BrandRepresented(models.Model):
     Marcas representadas.
     
     """
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  
+    blank=True, null=True)
 
     name = models.CharField(_l("Nombre"), max_length=100)
 
@@ -554,7 +561,8 @@ class Question(models.Model):
     Preguntas y respuestas.
 
     """
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  
+    blank=True, null=True)
 
     question = models.CharField(_l("Pregunta"), max_length=100, unique=True)
 
@@ -596,7 +604,8 @@ class SampleImage(models.Model):
 
     RECORD_LIMIT = 50 # Número máximo de registros que se pueden registrar.
 
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  
+    blank=True, null=True)
 
     title = models.CharField(_l("Título"), max_length=70, blank=True)
 
@@ -647,7 +656,8 @@ class SampleVideo(models.Model):
     """
     RECORD_LIMIT = 5 # Número máximo de registros que se pueden registrar.
 
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  
+    blank=True, null=True)
 
     title = models.CharField(_l("Título"), max_length=70, blank=True)
 
@@ -686,3 +696,137 @@ class SampleVideo(models.Model):
         
         """
         return SampleVideo.objects.filter(site=Site.objects.get_current())
+
+
+
+    
+
+class VisitCounter(models.Model):
+    """
+    Contador de visitas a páginas.
+
+    """
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  
+    blank=True, null=True)
+
+    urlpath = models.CharField(_l("URL path"), max_length=200)
+
+    date = models.DateField(verbose_name=_l("Fecha"), 
+    auto_now=True)
+
+    count = models.IntegerField(_("Cantidad"), default=0)
+
+    objects = models.Manager()
+    on_site = CurrentSiteManager()
+
+
+    class Meta:
+        verbose_name = _("Visita")
+        verbose_name_plural = _("Visitas")
+        ordering = ["date"]
+        constraints = [
+            models.UniqueConstraint(fields=("site", "urlpath", "date"), 
+            name="unique_visitcounter"),
+        ]
+
+
+    def __str__(self):
+        return f"{self.date}: {self.site}{self.urlpath}"
+
+    def clean(self):
+        if not self.pk:
+            self.site = Site.objects.get_current()
+
+    @classmethod
+    def __total(self, queryset) -> int:
+        return queryset.aggregate(models.Sum("count"))["cont__sum"]
+
+    @classmethod
+    def GetTotalOnSite(self, site: Site=None) -> int:
+        """
+        Obtiene la sumatoria de visitas en el sitio indicado.
+
+        Parameters:
+            site (django.sites.models.Site): default self.site or current_site.
+
+        """
+        site = site or self.site or Site.objects.get_current()
+
+        if site:
+            qs = VisitCounter.objects.filter(site=site)
+        else:
+            qs = VisitCounter.objects.all()
+        
+        return self.__total(qs)
+
+    @classmethod
+    def GetTotalOnPath(self, site: Site=None, urlpath: str=None) -> int:
+        """
+        Obtiene la sumatoria de visitas en el sitio y url indicada.
+
+        De no especificarse algún parámetro y ser esta una instancia, se tomarán
+        los valores de la instancia.
+
+        Parameters:
+            site (django.sites.models.Site): default self.site.
+            
+            urlpath (str): default self.urlpath.
+        
+        """
+
+        site = site or self.site or Site.objects.get_current()
+        urlpath = urlpath or self.urlpath
+
+        if (not site) or (not urlpath):
+            raise ValueError("Debe indicar el 'site' y el 'urlpath' parámetros.")
+
+        qs = VisitCounter.objects.filter(site=site, urlpath=urlpath)
+        return self.__total(qs)
+
+
+    @classmethod
+    def GetTotalOnDate(self, site: Site=None, urlpath: str=None, 
+        date: timezone=None) -> int:
+        """
+        Obtiene la sumatoria de visitas en el sitio, url y fecha indicada.
+
+        De no especificarse algún parámetro y ser esta una instancia, se tomarán
+        los valores de la instancia, en el caso de la fecha será la de hoy.
+
+        Parameters:
+            site (django.sites.models.Site): default self.site.
+            
+            urlpath (str): default self.urlpath.
+
+            date (datetime.date): default timezone.now.
+        
+        """
+        site = site or self.site or Site.objects.get_current()
+        urlpath = urlpath or self.urlpath
+        date = date or timezone.now()
+
+        if (not site) or (not urlpath) or (not date):
+            raise ValueError(
+                "Debe indicar los parámetros 'site', 'urlpath' y 'date'")
+
+        qs = VisitCounter.objects.filter(site=site, urlpath=urlpath, date=date)
+        return self.__total(qs)
+
+    
+    @classmethod
+    def on_today(self, urlpath: str=None):
+        """
+        Obtiene un queryset con todas las visitas de hoy, o una única instancia
+        de la visita de hoy a una página especifica si se indica 'urlpath'.
+
+        Nota: las visitas son únicas para cada site, urlpath, date.
+
+        Si se indica 'urlpath' y no hay resultados, lanzará 'DoesNotExist'.
+
+        """
+        if urlpath:
+            return VisitCounter.on_site.get(urlpath=urlpath, date=timezone.now())
+        
+        return VisitCounter.on_site.filter(date=timezone.now())
+
+

@@ -4,8 +4,12 @@ import re
 
 from django import template
 from django.conf import settings
-from fuente import text
+from django.utils import timezone
+from django.utils.translation import gettext as _
+from django.db import models
 
+from fuente import text
+from base.models import VisitCounter
 
 
 
@@ -22,6 +26,78 @@ def vue(content):
 
     """
     return "{{" + content + "}}"
+
+
+
+@register.filter
+def register_visit(request, get_count: bool=False):
+    """
+    Registra una nueva visita a página al modelo base.Visit
+
+    """
+
+    # Si es superuser o staff no registramos las visitas.
+    if (request.user.is_superuser) or (request.user.is_staff):
+
+        count_yesterday = VisitCounter.on_site.filter(
+            urlpath=request.path, 
+            date=timezone.now() - timezone.timedelta(days=1)
+            ).aggregate(models.Sum("count"))["count__sum"] or 0
+
+        count_today = VisitCounter.on_site.filter(
+            urlpath=request.path, date=timezone.now()
+            ).aggregate(models.Sum("count"))["count__sum"] or 0
+
+        count_alltime = VisitCounter.on_site.filter(
+            urlpath=request.path
+            ).aggregate(models.Sum("count"))["count__sum"] or 0
+
+        count_global_yesterday = VisitCounter.on_site.filter(
+            date=timezone.now() - timezone.timedelta(days=1)
+            ).aggregate(models.Sum("count"))["count__sum"] or 0
+
+        count_global_today = VisitCounter.on_site.filter(
+            date=timezone.now()
+            ).aggregate(models.Sum("count"))["count__sum"] or 0
+
+        count_global_alltime = VisitCounter.on_site.aggregate(
+            models.Sum("count"))["count__sum"] or 0
+
+        return {
+            "current_path": {
+                "yesterday": (_("Ayer"), count_yesterday),
+                "today": (_("Hoy"), count_today), 
+                "alltime": (_("Siempre"), count_alltime),
+            },
+            "global": {
+                "yesterday": (_("Ayer"), count_global_yesterday),
+                "today": (_("Hoy"), count_global_today),
+                "alltime": (_("Siempre"), count_global_alltime),
+            }
+        }
+
+    try:
+        visit_counter = VisitCounter.on_today(urlpath=request.path)
+    except (VisitCounter.DoesNotExist):
+        visit_counter = VisitCounter(urlpath=request.path)
+        try:
+            visit_counter.clean()
+        except (BaseException) as e:
+            print(e)
+            return ""
+
+    visit_counter.count += 1
+    try:
+        visit_counter.save()
+    except (BaseException) as e:
+        print(e)
+        return ""
+
+    if get_count:
+        return visit_counter.count
+
+    return ""
+
 
 
 
