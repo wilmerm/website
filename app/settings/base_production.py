@@ -31,7 +31,7 @@ DATABASES = {
     },
 }
 
-MEDIA_ROOT = MEDIA_ROOT / NAME
+MEDIA_ROOT = MEDIA_ROOT # / NAME ("Agregar el NAME en el archivo del sitio específico.")
 
 TEMPLATES[0]["DIRS"].append(BASE_DIR / f"templates/{NAME}")
 
