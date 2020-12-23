@@ -5,9 +5,9 @@ NAME = "refrimorel"
 
 SECRET_KEY = ')i-)cyg((ap3*ad6g2#$314z9*b%qo5114c2+zmdtqbo~@|¬s5'
 
-#DEBUG = False
+DEBUG = False
 
-#ALLOWED_HOSTS = [f"www.{NAME}.com", f"{NAME}.com"]
+ALLOWED_HOSTS = [f"www.{NAME}.com", f"{NAME}.com"]
 
 # DATABASES = {
 #     'default': {
