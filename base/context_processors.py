@@ -10,6 +10,7 @@ parte de TEMPLATES -- OPTIONS -- context_procesors
 
 from django.conf import settings
 from django.contrib.sites.models import Site
+from django.contrib.sites.shortcuts import get_current_site
 from django.utils.translation import gettext as _
 from django.db.utils import OperationalError
 
@@ -24,14 +25,6 @@ except (ImportError):
 
 
 
-# Obtiene el site actual.
-def get_current_site(request=None):
-    try:
-        return Site.objects.get_current()
-    except (NameError) as e:
-        print(e)
-
-
 
 class Base:
     """
@@ -39,7 +32,7 @@ class Base:
     """
 
     def __str__(self):
-        return self.setting().website_name or "base"
+        return self.setting() or "base"
 
     @classmethod
     def social_networks(self, request=None):

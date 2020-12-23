@@ -1,7 +1,8 @@
 import datetime
 
 from django.db import models
-from django.contrib.sites.models import Site, SiteManager
+from django.contrib.sites.models import Site
+from django.contrib.sites.managers import CurrentSiteManager
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _l
 from django.core.exceptions import ValidationError
@@ -148,7 +149,7 @@ class Setting(models.Model):
 
 
     objects = models.Manager()
-    on_site = SiteManager()
+    on_site = CurrentSiteManager()
 
     class Meta:
         verbose_name = _("Ajustes")
@@ -191,7 +192,7 @@ class AdvancedSetting(models.Model):
     site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  blank=True, null=True)
 
     objects = models.Manager()
-    on_site = SiteManager()
+    on_site = CurrentSiteManager()
 
     class Meta:
         verbose_name = _("Configuración avanzada")
@@ -264,7 +265,7 @@ class SocialNetwork(models.Model):
     help_text=_l("Ordena los links de las redes sociales acorde a este indice."))
 
     objects = models.Manager()
-    on_site = SiteManager()
+    on_site = CurrentSiteManager()
 
     class Meta:
         verbose_name = _("Red social")
@@ -315,7 +316,7 @@ class Slide(models.Model):
     is_active = models.BooleanField(_l("Activa"), default=True)
 
     objects = models.Manager()
-    on_site = SiteManager()
+    on_site = CurrentSiteManager()
 
     class Meta:
         verbose_name = _("Diapositiva")
@@ -421,7 +422,7 @@ class Schedule(models.Model):
     default=datetime.time(12, 0))
 
     objects = models.Manager()
-    on_site = SiteManager()
+    on_site = CurrentSiteManager()
 
     class Meta:
         verbose_name = _("Horario de servicio")
@@ -518,7 +519,7 @@ class BrandRepresented(models.Model):
     "indice, de mejor a mayor."))
 
     objects = models.Manager()
-    on_site = SiteManager()
+    on_site = CurrentSiteManager()
 
     class Meta:
         verbose_name = _("Marca")
@@ -560,7 +561,7 @@ class Question(models.Model):
     answer = models.CharField(_l("Respuesta"), max_length=700)
 
     objects = models.Manager()
-    on_site = SiteManager()
+    on_site = CurrentSiteManager()
 
     class Meta:
         verbose_name = _("Pregunta")
@@ -608,7 +609,7 @@ class SampleImage(models.Model):
     "en que será mostrada la imagen con respecto a otra."))
 
     objects = models.Manager()
-    on_site = SiteManager()
+    on_site = CurrentSiteManager()
 
     class Meta:
         verbose_name = _("Imagen de muestra")
@@ -659,7 +660,7 @@ class SampleVideo(models.Model):
     "en que será mostrado el video con respecto a otro."))
 
     objects = models.Manager()
-    on_site = SiteManager()
+    on_site = CurrentSiteManager()
     
     class Meta:
         verbose_name = _("Video de muestra")
