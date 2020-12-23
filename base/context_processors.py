@@ -32,7 +32,7 @@ class Base:
     """
 
     def __str__(self):
-        return self.setting() or "base"
+        return str(self.setting()) or "base"
 
     @classmethod
     def social_networks(self, request=None):
