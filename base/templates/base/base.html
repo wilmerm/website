@@ -197,9 +197,9 @@
     <main id="content" class="bg-white py-5">
         {% block messages %}
             {% if messages %}
-            <div class="messages fixed-bottom w-100 w-md-50 p-4" style="top: 128px">
+            <div class="container messages">
                 {% for message in messages %}
-                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} text-center shadow-lg font-size-large">
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} text-center shadow font-size-large p-4 my-2 animate__animated animate__bounceIn">
                     {{ message }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>

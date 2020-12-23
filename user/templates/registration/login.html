@@ -5,7 +5,7 @@
 
 
 
-{% block head %}
+{% block scripts %}
 <script src="https://apis.google.com/js/platform.js?" async defer></script>
 <script>
     // {% comment %}
@@ -44,11 +44,13 @@
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.setRequestHeader('X-CSRFToken', "{{ csrf_token }}");
 
-        xhr.onload = function() {
+        xhr.onload = function(event) {
             let json = JSON.parse(xhr.responseText);
 
             if (json.userid) {
+                event.preventDefault();
                 window.location.href = "{% url 'user-profile' %}";
+                return;
             } else if (json.error) {
                 alert(json.message);
             } else {
@@ -101,7 +103,7 @@
         // {% endcomment %}
     }
 </script>
-{% endblock head %}
+{% endblock scripts %}
 
 
 
@@ -133,19 +135,9 @@
                 <a href="{% url ''"></a>
                 <div class="text-center">
                     <a class="btn btn-lg btn-primary font-size-large w-100">{% trans 'Crear una cuenta' %}</a>
-                    
-                    <!-- <a class="btn btn-light btn-lg" href="" title="{% trans 'Utiliza tu cuenta de Google para registrarte con nosotros.' %}">
-                        <img src="/static/img/social/google.svg" alt="Google" class="w-32px h-32px">
-                        {% trans 'Registrase con Google' %}
-                    </a> -->
-                    <!-- <a class="btn btn-light btn-lg" href="" title="{% trans 'Utiliza tu cuenta de Facebook para registrarte con nosotros.' %}">
-                        <img src="/static/img/social/facebook.svg" alt="Facebook" class="w-32px h-32px">
-                        {% trans 'Registrase con Facebook' %}
-                    </a> -->
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock content %}

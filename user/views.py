@@ -117,6 +117,7 @@ def google_signin_view(request):
         else:
             messages.info(request, _("¡Usted ha ingresado con su cuenta de "
             "Google correctamente!"))
+            pass
         # Logueamos el usuario.
         # 'user.authentication.AuthByEmailBackend',
         # 'django.contrib.auth.backends.ModelBackend',
