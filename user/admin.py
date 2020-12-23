@@ -56,7 +56,7 @@ class UserAdmin(DjangoUserAdmin):
 
     def get_queryset(self, request):
         if not request.user.is_superuser:
-            return User.objects.none()
+            return User.on_site.all()
         return User.objects.all()
 
 

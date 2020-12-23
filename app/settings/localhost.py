@@ -1,3 +1,8 @@
+"""
+Archivo de configuración para la versión de desarrollo.
+
+"""
+
 from .base import *
 
 
@@ -9,12 +14,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = [NAME, "*"]
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / f'db/{NAME}.sqlite3',
-#     }
-# }
+DATABASES = {
+     'default': {
+         'ENGINE': 'django.db.backends.sqlite3',
+         'NAME': BASE_DIR / 'db.sqlite3',
+     }
+}
 
 MEDIA_ROOT = MEDIA_ROOT / NAME
 

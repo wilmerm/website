@@ -84,40 +84,51 @@ def google_signin_view(request):
     # procedemos a loguear el usuario de Google o registrarlo si no lo tenemos
     # registrado.
     if not user:
+
         try:
             user = User.on_site.get(email=idinfo["email"])
         except (User.DoesNotExist):
-            # Registramos el usuario.
-
-            # Generamos una contraseña aleatoria.
-            sr = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-            pwd = "".join([random.choice(sr) for i in range(10)])
-
-            # Método Django para crear el usuario.
-            user = User.objects.create_user(username=idinfo["email"], password=pwd)
-            # En la línea anterior el user ya adquirió un pk.
-            user.site = get_current_site(request)
-            user.initial_password = pwd
-            user.email = idinfo["email"]
-            user.first_name = idinfo["given_name"]
-            user.last_name = idinfo["family_name"]
-            user.image_url = idinfo["picture"]
-            user.google_userid = idinfo["sub"]
-            user.is_active = True
+            # En este punto no hemos encontrado ningún usuario en el site actual.
+            # comprobamos entonces si existe un usuario con acceso a todos los site.
             try:
-                user.clean()
-                user.save()
-            except (ValidationError) as e:
-                return JsonResponse({"error": True, "message": e.message})
+                user = User.objects.get(email=idinfo["email"], site=None)
+            except (User.DoesNotExist):
+                # Registramos el usuario.
+                # Generamos una contraseña aleatoria.
+                sr = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                pwd = "".join([random.choice(sr) for i in range(10)])
 
-            google_user["initial_password"] = pwd
-            messages.success(request, _("¡Su cuenta ha sido creada correctamente!"))
-            messages.info(request, _("Se ha generado una contraseña "
-            f"aleatoria que podrá cambiar en cualquier momento. Contraseña: {pwd}"))
+                # Método Django para crear el usuario.
+                user = User.objects.create_user(username=idinfo["email"], password=pwd)
+                # En la línea anterior el user ya adquirió un pk.
+                user.site = get_current_site(request)
+                user.initial_password = pwd
+                user.email = idinfo["email"]
+                user.first_name = idinfo["given_name"]
+                user.last_name = idinfo["family_name"]
+                user.image_url = idinfo["picture"]
+                user.google_userid = idinfo["sub"]
+                user.is_active = True
+                try:
+                    user.clean()
+                    user.save()
+                except (ValidationError) as e:
+                    return JsonResponse({"error": True, "message": e.message})
+
+                google_user["initial_password"] = pwd
+                messages.success(request, _("¡Su cuenta ha sido creada correctamente!"))
+                messages.info(request, _("Se ha generado una contraseña "
+                f"aleatoria que podrá cambiar en cualquier momento. Contraseña: {pwd}"))
+            else:
+                # En este punto hemos encontrado un usuario que 
+                # tiene acceso a todos los sites.
+                pass
         else:
+            # En este punto hemos encontrado un usuario en el site actual.
             messages.info(request, _("¡Usted ha ingresado con su cuenta de "
             "Google correctamente!"))
             pass
+        
         # Logueamos el usuario.
         # 'user.authentication.AuthByEmailBackend',
         # 'django.contrib.auth.backends.ModelBackend',
