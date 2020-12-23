@@ -37,7 +37,7 @@ const App = {
 
     created() {
         this.url = URL;
-        sendData(this.getUrl("store-cart-get"), "GET", "json", {}, this.getData);
+        this.sendData(this.getUrl("store-cart-get"), "GET", "json", {}, this.getData);
     },
 
 
@@ -50,7 +50,23 @@ const App = {
         },
 
 
-        getUrl: function (name) {
+        sendData(url, type="GET", dataType="json", data=null, success=null) {
+            try {
+                $.ajax({
+                    url: url,
+                    type: type,
+                    data: data,
+                    dataType: dataType,
+                    success: success,
+                });
+            } catch (error) {
+                console.log('sendData()');
+                console.error(error);
+            }
+        },
+
+
+        getUrl(name) {
             return this.url[name];
         },
 
@@ -60,7 +76,7 @@ const App = {
             let cant = document.getElementById("id_cant").value;
             let url = this.getUrl("store-cart-add");
             let formdata = $("#form-add-cart").serialize();
-            sendData(url, "POST", "json", formdata, this.getData);
+            this.sendData(url, "POST", "json", formdata, this.getData);
         },
 
 
@@ -76,14 +92,14 @@ const App = {
         // Actualiza el item indicado con la cantidad indicada.
         updateItem(id, cant) {
             let url = this.getUrl("store-cart-update")+"?item_id="+id+"&cant="+cant;
-            sendData(url, "GET", "json", null, this.getDataWithoutAlert);
+            this.sendData(url, "GET", "json", null, this.getDataWithoutAlert);
         },
 
 
         // Quita del carrito el item con el id indicado.
         removeItem(id) {
             let url = this.getUrl("store-cart-remove")+"?item_id="+id;
-            sendData(url, "GET", "json", null, this.getData);
+            this.sendData(url, "GET", "json", null, this.getData);
         },
 
 

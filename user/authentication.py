@@ -2,10 +2,15 @@
 Autenticación de usuario personalizada.
 
 """
-
 from django.conf import settings
 from django.utils.translation import gettext
 from django.contrib import messages
+
+# Para iniciar sesión con Google.
+# https://google-auth.readthedocs.io/en/latest/
+from google.oauth2 import id_token
+from google.auth.transport import requests
+
 from .models import User, get_current_site
 
 
@@ -65,8 +70,8 @@ class AuthByEmailBackend:
 
 def google_verify_token(request):
     """
-
     https://developers.google.com/identity/sign-in/web/backend-auth
+
     """
     # (Receive token by HTTPS POST)
     token = request.POST.get("idtoken")
