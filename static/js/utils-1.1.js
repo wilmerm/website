@@ -1,27 +1,43 @@
 /**
  * @utils scripts útiles comunes para todo el proyecto de Unolet.
  * 
- * @version 2.2
+ * @version 3.0
  * @author Unolet <https://www.unolet.com>
  * @copyright Unolet <https://www.unolet.com>
  * @see https://blog.unolet.com
  */
 
-// ---------------------------------------------
+// -----------------------------------------------------------------------------
 // Variables
-//----------------------------------------------
-var PORCENTAJE = "PORCENTAJE";
-var FIJO = "FIJO";
+//------------------------------------------------------------------------------
+
+// Convensión con Python.
+const None = null;
+const True = true;
+const False = false;
+
+const PORCENTAJE = "PORCENTAJE";
+const FIJO = "FIJO";
 
 
 
 
+// Métodos abreviado.
 
-
-// Método abreviado.
 function getById(id) {
   return document.getElementById(id);
 }
+
+
+function querySelector(text) {
+  return document.querySelector(text);
+}
+
+
+function querySelectorAll(text) {
+  return document.querySelectorAll(text);
+}
+
 
 
 // Método abreviado de location.href = 'url'.
@@ -252,3 +268,23 @@ function translate(text) {
 }
 
 _ = translate
+
+
+
+
+
+// Método de conveniencia para solicitar datos al servidor.
+function sendData(url, type="GET", dataType="json", data=null, success=null) {
+  try {
+      $.ajax({
+          url: url,
+          type: type,
+          data: data,
+          dataType: dataType,
+          success: success,
+      });
+  } catch (error) {
+      console.log('sendData()');
+      console.error(error);
+  }
+}

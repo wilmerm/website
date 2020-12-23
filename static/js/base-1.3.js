@@ -51,3 +51,4 @@ function activeDarkMode() {
     xhttp.open("GET", "/conf/setdarkmode/", true);
     xhttp.send();
 }
+

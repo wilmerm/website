@@ -53,9 +53,6 @@
     {% endif %}
     <script src="/static/js/utils-1.1.js"></script>
 
-
-
-
     <link rel="stylesheet" href="/static/css/base-1.8.css">
     
     {% if request.session.darkmode %}
@@ -103,7 +100,7 @@
     <header>
         <!-- block cover -->
         {% block cover %}
-            <div class="container-fluid sticky-top" style="position: absolute; z-index: 0; {% if base.setting.cover %}height: {{ base.setting.cover_height }}px; background-image: url('{{ base.setting.cover.url }}'); background-size: cover; filter: blur(8px); -webkit-filter: blur(8px);{% endif %}"></div>
+            <div class="container-fluid sticky-top" style="position: absolute; z-index: 0"></div>
         {% endblock cover %}
     </header>
     {% endblock header %}
@@ -241,175 +238,38 @@
         {% endblock copyright %}
 
     </footer>
-
-
-
-
-
-    <script>
-
-        // Muestra el botón de subir al top de la página cuando el 
-        // scroll alcanza determinada posición. 
-        document.documentElement.dataset.scroll = window.scrollY;
-        document.addEventListener('scroll', () => {
-            document.documentElement.dataset.scroll = window.scrollY;
-
-            if (window.scrollY > 512) {
-                $("#btnUp").addClass("active");
-            } else {
-                $("#btnUp").removeClass("active");
-            }
-        });
-
-
-
-
-
-
-        // {# Método de conveniencia para solicitar datos al servidor. #}
-        function sendData(url, type="GET", dataType="json", data=null, success=null) {
-            try {
-                $.ajax({
-                    url: url,
-                    type: type,
-                    data: data,
-                    dataType: dataType,
-                    success: success,
-                });
-            } catch (error) {
-                console.log('sendData()');
-                console.error(error);
-            }
-        }
-
-
-
-
-        // Vue App.
-        const App = {
-
-            data() {
-                return {
-
-                    //{# Variables Django para ser utilizadas en Javascript. #}
-                    //{# Es posible pasar a los textos etiquetas como {{name}} #}
-                    //{# para hacer referencias a estas variables. #}
-                    website_name: "{{ base.setting.website_name }}",
-                    alert: {
-                        title: "",
-                        message: "",
-                    },
-                    user: {
-                        id: '{{ user.id }}',
-                        username: '{{ user }}',
-                    },
-                    cart: {
-                        items: {},
-                        total: {
-                            count: 0,
-                            cant: 0,
-                            subtotal: 0,
-                            tax: 0,
-                            total: 0
-                        }
-                    }
-
-                }
-            },
-
-
-
-            created() {
-                sendData("{% url 'store-cart-get' %}", "GET", "json", {}, this.getData);
-            },
-
-
-
-            methods: {
-
-                // Se usa la función intcomma del módulo base.js.
-                intcomma(num) {
-                    return intcomma(num);
-                },
-
-
-                // Agrega un item al carrito.
-                addItem(id) {
-                    let cant = document.getElementById("id_cant").value;
-                    let url = "{% url 'store-cart-add' %}";
-                    let formdata = $("#form-add-cart").serialize();
-                    sendData(url, "POST", "json", formdata, this.getData);
-                },
-
-
-                // Se llamará como un evento que invoca a su vez a 'updateItem'.
-                onUpdateItemFromCtrl(event) {
-                    let ctrl = event.target;
-                    let item_id = ctrl.dataset.item;
-                    let cant = ctrl.value;
-                    this.updateItem(item_id, cant);
-                },
-
-                
-                // Actualiza el item indicado con la cantidad indicada.
-                updateItem(id, cant) {
-                    let url = "{% url 'store-cart-update' %}?item_id="+id+"&cant="+cant;
-                    sendData(url, "GET", "json", null, this.getDataWithoutAlert);
-                },
-
-
-                // Quita del carrito el item con el id indicado.
-                removeItem(id) {
-                    let url = "{% url 'store-cart-remove' %}?item_id="+id;
-                    sendData(url, "GET", "json", null, this.getData);
-                },
-
-
-                // Quita del carrito todos los items.
-                removeItemAll() {
-                    this.removeItem("all");
-                },
-
-
-                // Extrae la información obtenida del servidor.
-                getData(data) {
-                    if (data.error) {
-                        this.showAlert(data.message, 10000);
-                    } else {
-                        this.cart.items = data.cart;
-                        this.cart.total = data.cart_total;
-                        this.showAlert(data.message, 5000);
-                    }
-                },
-
-
-                // Lo mismo que getData pero solo muestra mensaje en caso de error.
-                getDataWithoutAlert(data) {
-                    if (data.error) {
-                        this.showAlert(data.message, 10000);
-                    } else {
-                        this.cart.items = data.cart;
-                        this.cart.total = data.cart_total;
-                    }
-                },
-
-
-                // Muestra un mensaje en pantalla por el tiempo indicado.
-                showAlert(message="", time=5000) {
-                    this.alert.message = message;
-                    
-                    setTimeout(() => {
-                        this.alert.message = "";
-                    }, time);
-                },
-            }
-        }
-
-        Vue.createApp(App).mount("#app");
-    </script>
-    
-    {% block scripts %}
-    {% endblock scripts %}
-
 </body>
+
+
+<script type="application/javascript">
+
+    // {# Constantes. #}
+    const URL = {
+        "store-item-list": "{% url 'store-item-list' %}",
+        "store-cart-get": "{% url 'store-cart-get' %}",
+        "store-cart-add": "{% url 'store-cart-add' %}",
+        "store-cart-update": "{% url 'store-cart-update' %}",
+        "store-cart-remove": "{% url 'store-cart-remove' %}",
+    };
+
+
+    // Muestra el botón de subir al top de la página cuando el 
+    // scroll alcanza determinada posición. 
+    document.documentElement.dataset.scroll = window.scrollY;
+    document.addEventListener('scroll', () => {
+        document.documentElement.dataset.scroll = window.scrollY;
+
+        if (window.scrollY > 512) {
+            $("#btnUp").addClass("active");
+        } else {
+            $("#btnUp").removeClass("active");
+        }
+    });
+</script>
+<script src="/static/js/app-vue.1.0.js"></script>
+
+{% block scripts %}
+{% endblock scripts %}
+
+
 </html>
