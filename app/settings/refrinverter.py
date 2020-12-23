@@ -9,12 +9,21 @@ DEBUG = False
 
 ALLOWED_HOSTS = [f"www.{NAME}.com", f"{NAME}.com"]
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / f'db/{NAME}.sqlite3',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'wilmermartinez$websites',
+        'USER': 'wilmermartinez',
+        'PASSWORD': 'HolaMundo',
+        'HOST': 'wilmermartinez.mysql.pythonanywhere-services.com',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
+        'TEST': {
+            'NAME': 'wilmermartinez$test',
+        },
+    },
+}
 
 MEDIA_ROOT = MEDIA_ROOT / NAME
 
