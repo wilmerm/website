@@ -67,6 +67,9 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
+    def get_username(self):
+        return self.email
+
     def get_absolute_url(self):
         return reverse_lazy("user-profile")
     
@@ -123,11 +126,6 @@ class User(AbstractUser):
         if not self.image_url:
             return self.IMAGE_DEFAULT
         return self.image_url
-
-
-
-
-
 
 
 
