@@ -44,7 +44,8 @@ class ItemListView(ListView):
         group = self.request.GET.get("group")
 
         # Se muestran solo los artículos del site actual.
-        qs = self.model.objects.filter(site=get_current_site(), is_active=True)
+        qs = self.model.objects.filter(site=get_current_site(), is_active=True, 
+            price__gt=0, available__gt=0).exclude(price=None)
 
         if brand:
             qs = qs.filter(brand=brand)
