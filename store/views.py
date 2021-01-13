@@ -360,8 +360,11 @@ def update_from_unolet(request):
     else:
         request.session["store_updating_from_unolet"] = True
 
-    resp = urllib.request.urlopen(url)
-    data = json.loads(resp.read())
+    try:
+        resp = urllib.request.urlopen(url)
+        data = json.loads(resp.read())
+    except (BaseException) as e:
+        return JsonResponse({"message": str(e), "error": True})
 
     count = 0
     errors = 0
@@ -387,6 +390,7 @@ def update_from_unolet(request):
             item.available = 0
 
         try:
+            item.clean()
             item.save()
         except (BaseException) as e:
             print("Error en update_from_unolet", e, url)
