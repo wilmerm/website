@@ -27,6 +27,16 @@
     </div>
 </form>
 <hr>
+{% if user.is_staff and settings.UNOLET_APP_DOMAIN %}
+    <div class="container">
+        {% if request.session.store_updating_from_unolet %}
+            <div class="alert alert-warning">{% trans 'Se están actualizando los artículos. Por favor, espere...' %}</div>
+        {% else %}
+            <input type="button" onclick="update_from_unolet()" class="btn btn-outline-primary" id="btn-update-from-unolet" value="{% trans 'Actualizar los artículos desde Unolet. Esta operación bloqueará la base de datos por unos minutos.' %}">
+        {% endif %}
+    </div>
+{% endif %}
+<hr>
 <div class="container">
     {% if not object_list %}
     <div class="alert alert-secondary text-secondary-contrast font-size-large text-center">{% trans 'No se encontraron artículos.' %}</div>
@@ -56,4 +66,29 @@
         {% bootstrap_pagination page_obj %}
     </div>
 </div>
+
+
+
+<script>
+
+    function update_from_unolet(event) {
+        yes = confirm("{% trans '¿Realmente desea actualizar los artículos desde Unolet?' %}");
+        if (yes == true) {
+            var btn = document.getElementById("btn-update-from-unolet");
+            btn.onclick = "";
+            btn.value = "{% trans 'Se están actualizando los artículos. Recibirá un mensaje cuando el proceso haya concluido. Por favor, espere...' %}";
+            let url = "{% url 'store-item-update-from-unolet' %}";
+            $.ajax({
+                dataType: "json",
+                url: url,
+                //data: data,
+                success: function(data) {
+                    alert(data.message);
+                    btn.value = data.message;
+                }
+            });
+            alert("Se están actualizando los artículos en el servidor. Se enviará una notificación cuando el proceso concluya. Por favor, espere...")
+        }
+    }
+</script>
 {% endblock content %}

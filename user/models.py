@@ -63,7 +63,6 @@ class User(AbstractUser):
                 name="unique_user_on_site"),
         ]
 
-
     def __str__(self):
         return self.email
 
@@ -100,7 +99,6 @@ class User(AbstractUser):
         if User.objects.filter(site=self.site, email=self.email).exclude(pk=self.pk):
             raise ValidationError(_("Ya existe otro usuario con este correo "
             f"electrónico {self.email}. Puede intentar iniciar sesión en su lugar."))
-
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

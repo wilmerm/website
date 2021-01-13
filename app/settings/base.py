@@ -188,6 +188,8 @@ EMAIL_HOST_USER = None
 EMAIL_HOST_PASSWORD = None
 EMAIL_USE_TLS = True
 
+# Para conectar este sitio con la app Unolet del cliente.
+UNOLET_APP_DOMAIN = "demo.unolet.com"
 
 
 # Aplicación 'easy_thumbnails'

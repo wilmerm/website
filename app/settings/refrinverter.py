@@ -14,3 +14,5 @@ MEDIA_ROOT = MEDIA_ROOT / NAME
 TEMPLATES[0]["DIRS"].append(BASE_DIR / f"templates/{NAME}")
 
 SITE_ID = 3
+
+UNOLET_APP_DOMAIN = "refrinverter.unolet.com"

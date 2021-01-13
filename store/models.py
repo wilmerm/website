@@ -516,8 +516,6 @@ class Order(models.Model):
         }
 
 
-
-
 class OrderNote(models.Model):
     """
     Notas y comentarios de ordenes.

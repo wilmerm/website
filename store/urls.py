@@ -18,4 +18,6 @@ urlpatterns = [
     path("json/cart/remove/", views.cart_remove, name="store-cart-remove"),
     path("json/cart/update/", views.cart_update, name="store-cart-update"),
     #path("checkout/", views.checkout, name="store-checkout")
+
+    path("item/update-from-unolet/", views.update_from_unolet, name="store-item-update-from-unolet")
 ]

@@ -337,6 +337,71 @@ def cart_get(request):
 
 
 
+def update_from_unolet(request):
+    """Actualiza los artículos desde la app Unolet configurada para el cliente."""
+    import datetime
+    import urllib
+    import json
+    import requests
+    from django.conf import settings 
+
+    domain = settings.UNOLET_APP_DOMAIN
+    today = datetime.datetime.today()
+
+    token_key = f"gszD35F{today.year-today.month-today.day-4377299}dldh-gaASDPp{today.day-today.month}-_s931_d{today.year-438844+today.day}-dsyDQe"
+    token_value = f"gas-_alhhdiey7493pKSHDFASF{today.year-today.month-today.day-4377532299}dpERQE{today.day-today.month-5544543}-_s93EWERewwWfdER1_d{today.year-4566667765554+today.day}-dsWERWTgfu45TTEWyDQe"
+    url = f"http://{domain}/articulo/json/articulo/list/forupdatewebsitewithunolet/?q=''&{token_key}={token_value}"
+
+
+    updating = request.session.get("store_updating_from_unolet") or False
+
+    if updating:
+        return JsonResponse({"message": _("Se están actualizando los artículos. Por favor, espere...")})
+    else:
+        request.session["store_updating_from_unolet"] = True
+
+    resp = urllib.request.urlopen(url)
+    data = json.loads(resp.read())
+
+    count = 0
+    errors = 0
+    site = Site.objects.get_current()
+
+    for dic in data["data"]:
+        
+        try:
+            item = Item.objects.get(codename=dic["codename"], site=site)
+        except (Item.DoesNotExist):
+            item = Item()
+            item.codename = dic["codename"]
+            item.site = site
+
+        item.name = dic["description"]
+        try:
+            item.price = dic["precio"]
+        except (ValueError, TypeError):
+            item.price = 0
+        try:
+            item.available = float(dic["disponible"])
+        except (ValueError, TypeError):
+            item.available = 0
+
+        try:
+            item.save()
+        except (BaseException) as e:
+            print("Error en update_from_unolet", e, url)
+            errors += 1
+        else:
+            count += 1
+
+    request.session["store_updating_from_unolet"] = False
+    return JsonResponse({"message": f"Se actualizaron {count} artículos. {errors} errores."})
+
+    
+   
+
+
+
 # ------------------------------------------------------------------------------
 # Funciones que no son vistas.
 # ------------------------------------------------------------------------------
