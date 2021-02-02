@@ -10,25 +10,18 @@ from django.utils import timezone
 from django.views.generic import (ListView, CreateView, UpdateView, 
     DetailView, DeleteView, TemplateView, FormView)
 
-
 from fuente import (var, utils, text)
 
 from .models import Item, Brand, Group, Order, Mov
 from .forms import ItemSearchForm, ItemCartForm, OrderForm
 
 
-
-
 # Método que obtiene el sitio actual.
 get_current_site = Site.objects.get_current
 
 
-
-
 class ItemListView(ListView):
-    """
-    Listado de artículos.
-    """
+    """Listado de artículos."""
     model = Item
     paginate_by = 30
 
@@ -49,22 +42,15 @@ class ItemListView(ListView):
 
         if brand:
             qs = qs.filter(brand=brand)
-
         if group:
             qs = qs.filter(group=group)
-
         if q:
             qs = qs.filter(tags__contains=text.Text.GetTag(q))
-
         return qs
 
 
-
-
 class ItemDetailView(DetailView):
-    """
-    Detalle de un artículo.
-    """
+    """Detalle de un artículo."""
     model = Item
 
     @utils.context_decorator()
@@ -81,8 +67,6 @@ class ItemDetailView(DetailView):
         if self.get_object().site != get_current_site():
             return HttpResponseRedirect(reverse_lazy("store-item-list"))
         return super().dispatch(request, *args, **kwargs)
-
-
 
 
 class OrderCreateView(LoginRequiredMixin, CreateView):
@@ -111,24 +95,16 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.create_user = self.request.user
         form.instance.user = self.request.user
-
         # Eliminamos el carrito de la sesión.
         self.request.session["cart"] = {}
         self.request.session["cart_total"] = {}
-
         messages.success(self.request, 
             _("¡Su orden ha sido creada satisfactoriamente!"))
         return super().form_valid(form)
 
 
-
-
-
-
 class OrderDetailView(LoginRequiredMixin, DetailView):
-    """
-    Detalle de una orden del usuario actual.
-    """
+    """Detalle de una orden del usuario actual."""
     model = Order
 
     @utils.context_decorator()
@@ -143,13 +119,8 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
         return super().dispatch(request, *args, **kwargs)
 
 
-
-
-
 class OrderListView(LoginRequiredMixin, ListView):
-    """
-    Listado de ordenes del usuario actual.
-    """
+    """Listado de ordenes del usuario actual."""
     model = Order
     paginate_by = 20
 
@@ -162,12 +133,8 @@ class OrderListView(LoginRequiredMixin, ListView):
         return Order.on_site.filter(user=self.request.user)
     
 
-
-
 class CartView(TemplateView):
-    """
-    Detalle de un artículo.
-    """
+    """Detalle de un artículo."""
     template_name = "store/cart.html"
 
     @utils.context_decorator()
@@ -175,9 +142,6 @@ class CartView(TemplateView):
         context = super().get_context_data(**kwargs)
         context["form_search"] = ItemSearchForm(self.request.GET)
         return context
-
-
-
 
 
 def cart_remove(request) -> JsonResponse:
@@ -214,11 +178,8 @@ def cart_remove(request) -> JsonResponse:
     request.session["cart"] = cart
     cart_total = calculate_totals(cart)
     request.session["cart_total"] = cart_total
-
     return JsonResponse({"error": False, "cart": cart, "cart_total": cart_total,
     "message": _("¡Artículo removido del carrito!")})
-
-
 
 
 def cart_add(request, item_id=None, cant=None, update=False) -> JsonResponse:
@@ -310,32 +271,19 @@ def cart_add(request, item_id=None, cant=None, update=False) -> JsonResponse:
     "message": _("¡Artículo añadido al carrito!")})
 
 
-
-
 def cart_update(request):
-    """
-    Actualiza el item indicado con la nueva cantidad.
-    
-    """
+    """Actualiza el item indicado con la nueva cantidad."""
     item_id = request.GET.get("item_id")
     cant = request.GET.get("cant")
     return cart_add(request, item_id, cant, update=True)
 
 
-
-
-
 def cart_get(request):
-    """
-    Obtiene el carrito de la sesión actual.
-    
-    """
+    """Obtiene el carrito de la sesión actual."""
     cart = request.session.get("cart") or {}
     cart_total = calculate_totals(cart)
     return JsonResponse({"cart": cart, "cart_total": cart_total, "error": False,
     "message": ""})
-
-
 
 
 def update_from_unolet(request):
@@ -353,9 +301,7 @@ def update_from_unolet(request):
     token_value = f"gas-_alhhdiey7493pKSHDFASF{today.year-today.month-today.day-4377532299}dpERQE{today.day-today.month-5544543}-_s93EWERewwWfdER1_d{today.year-4566667765554+today.day}-dsWERWTgfu45TTEWyDQe"
     url = f"http://{domain}/articulo/json/articulo/list/forupdatewebsitewithunolet/?q=''&{token_key}={token_value}"
 
-
     updating = request.session.get("store_updating_from_unolet") or False
-
     if updating:
         return JsonResponse({"message": _("Se están actualizando los artículos. Por favor, espere...")})
     else:
@@ -372,7 +318,6 @@ def update_from_unolet(request):
     site = Site.objects.get_current()
 
     for dic in data["data"]:
-        
         try:
             item = Item.objects.get(codename=dic["codename"], site=site)
         except (Item.DoesNotExist):
@@ -402,20 +347,13 @@ def update_from_unolet(request):
     request.session["store_updating_from_unolet"] = False
     return JsonResponse({"message": f"Se actualizaron {count} artículos. {errors} errores."})
 
-    
-   
-
-
 
 # ------------------------------------------------------------------------------
 # Funciones que no son vistas.
 # ------------------------------------------------------------------------------
 
 def calculate_totals(cart: dict) -> dict:
-    """
-    Calcula los totales del carrito de compra indicado.
-    
-    """
+    """Calcula los totales del carrito de compra indicado."""
     cant = 0 # Cantidad de items.
     subtotal = 0
     tax = 0
