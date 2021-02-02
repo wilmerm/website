@@ -251,4 +251,38 @@
         <a class="text-primary-contrast text-muted font-size-small" href="{% url 'policy' %}">Términos y Condiciones del sitio web</a>
     </div>
     {% endblock policy %}
+
+    {% block promo %}
+    <div class="temp promo border-0" style="background-color: transparent">
+        <div class="modal border-0" tabindex="-1" role="dialog" id="promo-modal" style="background-color: transparent;">
+            <div class="modal-dialog" role="document" style="background-color: transparent;">
+                <div class="modal-content border-0" style="background-color: transparent;">
+                    <div class="modal-header border-0">
+                        <button type="button" class="close btn btn-danger bg-danger" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center border-0">
+                        <p></p>
+                        <video style="width: auto; height: 512px" autoplay>
+                            <source src="base.sample_videos.last.url" type="video/mp4">
+                            Este navegador no soporta la visualización de este video.
+                        </video>
+                    </div>
+                    <div class="modal-footer border-0">
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if base.sample_videos.last %}
+        <script>
+            $(window).on("load", function(event) {
+                setTimeout(() => {
+                    var promo_modal = $("#promo-modal").modal("show");
+                }, 2000);
+            });
+        </script>
+        {% endif %}
+    </div>
+    {% endblock promo %}
 {% endblock footer %}

@@ -23,8 +23,8 @@ DATABASES = {
 
 MEDIA_ROOT = MEDIA_ROOT / NAME
 
-TEMPLATES[0]["DIRS"].append(BASE_DIR / f"templates/refrimorel")
+TEMPLATES[0]["DIRS"].append(BASE_DIR / f"templates/refrinverter")
 
 SITE_ID = 1
 
-UNOLET_APP_DOMAIN = "127.0.0.2:7000"
+UNOLET_APP_DOMAIN = "127.0.0.2"

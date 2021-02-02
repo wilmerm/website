@@ -151,11 +151,8 @@ CONTEXT = {
     },
     
     "settings": settings, # app.settings.base
-
     "base": Base,
-
     "store": Store,
-
     "get_current_site": get_current_site,
 
 }
