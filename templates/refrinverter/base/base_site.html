@@ -68,8 +68,8 @@
         <a class="nav-link" href="{% if request.session.cart %}{% url 'store-cart' %}{% else %}{% url 'store' %}{% endif %}" aria-label="Store">
             {% svg 'cart-fill' size="24px" %}
         </a>
-        <div v-if="cart.total.cant" 
-            class="cart-length bg-success text-white font-weight-bold font-size-small rounded-circle top right shadow-sm p-1 px-2 animate__animated animate__bounce" 
+        <div v-if="cart.total.cant"
+            class="cart-length bg-success text-white font-weight-bold font-size-small rounded-circle top right shadow-sm p-1 px-2 animate__animated animate__bounce"
             style="position: absolute; top: 5px; right: 0px;">
             {% vue 'cart.total.cant' %}
         </div>
@@ -123,8 +123,8 @@
             <a class="nav-link" href="{% if request.session.cart %}{% url 'store-cart' %}{% else %}{% url 'store' %}{% endif %}" aria-label="Store">
                 {% svg 'cart-fill' size="24px" %}
             </a>
-            <div v-if="cart.total.cant" 
-                class="cart-length bg-success text-white font-weight-bold font-size-small rounded-circle top right shadow-sm p-1 px-2 animate__animated animate__bounce" 
+            <div v-if="cart.total.cant"
+                class="cart-length bg-success text-white font-weight-bold font-size-small rounded-circle top right shadow-sm p-1 px-2 animate__animated animate__bounce"
                 style="position: absolute; top: 5px; right: 0px;">
                 {% vue 'cart.total.cant' %}
             </div>
@@ -258,9 +258,8 @@
                         </button>
                     </div>
                     <div class="modal-body text-center border-0">
-                        <p></p>
-                        <video style="width: auto; height: 512px" autoplay>
-                            <source src="{{ base.sample_videos.last.url }}" type="video/mp4">
+                        <video style="width: auto; height: 512px" autoplay controls>
+                            <source src="{{ base.sample_videos.last.video.url }}" type="video/mp4">
                             Este navegador no soporta la visualización de este video.
                         </video>
                     </div>
@@ -269,7 +268,7 @@
                 </div>
             </div>
         </div>
-        {% if base.sample_videos.last %}
+        {% if base.sample_videos.last.video %}
         <script>
             $(window).on("load", function(event) {
                 setTimeout(() => {
