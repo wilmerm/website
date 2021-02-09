@@ -135,20 +135,14 @@
 {% endblock navbar %}
 
 
-
-
 {% block sections %}
     {{ block.super }}
 {% endblock sections %}
 
 
-
-
 {% block content %}
     {{ block.super }}
 {% endblock content %}
-
-
 
 
 {% block footer %}
@@ -159,7 +153,8 @@
             <hr>
             <div class="row">
                 <div class="col col-12 col-md-6">
-                    <form action="{% url 'contact' %}" method="GET">
+                    <form action="{% url 'contact' %}" method="POST">
+                        {% csrf_token %}
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1">{% svg 'person-fill' size='1rem' %}</span>
@@ -176,7 +171,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon3">{% svg 'envelope-fill' size='1rem' %}</span>
                             </div>
-                            <input type="text" class="form-control form-control-lg" name="email" placeholder="EMAIL" aria-label="EMAIL" aria-describedby="basic-addon3">
+                            <input type="text" class="form-control form-control-lg" name="email" placeholder="EMAIL" aria-label="EMAIL" aria-describedby="basic-addon3" required>
                         </div>
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">

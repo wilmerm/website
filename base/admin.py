@@ -7,13 +7,11 @@ from django import forms
 from tinymce.widgets import TinyMCE
 
 from base.models import (Setting, AdvancedSetting, SocialNetwork, Slide, 
-Schedule, BrandRepresented, Question, SampleImage, SampleVideo, VisitCounter)
-
-
+    Schedule, BrandRepresented, Question, SampleImage, SampleVideo, 
+    VisitCounter, Message)
 
 
 get_current_site = Site.objects.get_current
-
 
 
 @admin.register(Setting)
@@ -67,8 +65,6 @@ class SettingAdmin(admin.ModelAdmin):
         return form
 
 
-
-
 @admin.register(AdvancedSetting)
 class AdvancedSettingAdmin(admin.ModelAdmin):
 
@@ -85,8 +81,6 @@ class AdvancedSettingAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         return form
-
-
 
 
 @admin.register(SocialNetwork)
@@ -117,8 +111,6 @@ class SocialNetworkAdmin(admin.ModelAdmin):
         return format_html("<a href='{}' target='_blank'>{}</a>", obj.url, obj.url)
 
 
-
-
 @admin.register(Slide)
 class SlideAdmin(admin.ModelAdmin):
     list_display = ('get_image', 'get_text', 'site')
@@ -147,8 +139,6 @@ class SlideAdmin(admin.ModelAdmin):
         return format_html("<p><b>{}</b><br>{}</p>", obj.title, obj.description)
 
 
-
-
 @admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
 
@@ -165,8 +155,6 @@ class ScheduleAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         return form
-
-
 
 
 @admin.register(BrandRepresented)
@@ -188,8 +176,6 @@ class BrandRepresentedAdmin(admin.ModelAdmin):
         return form
 
 
-
-
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
     search_fields = ('question__icontains', 'answer__icontains')
@@ -209,8 +195,6 @@ class QuestionAdmin(admin.ModelAdmin):
         form.base_fields['question'].widget.attrs.update({'style': 'width: 50%'})
         form.base_fields['answer'].widget = TinyMCE()
         return form
-
-
 
 
 @admin.register(SampleImage)
@@ -236,8 +220,6 @@ class SampleImageAdmin(admin.ModelAdmin):
         obj.image.url)
 
 
-
-
 @admin.register(SampleVideo)
 class SampleVideoAdmin(admin.ModelAdmin):
     search_fields = ('title__icontains',)
@@ -257,9 +239,6 @@ class SampleVideoAdmin(admin.ModelAdmin):
         return form
 
 
-
-
-
 @admin.register(VisitCounter)
 class VisitCounterAdmin(admin.ModelAdmin):
     readonly_fields = ("site", "urlpath", "count", "date")
@@ -273,3 +252,13 @@ class VisitCounterAdmin(admin.ModelAdmin):
 
     def get_url(self, obj):
         return "%s%s" % (obj.site, obj.urlpath)
+
+
+@admin.register(Message)
+class MessageAdmin(admin.ModelAdmin):
+    readonly_fields = ("site", "date", "name", "email", "phone", "message")
+    
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return Message.objects.all()
+        return Message.on_site.all()

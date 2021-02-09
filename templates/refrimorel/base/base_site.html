@@ -223,33 +223,34 @@
                 </div>
                 <div class="col col-12 col-md-6 p-4 bg-white">
                     <h2 class="text-center">Solicitar <strong>visita</strong></h2>
-                    <form action="{% url 'contact' %}" method="GET">
+                    <form action="{% url 'contact' %}" method="POST">
+                        {% csrf_token %}
                         <div class="row mt-4">
                             <div class="col col-6">
                                 <input class="form-control form-control-lg bg-light2 border-0" type="text" name="name" placeholder="Su nombre">
                             </div>
                             <div class="col col-6">
-                                <select name="service" class="form-control form-control-lg bg-light2 border-0">
+                                <select name="service_type" class="form-control form-control-lg bg-light2 border-0">
                                     <option value="">Tipo de servicio</option>
-                                    <option value="instalacion_central">Instalación central</option>
-                                    <option value="instalacion_central">Unidad de ventada</option>
-                                    <option value="instalacion_central">Instalación split</option>
-                                    <option value="instalacion_central">Mantenimiento, soporte, replaración</option>
-                                    <option value="instalacion_central">Otro</option>
+                                    <option value="Instalación central">Instalación central</option>
+                                    <option value="Unidad de ventana">Unidad de ventana</option>
+                                    <option value="Instalación split">Instalación split</option>
+                                    <option value="Mantenimiento">Mantenimiento, soporte, reparación</option>
+                                    <option value="Otro">Otro</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row mt-3">
                             <div class="col col-6">
-                                <input class="form-control form-control-lg bg-light2 border-0" type="email" name="email" placeholder="Su email">
+                                <input class="form-control form-control-lg bg-light2 border-0" type="email" name="email" placeholder="Su email" required>
                             </div>
                             <div class="col col-6">
-                                <select name="location" class="form-control form-control-lg bg-light2 border-0">
+                                <select name="address" class="form-control form-control-lg bg-light2 border-0">
                                     <option value="">Localidad</option>
-                                    <option value="instalacion_central">Santo Domingo</option>
-                                    <option value="instalacion_central">Santiago</option>
-                                    <option value="instalacion_central">Bávaro</option>
-                                    <option value="instalacion_central">Otro</option>
+                                    <option value="Santo Domingo">Santo Domingo</option>
+                                    <option value="Santiago">Santiago</option>
+                                    <option value="Bávaro">Bávaro</option>
+                                    <option value="Otro">Otro</option>
                                 </select>
                             </div>
                         </div>
@@ -259,10 +260,10 @@
                             </div>
                             <div class="col col-6">
                                 <select name="warranty" class="form-control form-control-lg bg-light2 border-0">
-                                    <option value=RefriMorel"">Sin garantía</option>
-                                    <option value="instalacion_central">6 meses de garantía</option>
-                                    <option value="instalacion_central">1 año de garantía</option>
-                                    <option value="instalacion_central">2 años de garantía</option>
+                                    <option value="Sin garantía">Sin garantía</option>
+                                    <option value="6 meses">6 meses de garantía</option>
+                                    <option value="1 año">1 año de garantía</option>
+                                    <option value="2 años">2 años de garantía</option>
                                 </select>
                             </div>
                         </div>
