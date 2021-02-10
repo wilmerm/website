@@ -70,6 +70,7 @@
 <body class="bg-white p-0 m-0">
 
     
+    {% comment %}
     <!-- En construcción. -->
     {% if settings.DEBUG != True %}
     <div class="alert alert-warning alert-dismissible fade show container-fluid shadow-lg position-fixed bottom shadow-lg border z-index-3000 w-100 animate__animated animate__shakeY text-dark" role="alert" style="background-color: rgba(250, 235, 215, 0.638);">
@@ -87,6 +88,7 @@
         </button>
     </div>
     {% endif %}
+    {% endcomment %}
 
 
 
