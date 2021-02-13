@@ -16,9 +16,9 @@ from base.models import VisitCounter, Message
 class StaffRequiredMixin():
     """Valida que el usuario sea staff o superuser, o lanza un Http404 error."""
     def dispatch(self, request, *args, **kwargs):
-        if (not request.user.is_staff) and (not request.user.is_superuser):
-            raise Http404("Permiso denegado.")
-        return super().dispatch(request, *args, **kwargs)
+        if (request.user.is_staff) or (request.user.is_superuser):
+            return super().dispatch(request, *args, **kwargs)
+        raise Http404("Permiso denegado.")
 
 
 class IndexView(StaffRequiredMixin, TemplateView):

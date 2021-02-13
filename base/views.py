@@ -1,6 +1,6 @@
 import datetime
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
 from django.utils.translation import gettext as _
@@ -10,6 +10,24 @@ from django.views.generic import (ListView, CreateView, UpdateView,
 from fuente import (var, utils, text)
 from base.models import Message
 from base.forms import MessageForm
+
+
+
+
+def handler400(request, *args, **kwargs):
+    return render(request, template_name="error/400.html", context={}, status=400)
+
+
+def handler403(request, *args, **kwargs):
+    return render(request, template_name="error/403.html", context={}, status=403)
+
+
+def handler404(request, *args, **kwargs):
+    return render(request, template_name="error/404.html", context={}, status=404)
+
+
+def handler500(request, *args, **kwargs):
+    return render(request, template_name="error/500.html", context={}, status=500)
 
 
 class IndexView(TemplateView):
