@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # Proyecto.
     'user',
     'base',
+    'administration',
     'store',
 
     # Externas.
@@ -61,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.sites.middleware.CurrentSiteMiddleware',
+    'base.middleware.BaseMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'

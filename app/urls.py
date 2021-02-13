@@ -22,9 +22,10 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('unolet/admin/', admin.site.urls),
     path('', include('base.urls')),
-    path('tienda/', include('store.urls')),
+    path('administration/', include('administration.urls')),
+    path('store/', include('store.urls')),
 
     # En la siguiente línea se incluye la aplicación local 'user' la cual a 
     # su vez hace referencia a 'django.contrib.auth.urls',

@@ -1,0 +1,59 @@
+{% extends 'administration/base.html' %}
+{% load i18n %}
+{% load humanize %}
+{% load base %}
+
+
+{% block content %}
+{% with base.visit_counter_class.get_stat as stat %}
+<div class="container">
+    <div class="row">
+        <div class="col col-8">
+            <h1 class="text-primary">{% trans 'Panel de administración' %}</h1>
+        </div>
+        <div class="col col-4 text-right">
+            <a class="btn btn-dark" href="/unolet/admin/">{% trans 'Administración global' %}</a>
+        </div>
+    </div>
+    <hr>
+    <h2>{% trans 'Visitas globales' %}</h2>
+    <hr>
+    <div class="row">
+        <div class="col col-12 col-sm-6 col-md-4 col-lg-2 text-center">
+            <div id="visit_global_today" class="h1 font-weight-bold">{{ stat.today.total|intcomma }}</div>
+            <label for="visit_global_today">{% trans 'Hoy' %}</label>
+        </div>
+        <div class="col col-12 col-sm-6 col-md-4 col-lg-2 text-center">
+            <div id="visit_global_yesterday" class="h1 font-weight-bold">{{ stat.yesterday.total|intcomma }}</div>
+            <label for="visit_global_yesterday">{% trans 'Ayer' %}</label>
+        </div>
+        <div class="col col-12 col-sm-6 col-md-4 col-lg-2 text-center">
+            <div id="visit_global_alltime" class="h1 font-weight-bold">{{ stat.last_7_days.total|intcomma }}</div>
+            <label for="visit_global_alltime">{% trans 'Últimos 7 días' %}</label>
+        </div>
+        <div class="col col-12 col-sm-6 col-md-4 col-lg-3 text-center">
+            <div id="visit_global_alltime" class="h1 font-weight-bold">{{ stat.last_30_days.total|intcomma }}</div>
+            <label for="visit_global_alltime">{% trans 'Últimos 30 días' %}</label>
+        </div>
+        <div class="col col-12 col-sm-6 col-md-4 col-lg-3 text-center text-primary">
+            <div id="visit_global_alltime" class="h1 font-weight-bold">{{ stat.all_time.total|intcomma }}</div>
+            <label for="visit_global_alltime">{% trans 'Todo el tiempo' %}</label>
+        </div>
+    </div>
+    <hr>
+    <h2>{% trans 'Mensajes sin leer' %} ({{ base.message_class.get_unread_messages.count|intcomma }})</h2>
+    <hr>
+    <div class="row">
+        <div class="col col-12">
+            {% for obj in base.message_class.get_unread_messages %}
+            <div class="row">
+                <div class="col col-12 col-sm-4 col-md-4 col-lg-2"><a href="{% url 'administration-message' pk=obj.pk %}">{{ obj.date }}</a></div>
+                <div class="col col-12 col-sm-8 col-md-8 col-lg-4">{{ obj.email }}</div>
+                <div class="col col-12 col-sm-12 col-md-12 col-lg-6">{{ obj.message|truncatechars:50 }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endwith %}
+{% endblock content %}

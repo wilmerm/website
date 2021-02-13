@@ -31,10 +31,7 @@ def vue(content):
 
 @register.filter
 def register_visit(request, get_count: bool=False):
-    """
-    Registra una nueva visita a página al modelo base.Visit
-
-    """
+    """Registra una nueva visita a página al modelo base.Visit."""
 
     # Si es superuser o staff no registramos las visitas.
     if (request.user.is_superuser) or (request.user.is_staff):
@@ -97,8 +94,6 @@ def register_visit(request, get_count: bool=False):
         return visit_counter.count
 
     return ""
-
-
 
 
 @register.inclusion_tag("tags/icon.html")

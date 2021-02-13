@@ -1,0 +1,75 @@
+{% extends 'administration/base.html' %}
+{% load i18n %}
+{% load humanize %}
+{% load bootstrap4 %}
+
+
+{% block content %}
+<div class="container bg-light pt-3 pb-3 border shadow-sm">
+    <form action="" method="POST">
+        <div class="row">
+            <div class="col col-12 col-md-7">
+                {% bootstrap_field form.read_note layout="inline" %}
+                {% if form.instance.read_date %}
+                <input class="btn btn-primary" type="submit" value="{% trans 'Guardar cambios' %}">
+                {% endif %}
+            </div>
+            <div class="col col-12 col-md-5 text-right">
+                {% csrf_token %}
+                {% if form.instance.read_date %}
+                <div class="alert alert-info">
+                    <span>{% trans 'Mensaje leído en fecha ' %} </span>
+                    <span class="font-weight-bold">{{ form.instance.read_date }}</span> <br>
+                    <span>{% trans 'por' %} </span>
+                    <span class="font-weight-bold">{{ form.instance.read_user }}</span>
+                </div>
+                {% else %}
+                <input class="btn btn-warning" type="submit" value="{% trans 'Marcar como leído y guardar' %}">
+                {% endif %}
+            </div>
+        </div>
+    </form>
+    <hr>
+    <div class="row">
+        <div class="col col-12 col-sm-5 col-md-4 col-lg-3">
+            <div class="font-weight-bold">{% trans 'Fecha' %}</div>
+            <div>{{ form.instance.date }}</div>
+        </div>
+        <div class="col col-12 col-sm-7 col-md-8 col-lg-9">
+            <div class="font-weight-bold">{% trans 'De' %}</div>
+            <div><a href="mailto:{{ form.instance.email }}">{{ form.instance.email }}</a> ({{ form.instance.name }})</div>
+        </div>
+    </div>
+    <div class="row bg-white p-2 mt-2 mb-2">
+        <div class="col col-12">
+            <p>{{ form.instance.message }}</p>
+        </div>
+    </div>
+    <div class="row">
+        {% if form.instance.phone %}
+        <div class="col col-12 col-sm-6 col-md-4 p-2">
+            <div class="font-weight-bold">{% trans 'Teléfono' %}</div>
+            <div>{{ form.instance.phone }}</div>
+        </div>
+        {% endif %}
+        {% if form.instance.address %}
+        <div class="col col-12 col-sm-6 col-md-8 p-2">
+            <div class="font-weight-bold">{% trans 'Dirección' %}</div>
+            <div>{{ form.instance.address }}</div>
+        </div>
+        {% endif %}
+        {% if form.instance.service_type %}
+        <div class="col col-12 col-sm-6 col-md-4 p-2">
+            <div class="font-weight-bold">{% trans 'Servicio' %}</div>
+            <div>{{ form.instance.service_type }}</div>
+        </div>
+        {% endif %}
+        {% if form.instance.warranty %}
+        <div class="col col-12 col-sm-6 col-md-4 p-2">
+            <div class="font-weight-bold">{% trans 'Garantía' %}</div>
+            <div>{{ form.instance.warranty }}</div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

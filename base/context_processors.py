@@ -15,14 +15,13 @@ from django.utils.translation import gettext as _
 from django.db.utils import OperationalError
 
 from base.models import (Setting, AdvancedSetting, SocialNetwork, Slide,
-Schedule, BrandRepresented, Question, SampleImage, SampleVideo)
+    Schedule, BrandRepresented, Question, SampleImage, SampleVideo, Message, 
+    VisitCounter)
 
 try:
     from store.models import Item, StoreSetting
 except (ImportError):
     pass
-
-
 
 
 
@@ -97,6 +96,13 @@ class Base:
         except (OperationalError) as e:
             print(e)
 
+    @classmethod
+    def message_class(self):
+        return Message
+
+    @classmethod
+    def visit_counter_class(self):
+        return VisitCounter
 
 
 class Store:

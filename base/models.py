@@ -6,6 +6,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.sites.managers import CurrentSiteManager
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy as _l
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.core.validators import (MinValueValidator, MaxValueValidator)
@@ -646,11 +647,26 @@ class VisitCounter(models.Model):
             self.site = Site.objects.get_current()
 
     @classmethod
-    def __total(self, queryset) -> int:
-        return queryset.aggregate(models.Sum("count"))["cont__sum"]
+    def sum(cls, queryset) -> int:
+        totals = dict()
+        totals["for_urlpath"] = (queryset.values("urlpath").order_by("urlpath")
+                .annotate(count__sum=models.Sum("count")).order_by("-count__sum"))[:5]
+        totals["total"] = queryset.aggregate(s=models.Sum("count"))["s"] or 0
+        return totals 
 
     @classmethod
-    def GetTotalOnSite(self, site: Site=None) -> int:
+    def get_stat(cls, queryset=None):
+        qs = queryset or VisitCounter.on_site.all()
+        stat = dict()
+        stat["all_time"] = cls.sum(qs)
+        stat["today"] = cls.sum(qs.filter(date=timezone.now()))
+        stat["yesterday"] = cls.sum(qs.filter(date=timezone.now() - timezone.timedelta(days=1)))
+        stat["last_7_days"] = cls.sum(qs.filter(date__gt=timezone.now() - timezone.timedelta(days=7))) 
+        stat["last_30_days"] = cls.sum(qs.filter(date__gt=timezone.now() - timezone.timedelta(days=30))) 
+        return stat 
+
+    @classmethod
+    def GetTotalOnSite(cls, site: Site=None) -> int:
         """
         Obtiene la sumatoria de visitas en el sitio indicado.
 
@@ -658,16 +674,19 @@ class VisitCounter(models.Model):
             site (django.sites.models.Site): default self.site or current_site.
 
         """
-        site = site or self.site or Site.objects.get_current()
+        if isinstance(cls, VisitCounter):
+            site = site or cls.site or Site.objects.get_current()
+        else:
+            site = site or Site.objects.get_current()
 
         if site:
             qs = VisitCounter.objects.filter(site=site)
         else:
             qs = VisitCounter.objects.all()
-        return self.__total(qs)
+        return cls.sum(qs)
 
     @classmethod
-    def GetTotalOnPath(self, site: Site=None, urlpath: str=None) -> int:
+    def GetTotalOnPath(cls, site: Site=None, urlpath: str=None) -> int:
         """
         Obtiene la sumatoria de visitas en el sitio y url indicada.
 
@@ -687,10 +706,10 @@ class VisitCounter(models.Model):
             raise ValueError("Debe indicar el 'site' y el 'urlpath' parámetros.")
 
         qs = VisitCounter.objects.filter(site=site, urlpath=urlpath)
-        return self.__total(qs)
+        return self.sum(qs)
 
     @classmethod
-    def GetTotalOnDate(self, site: Site=None, urlpath: str=None, 
+    def GetTotalOnDate(cls, site: Site=None, urlpath: str=None, 
         date: timezone=None) -> int:
         """
         Obtiene la sumatoria de visitas en el sitio, url y fecha indicada.
@@ -706,18 +725,27 @@ class VisitCounter(models.Model):
             date (datetime.date): default timezone.now.
         
         """
-        site = site or self.site or Site.objects.get_current()
-        urlpath = urlpath or self.urlpath
+        if isinstance(cls, VisitCounter):
+            site = site or self.site or Site.objects.get_current()
+            urlpath = urlpath or self.urlpath
+        else:
+            site = site or Site.objects.get_current()
+            
         date = date or timezone.now()
 
-        if (not site) or (not urlpath) or (not date):
+        if (not site) or (not date):
             raise ValueError(
-                "Debe indicar los parámetros 'site', 'urlpath' y 'date'")
-        qs = VisitCounter.objects.filter(site=site, urlpath=urlpath, date=date)
-        return self.__total(qs)
+                "Debe indicar los parámetros 'site' y 'date'")
+
+        qs = VisitCounter.objects.filter(site=site, date=date)
+
+        if urlpath:
+            qs = qs.filter(urlpath=urlpath)
+
+        return cls.sum(qs)
 
     @classmethod
-    def on_today(self, urlpath: str=None):
+    def on_today(cls, urlpath: str=None):
         """
         Obtiene un queryset con todas las visitas de hoy, o una única instancia
         de la visita de hoy a una página especifica si se indica 'urlpath'.
@@ -757,6 +785,11 @@ class Message(models.Model):
 
     read_date = models.DateTimeField(_l("fecha de leído"), null=True, blank=True)
 
+    read_user = models.ForeignKey("user.User", on_delete=models.PROTECT,
+    null=True, blank=True, verbose_name=_l("usuario que leyó"))
+
+    read_note = models.CharField(_l("nota"), max_length=300, blank=True)
+
     objects = models.Manager()
 
     on_site = CurrentSiteManager()
@@ -769,9 +802,17 @@ class Message(models.Model):
     def __str__(self):
         return f"{self.date}: {self.email}"
 
+    def get_absolute_url(self):
+        return reverse_lazy("administration-message", kwargs={"pk": self.pk})
+
     def save(self, *args, **kwargs):
         if not self.pk:
             self.site = Site.objects.get_current()
         return super().save(*args, **kwargs)
+
+    @classmethod
+    def get_unread_messages(self):
+        """Obtiene los mensajes no leídos."""
+        return Message.on_site.filter(read_date=None)
 
     
