@@ -10,7 +10,7 @@ NAME = "localhost"
 
 SECRET_KEY = ')i-)cyg((ap3*-asg2#$314z9*b%qo56wgc2+zmdtqbo@*i3!$'
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [NAME, "*", "127.0.0.2"]
 

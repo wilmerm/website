@@ -11,12 +11,12 @@
 {% endblock styles %}
 
 
-
 {% block header %}
 <!-- Header. -->
 <header class="border-bottom animate__animated animate__slideInDown">
     <!-- block header -->
-    <div class="container-fluid sticky-top" style="position: absolute; z-index: 0; {% if base.setting.cover %}height: {{ base.setting.cover_height }}px; background-image: url('{{ base.setting.cover.url }}'); background-size: cover; filter: blur(8px); -webkit-filter: blur(8px);{% endif %}"></div>
+    <div class="container-fluid sticky-top" 
+        style="position: absolute; z-index: 0; {% if base.setting.cover %}height: {{ base.setting.cover_height }}px; background-image: url('{{ base.setting.cover.url }}'); background-size: cover; filter: blur(8px); -webkit-filter: blur(8px);{% endif %}"></div>
     <!-- block cover -->
     {% block cover %}
     <div class="container z-index-3000 py-3">
@@ -30,26 +30,39 @@
                     {% endif %}
                 </a>
             </div>
-            <div class="col col-0 col-sm-0 col-md-0 col-lg-2"></div>
+            <div class="col col-0 col-sm-0 col-md-0 col-lg-2">
+                <!-- pass -->
+            </div>
             <div class="col col-12 col-sm-12 col-md-6 col-lg-6 pt-md-4 pr-0 text-center d-print-none">
-                <div class="row">
-                    <div class="col col-12 col-md-6 m-0 p-0">
-                        <a href="{% url 'index' %}#contact" class="text-left">
-                            <div class="float-left py-1 pr-2 w-20 text-right">{% svg 'telephone-fill' size='32px' %}</div>
-                            <div class="float-left w-80">
-                                <div class="p-0 text-primary font-weight-bold">LLÁMENOS AL {{ base.setting.phone1 }}</div>
-                                <div class="p-0 text-muted small">TELÉFONO CENTRAL</div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col col-12 col-md-6 m-0 p-0">
-                        <a href="{% url 'index' %}#section-schedule" class="text-left">
-                            <div class="float-left py-1 pr-2 w-20 text-right">{% svg 'clock-fill' size='32px' fill="#ff9d00" %}</div>
-                            <div class="float-left w-80">
-                                <div class="p-0 text-primary font-weight-bold" title="">HORARIO DE TRABAJO</div>
-                                <div class="p-0 text-muted small">{{ base.setting.schedule|safe }}</div>
-                            </div>
-                        </a>
+                <div class="container-fluid">
+
+                    <div class="row">
+                        <div class="col col-12 col-md-6 m-0 p-0">
+                            <a href="{% url 'index' %}#contact" class="text-left">
+                                <div class="float-left py-1 pr-2 w-20 text-right">
+                                    {% svg 'telephone-fill' size='32px' %}
+                                </div>
+                                <div class="float-left w-80">
+                                    <div class="p-0 text-primary font-weight-bold">
+                                        LLÁMENOS AL {{ base.setting.phone1 }}
+                                    </div>
+                                    <div class="p-0 text-muted small">
+                                        TELÉFONO CENTRAL
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col col-12 col-md-6 m-0 p-0">
+                            <a href="{% url 'index' %}#section-schedule" class="text-left">
+                                <div class="float-left py-1 pr-2 w-20 text-right">
+                                    {% svg 'clock-fill' size='32px' fill="#ff9d00" %}
+                                </div>
+                                <div class="float-left w-80">
+                                    <div class="p-0 text-primary font-weight-bold" title="">HORARIO DE TRABAJO</div>
+                                    <div class="p-0 text-muted small">{{ base.setting.schedule|safe }}</div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -60,12 +73,13 @@
 {% endblock header %}
 
 
-
 {% block navbar %}
 <nav class="navbar navbar-expand-lg font-weight-bold px-md-0 py-3 navbar-light bg-white container animate__animated animate__fadeIn">
     <!-- Shop -->
     <div class="nav-item d-block d-lg-none">
-        <a class="nav-link" href="{% if request.session.cart %}{% url 'store-cart' %}{% else %}{% url 'store' %}{% endif %}" aria-label="Store">
+        <a class="nav-link" 
+            href="{% if request.session.cart %}{% url 'store-cart' %}{% else %}{% url 'store' %}{% endif %}" 
+            aria-label="Store">
             {% svg 'cart-fill' size="24px" %}
         </a>
         <div v-if="cart.total.cant"
@@ -75,7 +89,8 @@
         </div>
     </div>
     <!-- Mobile button. -->
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" 
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <!-- Links. -->
@@ -103,7 +118,8 @@
         {% if store %}
         <!-- {# Mi cuenta #} -->
         <div class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle btn btn-primary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle btn btn-primary" href="#" id="navbarDropdown" role="button" 
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {% trans 'Mi cuenta' %}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -120,7 +136,9 @@
         </div>
         <!-- {# Shop #} -->
         <div class="nav-item d-none d-lg-block">
-            <a class="nav-link" href="{% if request.session.cart %}{% url 'store-cart' %}{% else %}{% url 'store' %}{% endif %}" aria-label="Store">
+            <a class="nav-link" 
+                href="{% if request.session.cart %}{% url 'store-cart' %}{% else %}{% url 'store' %}{% endif %}" 
+                aria-label="Store">
                 {% svg 'cart-fill' size="24px" %}
             </a>
             <div v-if="cart.total.cant"
