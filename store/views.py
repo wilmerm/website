@@ -12,8 +12,8 @@ from django.views.generic import (ListView, CreateView, UpdateView,
 
 from fuente import (var, utils, text)
 
-from .models import Item, Brand, Group, Order, Mov
-from .forms import ItemSearchForm, ItemCartForm, OrderForm
+from store.models import Item, Brand, Group, Order, Mov, StoreSetting
+from store.forms import ItemSearchForm, ItemCartForm, OrderForm
 
 
 # Método que obtiene el sitio actual.
@@ -37,8 +37,11 @@ class ItemListView(ListView):
         group = self.request.GET.get("group")
 
         # Se muestran solo los artículos del site actual.
-        qs = self.model.objects.filter(site=get_current_site(), is_active=True, 
-            price__gt=0, available__gt=0).exclude(price=None)
+        qs = self.model.on_site.filter(is_active=True, available__gt=0)
+
+        store_setting = StoreSetting.get_current()
+        if not store_setting.show_items_without_price:
+            qs = qs.filter(price__gt=0).exclude(price=None)
 
         if brand:
             qs = qs.filter(brand=brand)

@@ -17,12 +17,9 @@ from fuente import text
 
 
 
-
-
 class Item(models.Model):
     """
     Artículo.
-    
     """
 
     IMG_DEFAULT = "/static/img/base/articulo.svg"
@@ -104,18 +101,15 @@ class Item(models.Model):
     is_featured = models.BooleanField(_l("Destacado"), default=False,
     help_text=_l("El artículo aparecerá en los primeros lugares de la tienda."))
 
-
     # Inventario.
 
     available = models.IntegerField(_l("Disponibles"), default=1, 
     validators=[MinValueValidator(0)])
 
-    
     # Contabilidad.
 
     pay_tax = models.BooleanField(_("Paga impuesto"), default=True)
 
-    
     # Estadísticas.
 
     count_search = models.IntegerField(_l("Búsquedas"), default=0, 
@@ -132,20 +126,17 @@ class Item(models.Model):
 
     tags = models.CharField(max_length=700, blank=True, editable=False)
 
-
     objects = models.Manager()
     on_site = CurrentSiteManager()
 
-
     class Meta:
-        verbose_name = _("Artículo")
-        verbose_name_plural = _("Artículos")
+        verbose_name = _l("artículo")
+        verbose_name_plural = _l("artículos")
         ordering = ["-is_featured", "-available"]
         constraints = [
             models.UniqueConstraint(fields=["site", "codename"], 
             name='unique_item'),
         ]
-
 
     def __str__(self):
         return self.name
@@ -176,17 +167,16 @@ class Item(models.Model):
 
     def GetImg(self):
         field = self.GetFirstImageField()
-        
+
         if field:
             return field.url
-        
         return self.IMG_DEFAULT
 
     def GetFirstImageField(self):
         return (self.image1 or self.image2 or self.image3)
 
     def CalculateAmount(self, quantity=1, price=None, tax=None, 
-    tax_included=True, parse=None, rounded=None):
+        tax_included=True, parse=None, rounded=None):
         """
         Calcula el importe según la cantidad, precio e impuesto indicado.
 
@@ -230,16 +220,12 @@ class Item(models.Model):
             amount = round(amount, 2)
             tax_amount = round(tax_amount, 2)
             total = round(total, 2)
-
         return (amount, tax_amount, total)
-
-
 
 
 class Group(models.Model):
     """
     Grupo de artículos.
-    
     """
     IMG_DEFAULT = "/static/img/base/articulo.svg"
 
@@ -253,20 +239,17 @@ class Group(models.Model):
     image = models.ImageField(_l("Imágen"), upload_to="store/group/", blank=True,
     null=True)
 
-
     objects = models.Manager()
     on_site = CurrentSiteManager()
 
-
     class Meta:
-        verbose_name = _("Grupo")
-        verbose_name_plural = _("Grupos")
+        verbose_name = _l("Grupo")
+        verbose_name_plural = _l("Grupos")
         ordering = ["name"]
         constraints = [
             models.UniqueConstraint(fields=["site", "name"], name="unique_group")
         ]
 
-    
     def __str__(self):
         return self.name
 
@@ -286,12 +269,9 @@ class Group(models.Model):
         return self.IMG_DEFAULT
 
 
-
-
 class Brand(models.Model):
     """
     Marcas de artículos.
-    
     """
     IMG_DEFAULT = "/static/img/base/info.svg"
 
@@ -305,20 +285,17 @@ class Brand(models.Model):
     image = models.ImageField(_l("Imágen"), upload_to="store/brand/", blank=True,
     null=True)
 
-    
     objects = models.Manager()
     on_site = CurrentSiteManager()
 
-
     class Meta:
-        verbose_name = _("Marca")
-        verbose_name_plural = _("Marcas")
+        verbose_name = _l("Marca")
+        verbose_name_plural = _l("Marcas")
         ordering = ["name"]
         constraints = [
             models.UniqueConstraint(fields=["site", "name"], name="unique_brand")
         ]
 
-    
     def __str__(self):
         return self.name
 
@@ -338,14 +315,9 @@ class Brand(models.Model):
         return self.IMG_DEFAULT
 
 
-
-
-
-
 class Order(models.Model):
     """
     Orden de compra.
-
     """
     PROCESS = "PROCESS"
     COMPLETE = "COMPLETE"
@@ -407,7 +379,6 @@ class Order(models.Model):
     help_text=_("Al marcar esta casilla usted acepta y está de acuerdo con "
     "las políticas del sitio para compras en línea."))
 
-    
     # Campos de consultas que serán actualizados cada vez que se guarde un 
     # movimiento de esta orden.
 
@@ -419,21 +390,17 @@ class Order(models.Model):
 
     total = models.DecimalField(_l("Total"), max_digits=17, decimal_places=2,
     blank=True, null=True)
-
-
     
     objects = models.Manager()
     on_site = CurrentSiteManager()
-
     
     class Meta:
-        verbose_name = _("Orden")
-        verbose_name_plural = _("Ordenes")
+        verbose_name = _l("Orden")
+        verbose_name_plural = _l("Ordenes")
         constraints = [
             models.UniqueConstraint(fields=["site", "number"], name="unique_order")
         ]
 
-    
     def __str__(self):
         return f"{self._meta.verbose_name} {self.number}"
 
@@ -441,7 +408,6 @@ class Order(models.Model):
         return reverse_lazy("store-order-detail", kwargs={"pk": self.pk})
 
     def clean(self):
-
         if not self.pk:
             self.site = Site.objects.get_current()
             
@@ -469,35 +435,23 @@ class Order(models.Model):
         return super().save(*args, **kwargs)
 
     def get_movs(self):
-        """
-        Obtiene los movimientos de esta orden.
-
-        """
+        """Obtiene los movimientos de esta orden."""
         return Mov.objects.filter(order=self)
 
     def update_amount(self, queryset=None):
-        """
-        Actualiza el campo 'amount' y retorna su valor.
-
-        """
+        """Actualiza el campo 'amount' y retorna su valor."""
         queryset = queryset or self.get_movs()
         self.amount = queryset.aggregate(models.Sum("amount"))["amount__sum"] or 0
         return self.amount
 
     def update_tax(self, queryset=None):
-        """
-        Actualiza el campo 'tax' y retorna su valor.
-
-        """
+        """Actualiza el campo 'tax' y retorna su valor."""
         queryset = queryset or self.get_movs()
         self.tax = queryset.aggregate(models.Sum("tax"))["tax__sum"] or 0
         return self.tax
 
     def update_total(self, queryset):
-        """
-        Actualiza el campo 'total' y retorna su valor.
-
-        """
+        """Actualiza el campo 'total' y retorna su valor."""
         queryset = queryset or self.get_movs()
         self.total = queryset.aggregate(models.Sum("total"))["total__sum"] or 0
         return self.total
@@ -506,7 +460,6 @@ class Order(models.Model):
         """
         Actualiza todas los campos actualizables, y retorna un diccionario con 
         sus valores.
-
         """
         queryset = queryset or self.get_movs()
         return {
@@ -519,7 +472,6 @@ class Order(models.Model):
 class OrderNote(models.Model):
     """
     Notas y comentarios de ordenes.
-
     """
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
@@ -534,22 +486,17 @@ class OrderNote(models.Model):
     verbose_name=_l("Usuario creó"), on_delete=models.SET_NULL, null=True, 
     blank=True, editable=False, related_name="ordernote_create_user")
 
-
     class Meta:
-        verbose_name = _("Nota de orden")
-        verbose_name_plural = _("Notas de ordenes")
-
+        verbose_name = _l("Nota de orden")
+        verbose_name_plural = _l("Notas de ordenes")
     
     def __str__(self):
         return f"{self.order}: {self.title}"
 
 
-
-
 class Mov(models.Model):
     """
     Movimiento de inventario.
-
     """
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
@@ -568,25 +515,23 @@ class Mov(models.Model):
     total = models.DecimalField(_l("Importe"), max_digits=17, decimal_places=2,
     default=0, blank=True)
 
-    create_date = models.DateTimeField(_("Creación"), auto_now_add=True,
+    create_date = models.DateTimeField(_l("Creación"), auto_now_add=True,
     editable=False)
 
     create_user = models.ForeignKey("user.User", 
     verbose_name=_l("Usuario creó"), on_delete=models.SET_NULL, null=True, 
     blank=True, editable=False, related_name="mov_create_user")
 
-    update_date = models.DateTimeField(_("Modificación"), auto_now=True, 
+    update_date = models.DateTimeField(_l("Modificación"), auto_now=True, 
     editable=False)
 
     update_user = models.ForeignKey("user.User", 
     verbose_name=_l("Usuario modificó"), on_delete=models.SET_NULL, null=True, 
     blank=True, editable=False, related_name="mov_update_user")
 
-
     class Meta:
-        verbose_name = _("Movimiento")
-        verbose_name_plural = _("Movimientos")
-
+        verbose_name = _l("Movimiento")
+        verbose_name_plural = _l("Movimientos")
 
     def __str__(self):
         return f"{self.order}: {self.item}"
@@ -600,26 +545,25 @@ class Mov(models.Model):
             self.total = self.amount
         
 
-
-
-
-
 class StoreSetting(models.Model):
     """
     Configuración de la tienda.
-    
     """
     site = models.OneToOneField(Site, on_delete=models.CASCADE, editable=False,  
     blank=True, null=True)
 
-    tax = models.DecimalField(_("Impuesto porcentaje"), decimal_places=2, 
-    max_digits=5, help_text=_("Porcentaje de impuesto a cargar a los artículos."))
+    tax = models.DecimalField(_l("impuesto porcentaje"), decimal_places=2, 
+    max_digits=5, default=18,
+    help_text=_l("porcentaje de impuesto a cargar a los artículos."))
 
-    currency_symbol = models.CharField(_("Moneda"), max_length=5, blank=True,
-    help_text=_l("Símbolo de la moneda en que están los precios de los items."))
+    currency_symbol = models.CharField(_l("moneda"), max_length=5, blank=True,
+    help_text=_l("símbolo de la moneda en que están los precios de los items."))
 
-    policies = models.CharField(_l("Políticas de la tienda en línea"), 
-    max_length=700, blank=True, help_text=_l("Texto que contine una versión "
+    show_items_without_price = models.BooleanField(_l("mostrar artículos in precio"),
+    default=False, help_text=_l("muestra los artículos aunque no tengan precio."))
+
+    policies = models.CharField(_l("políticas de la tienda en línea"), 
+    max_length=700, blank=True, help_text=_l("texto que contine una versión "
     "corta de las políticas, términos y condiciones de al compara a través de "
     "la tienda en línea. Este texto aparecerá en las ordenes impresas que "
     "realicen los clientes a través la tienda en línea."))
@@ -627,19 +571,24 @@ class StoreSetting(models.Model):
     objects = models.Manager()
     on_site = CurrentSiteManager()
 
-
     class Meta:
-        verbose_name = _("Configuración de tienda")
-        verbose_name_plural = _("Configuración de tienda")
-
+        verbose_name = _l("configuración de tienda")
+        verbose_name_plural = _l("configuración de tienda")
     
     def __str__(self):
-        return self._meta.verbose_name
+        return str(self._meta.verbose_name)
 
     def clean(self):
         if not self.pk:
             self.site = Site.objects.get_current()
-
+            # Solo puede existir una configuración por site.
             if StoreSetting.on_site.all():
-                raise ValidationError(
-                    _("Ya existe una configuración de artículos."))
+                raise ValidationError(_("Ya existe una configuración de artículos."))
+
+    @classmethod
+    def get_current(self):
+        """Obtiene la configuración para el sitio actual, o crea una."""
+        setting = StoreSetting.on_site.last()
+        if not getattr(setting, "pk", False):
+            setting = StoreSetting.objects.create(site=Site.objects.get_current())
+        return setting
