@@ -2,17 +2,20 @@
 Autenticación de usuario personalizada.
 
 """
+import warnings
 from django.conf import settings
 from django.utils.translation import gettext
 from django.contrib import messages
 
 # Para iniciar sesión con Google.
 # https://google-auth.readthedocs.io/en/latest/
-from google.oauth2 import id_token
-from google.auth.transport import requests
+try:
+    from google.oauth2 import id_token
+    from google.auth.transport import requests
+except (ImportError) as e:
+    warnings.warn(str(e))
 
 from .models import User, get_current_site
-
 
 
 
@@ -20,14 +23,12 @@ class AuthByEmailBackend:
     """
     Backend personalizado de authenticaciónd de 
     usuario via email en el sitio actual.
-
     """
     def authenticate(self, request, username=None, password=None):
         """
         En nuestro modelo User hemos definido un manejador 'on_site' que
         que sería igual a: User.objects.filter(site=Site.objects.get_current())
         También determinamos que el email será único solo para el site en actual.
-        
         """
         try:
             # Primero buscamos un usuario común para el sitio actual.

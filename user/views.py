@@ -1,5 +1,6 @@
 
 import random
+import warnings
 
 from django.contrib.auth import login, logout
 from django.contrib.sites.shortcuts import get_current_site
@@ -11,7 +12,11 @@ from django.http import JsonResponse
 from django.views.generic import (CreateView, UpdateView, ListView)
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 
-from .authentication import google_verify_token
+try:
+    from .authentication import google_verify_token
+except (ImportError) as e:
+    warnings.warn(str(e))
+    
 from .models import User
 
 

@@ -15,7 +15,8 @@ Sitio web genérico, capaz de adaptarlo a cualquier tipo de negocio o diseño.
 pip install easy_thumbnails
 pip install django-colorfield
 pip install django-tinymce
-pip install django-bootstrap4
+pip install django-bootstrap4 (Será reemplazado por Bootstrap5)
+pip install django-bootstrap-v5
 pip install requests
 pip install --upgrade google-auth
 ```

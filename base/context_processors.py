@@ -34,74 +34,79 @@ class Base:
         return str(self.setting()) or "base"
 
     @classmethod
-    def social_networks(self, request=None):
+    def social_networks(cls, request=None):
         try:
             return SocialNetwork.on_site.all()
         except (OperationalError) as e:
             print(e)
         
     @classmethod
-    def setting(self, request=None):
+    def setting(cls, request=None):
         try:
             return Setting.on_site.last()
         except (OperationalError) as e:
             print(e)
 
     @classmethod
-    def advanced_setting(self, request=None):
+    def advanced_setting(cls, request=None):
         try:
             return AdvancedSetting.on_site.last()
         except (OperationalError) as e:
             print(e)
 
     @classmethod
-    def sliders(self, request=None):
+    def sliders(cls, request=None):
         try:
             return Slide.on_site.filter(is_active=True)
         except (OperationalError) as e:
             print(e)
 
     @classmethod
-    def schedule(self, request=None):
+    def schedule(cls, request=None):
         try:
             return Schedule.on_site.last()
         except (OperationalError) as e:
             print(e)
 
     @classmethod
-    def brands(self, request=None):
+    def brands(cls, request=None):
         try:
             return BrandRepresented.on_site.all()
         except (OperationalError) as e:
             print(e)
 
     @classmethod
-    def questions(self, request=None):
+    def questions(cls, request=None):
         try:
             return Question.on_site.all()
         except (OperationalError) as e:
             print(e)
 
     @classmethod
-    def sample_images(self, request=None):
+    def sample_images(cls, request=None):
         try:
             return SampleImage.on_site.all()
         except (OperationalError) as e:
             print(e)
 
     @classmethod
-    def sample_videos(self, request=None):
+    def sample_images_dict(cls, request=None):
+        qs = SampleImage.on_site.all() or []
+        return {e.index:e for e in qs}
+
+    @classmethod
+    def sample_videos(cls, request=None):
         try:
             return SampleVideo.on_site.all()
         except (OperationalError) as e:
             print(e)
 
     @classmethod
-    def message_class(self):
+    def message_class(cls):
         return Message
 
     @classmethod
-    def visit_counter_class(self):
+    def visit_counter_class(cls):
         return VisitCounter
 
 
@@ -121,21 +126,21 @@ class Store:
         return True
 
     @classmethod
-    def items(self, request=None):
+    def items(cls, request=None):
         try:
             return Item.on_site.filter(is_active=True)
         except (NameError) as e:
             print(e)
 
     @classmethod
-    def setting(self, request=None):
+    def setting(cls, request=None):
         try:
             return StoreSetting.on_site.last()
         except (NameError) as e:
             print(e)
 
     @classmethod
-    def featured_items(self, request=None):
+    def featured_items(cls, request=None):
         try:
             return Item.on_site.filter(is_active=True, is_featured=True)
         except (NameError) as e:

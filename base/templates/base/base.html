@@ -27,6 +27,8 @@
     <!-- {# Google Developerr Sigin #} -->
     <!-- App Unolet Sites -->
     <meta name="google-signin-client_id" content="632095761113-vl3obm2vtre59mihchjoa7nt2mkpopl5.apps.googleusercontent.com">
+     <!-- {# Google recaptcha - websites py Unolet #} -->
+     <script src="https://www.google.com/recaptcha/api.js?render=6LeRs-0aAAAAAEtuUEs-bpdwbzDJm4bAV3kXz8LS"></script>
          
     {% if settings.DEBUG == True %}
         <!-- Utilizamos las versiones almacenadas localmente, para reducir la 
@@ -260,16 +262,14 @@
 
     <!-- Footer. -->
     <footer class="bg-primary d-print-none">
-
         <!-- block footer. -->
         {% block footer %}
         {% endblock footer %}
-
         <hr>
         <!-- Copyright. -->
         {% block copyright %}
         <div class="copyright text-center text-white p-4">
-            © {% now "Y" %} {{ base.setting.website_name }} by <a class="text-white" href="{{ unolet.site.url }}" target="_blank"><b>{{ unolet.site.name }}</b></a>
+            © 2020 {{ base.setting.website_name }} by <a class="text-white" href="{{ unolet.site.url }}" target="_blank"><b>{{ unolet.site.name }}</b></a>
         </div>
         {% endblock copyright %}
 

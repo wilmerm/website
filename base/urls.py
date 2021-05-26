@@ -14,4 +14,8 @@ urlpatterns = [
     path("policy/", views.PolicyView.as_view(), name="policy"),
     path("contact/", views.contact_view, name="contact"),
 
+    # Api.
+
+    path("api/message/form/", views.api_message_form, name="api-message-form"),
+
 ]

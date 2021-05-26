@@ -275,7 +275,10 @@
                         <div class="row mt-3">
                             <div class="col col-0 col-md-6"></div>
                             <div class="col col-12 col-md-6 text-right">
-                                <input type="submit" class="btn btn-primary btn-block p-3" value="PROGRAMAR CITA">
+                                <button class="g-recaptcha btn btn-primary btn-block p-3" 
+                                    data-sitekey="6LeRs-0aAAAAAEtuUEs-bpdwbzDJm4bAV3kXz8LS" 
+                                    data-callback='onSubmit' 
+                                    data-action='submit'>PROGRAMAR CITA</button>
                             </div>
                         </div>
                     </form>
@@ -283,6 +286,11 @@
             </div>
         </div>
     </div>
+    <script>
+        function onSubmit(token) {
+          document.querySelector("#information form").submit();
+        }
+      </script>
     {% endblock info %}
 
     {% block social_networks %}

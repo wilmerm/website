@@ -3,6 +3,7 @@ Archivo de configuración para la versión de desarrollo.
 
 """
 
+import warnings
 from .base import *
 
 
@@ -23,7 +24,7 @@ DATABASES = {
 
 MEDIA_ROOT = MEDIA_ROOT / NAME
 
-TEMPLATES[0]["DIRS"].append(BASE_DIR / f"templates/refrimorel")
+TEMPLATES[0]["DIRS"].append(BASE_DIR / f"templates/mundofrio")
 
 SITE_ID = 1
 
