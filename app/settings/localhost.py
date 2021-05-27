@@ -24,7 +24,7 @@ DATABASES = {
 
 MEDIA_ROOT = MEDIA_ROOT / NAME
 
-TEMPLATES[0]["DIRS"].append(BASE_DIR / f"templates/mundofrio")
+TEMPLATES[0]["DIRS"].append(BASE_DIR / f"templates/refrimorel")
 
 SITE_ID = 1
 

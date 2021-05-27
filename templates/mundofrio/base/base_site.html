@@ -40,6 +40,10 @@
 </head>
 <body>
 
+    <div class="alert alert-warning text-center fs-5 shadow-sm animate__animated animate__bounceInDown animate__delay-2s">
+        {% svg 'info-circle-fill' fill="orange" %} Estamos construyendo este sitio para tí
+    </div>
+
     <!-- {# Cover. #} -->
     <div v-if="html.body.cover.show" class="container-fluid mb-5 animate__animated animate__fadeInDown">
         <div class="row">
@@ -53,9 +57,9 @@
     <!-- {# Navbar. #} -->
     <!-- {# sticky-top hará que se quede pegada en el top cuando llegue allí. #} -->
     <div id="primary-navigation" class="bg-white sticky-top shadow-sm p-0 animate__animated animate__fadeInDown">
-        <nav v-if="html.body.navbar.show" id="navbar" class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#"><img :src="site.logo" alt="" style="height: 2rem; width: auto;"></a>
+        <nav v-if="html.body.navbar.show" id="navbar" class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+            <div class="container">
+                <a class="navbar-brand" href="#"><img :src="site.logo" alt="" style="height: 3rem; width: auto;"></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -90,11 +94,6 @@
                     <div class="d-flex">
                         <button type="button" class="btn btn-primary">
                             {% if user.is_authenticated %}{{ user }}{% else %}Iniciar sesión{% endif %}
-                        </button>
-                    </div>
-                    <div class="d-flex">
-                        <button type="button" class="btn btn-light">
-                            {% svg 'shop' fill="#171795" %}
                         </button>
                     </div>
                 </div>
@@ -156,6 +155,79 @@
     <main v-if="html.body.main.show" class="container bg-white p-4 text-center animate__animated animate__fadeInDown" style="min-height: 200px;">
         {% block main %}{% endblock %}
     </main>
+
+
+    <!-- {# Imágenes de muestra. #} -->
+    <section v-if="html.body.sample_images.show" id="sample-images" class="container py-5 animate__animated animate__fadeInDown">
+        <div class="row">
+            {% with base.sample_images_dict as dic %}
+            {% if dic.201 %}
+            {% with dic.201 as img %}
+            <div class="col col-12 col-sm-6 col-md-4 col-lg-3 position-relative" @mouseover="html.body.sample_images.selected = {{ img.index }}" @mouseout="html.body.sample_images.selected = null">
+                <img src="{{ img.image|thumbnail_url:'512crop-upscale' }}" alt="{{ img.title }}" class="img-fluid">
+                <div v-if="html.body.sample_images.selected == {{ img.index }}" class="position-absolute left text-center w-100 fs-5 py-4 animate__animated animate__fadeInUp animate__fast" style="bottom: 1rem; background-color: #ffffffdd;">{{ img.title }}</div>
+            </div>
+            {% endwith %}
+            {% endif %}
+            {% if dic.202 %}
+            {% with dic.202 as img %}
+            <div class="col col-12 col-sm-6 col-md-4 col-lg-3 position-relative" @mouseover="html.body.sample_images.selected = {{ img.index }}" @mouseout="html.body.sample_images.selected = null">
+                <img src="{{ img.image|thumbnail_url:'512crop-upscale' }}" alt="{{ img.title }}" class="img-fluid">
+                <div v-if="html.body.sample_images.selected == {{ img.index }}" class="position-absolute left text-center w-100 fs-5 py-4 animate__animated animate__fadeInUp animate__fast" style="bottom: 1rem; background-color: #ffffffdd;">{{ img.title }}</div>
+            </div>
+            {% endwith %}
+            {% endif %}
+            {% if dic.203 %}
+            {% with dic.203 as img %}
+            <div class="col col-12 col-sm-6 col-md-4 col-lg-3 position-relative" @mouseover="html.body.sample_images.selected = {{ img.index }}" @mouseout="html.body.sample_images.selected = null">
+                <img src="{{ img.image|thumbnail_url:'512crop-upscale' }}" alt="{{ img.title }}" class="img-fluid">
+                <div v-if="html.body.sample_images.selected == {{ img.index }}" class="position-absolute left text-center w-100 fs-5 py-4 animate__animated animate__fadeInUp animate__fast" style="bottom: 1rem; background-color: #ffffffdd;">{{ img.title }}</div>
+            </div>
+            {% endwith %}
+            {% endif %}
+            {% if dic.204 %}
+            {% with dic.204 as img %}
+            <div class="col col-12 col-sm-6 col-md-4 col-lg-3 position-relative" @mouseover="html.body.sample_images.selected = {{ img.index }}" @mouseout="html.body.sample_images.selected = null">
+                <img src="{{ img.image|thumbnail_url:'512crop-upscale' }}" alt="{{ img.title }}" class="img-fluid">
+                <div v-if="html.body.sample_images.selected == {{ img.index }}" class="position-absolute left text-center w-100 fs-5 py-4 animate__animated animate__fadeInUp animate__fast" style="bottom: 1rem; background-color: #ffffffdd;">{{ img.title }}</div>
+            </div>
+            {% endwith %}
+            {% endif %}
+            {% if dic.205 %}
+            {% with dic.205 as img %}
+            <div class="col col-12 col-sm-6 col-md-4 col-lg-3 position-relative" @mouseover="html.body.sample_images.selected = {{ img.index }}" @mouseout="html.body.sample_images.selected = null">
+                <img src="{{ img.image|thumbnail_url:'512crop-upscale' }}" alt="{{ img.title }}" class="img-fluid">
+                <div v-if="html.body.sample_images.selected == {{ img.index }}" class="position-absolute left text-center w-100 fs-5 py-4 animate__animated animate__fadeInUp animate__fast" style="bottom: 1rem; background-color: #ffffffdd;">{{ img.title }}</div>
+            </div>
+            {% endwith %}
+            {% endif %}
+            {% if dic.206 %}
+            {% with dic.206 as img %}
+            <div class="col col-12 col-sm-6 col-md-4 col-lg-3 position-relative" @mouseover="html.body.sample_images.selected = {{ img.index }}" @mouseout="html.body.sample_images.selected = null">
+                <img src="{{ img.image|thumbnail_url:'512crop-upscale' }}" alt="{{ img.title }}" class="img-fluid">
+                <div v-if="html.body.sample_images.selected == {{ img.index }}" class="position-absolute left text-center w-100 fs-5 py-4 animate__animated animate__fadeInUp animate__fast" style="bottom: 1rem; background-color: #ffffffdd;">{{ img.title }}</div>
+            </div>
+            {% endwith %}
+            {% endif %}
+            {% if dic.207 %}
+            {% with dic.207 as img %}
+            <div class="col col-12 col-sm-6 col-md-4 col-lg-3 position-relative" @mouseover="html.body.sample_images.selected = {{ img.index }}" @mouseout="html.body.sample_images.selected = null">
+                <img src="{{ img.image|thumbnail_url:'512crop-upscale' }}" alt="{{ img.title }}" class="img-fluid">
+                <div v-if="html.body.sample_images.selected == {{ img.index }}" class="position-absolute left text-center w-100 fs-5 py-4 animate__animated animate__fadeInUp animate__fast" style="bottom: 1rem; background-color: #ffffffdd;">{{ img.title }}</div>
+            </div>
+            {% endwith %}
+            {% endif %}
+            {% if dic.208 %}
+            {% with dic.208 as img %}
+            <div class="col col-12 col-sm-6 col-md-4 col-lg-3 position-relative" @mouseover="html.body.sample_images.selected = {{ img.index }}" @mouseout="html.body.sample_images.selected = null">
+                <img src="{{ img.image|thumbnail_url:'512crop-upscale' }}" alt="{{ img.title }}" class="img-fluid">
+                <div v-if="html.body.sample_images.selected == {{ img.index }}" class="position-absolute left text-center w-100 fs-5 py-4 animate__animated animate__fadeInUp animate__fast" style="bottom: 1rem; background-color: #ffffffdd;">{{ img.title }}</div>
+            </div>
+            {% endwith %}
+            {% endif %}
+            {% endwith %}
+        </div>
+    </section>
     
 
     <a id="btnUp" 

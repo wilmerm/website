@@ -52,6 +52,10 @@ const App = {
                     main: {
                         show: false,
                     },
+                    sample_images: {
+                        show: false,
+                        selected: null,
+                    },
                     contact: {
                         show: false,
                         alert: {
@@ -91,6 +95,7 @@ const App = {
         this.html.body.header.show = true;
         this.html.body.about.show = true;
         this.html.body.main.show = true;
+        this.html.body.sample_images.show = true;
         this.html.body.contact.show = true;
         this.html.body.footer.show = true;
     },

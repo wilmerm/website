@@ -61,6 +61,11 @@ class CalcBTUView(BaseView, TemplateView):
     template_name = "base/calcbtu.html"
 
 
+class CatalogueView(BaseView, TemplateView):
+    """Catálogo de productos."""
+    template_name = "base/catalogue.html"
+
+
 class QuestionsView(BaseView, TemplateView):
     """Calculadora de BTU."""
     template_name = "base/questions.html"
