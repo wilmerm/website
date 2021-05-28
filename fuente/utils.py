@@ -136,10 +136,13 @@ def get_barcode(code, strtype="code128", render=True, options=None):
 
 
 
+
 class context_decorator:
     """
     Docorador para el método get_context_data en las vistas genéricas de Django.
     """
+    warnings.warn("context_decorator. Deprecation")
+    
     def __init__(self, *args, **kwargs):
         pass
 

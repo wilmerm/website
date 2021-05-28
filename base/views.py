@@ -9,7 +9,7 @@ from django.views.generic import (ListView, CreateView, UpdateView,
     DetailView, DeleteView, TemplateView)
 
 from fuente import (var, utils, text)
-from base.models import Message
+from base.models import Message, Setting, AdvancedSetting, SocialNetwork
 from base.forms import MessageForm
 
 
@@ -34,10 +34,20 @@ def handler500(request, *args, **kwargs):
 
 class BaseView:
     """Clase base para todas las vistas."""
-    @utils.context_decorator()
+
+    @classmethod
+    def get_setting(cls):
+        return Setting.GetForCurrentSite()
+
     def get_context_data(self, **kwargs):
+        setting = self.get_setting()
         context = super().get_context_data(**kwargs)
         context["message_form"] = MessageForm(self.request.GET)
+        context["setting"] = setting
+        context["title"] = setting.website_name
+        context["description"] = setting.description
+        context["logo"] = setting.logo
+        context["author"] = "Unolet (www.unolet.com)"
         return context
 
 

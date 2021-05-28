@@ -5,9 +5,10 @@
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <title>{% if title %}{{ title }} |{% endif %} {{ base.setting.website_name|truncatechars:30 }} {% if settings.DEBUG %}(Debug){% endif %}</title>
-    <link rel="icon" type="image/any" href="{% if base.setting.icon %}{{ base.setting.icon|thumbnail_url:'icon' }}{% else %}'/static/img/base/logo.png'{% endif %}">
+    <title>{{ title }}</title>
+    <link rel="icon" type="image/any" href="{% if setting.icon %}{{ setting.icon|thumbnail_url:'icon' }}{% else %}'/static/img/base/logo.png'{% endif %}">
     <meta charset="UTF-8">
     <meta name="robots" content="{% block meta_robots_content %}index,follow{% endblock %}" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,17 +16,17 @@
     <meta name="keywords" content="{{ keywords }}">
     <meta name="author" content="{{ author }}">
 
-    <!-- OG Meta Tags to improve the way the post looks when you share the page on LinkedIn, Facebook, Google+ -->
-	<meta property="og:site_name" content="{{ site_name }}" /> 
+   <!-- OG Meta Tags to improve the way the post looks when you share the page on LinkedIn, Facebook, Google+ -->
+	<meta property="og:site_name" content="{{ setting.website_name }}" /> 
 	<meta property="og:site" content="{{ request.build_absolute_uri }}" /> 
 	<meta property="og:title" content="{{ title }}"/> 
 	<meta property="og:description" content="{{ description }}" /> 
-	<meta property="og:image" content="{% firstof '/static/img/sections/unolet-multiplataforma.jpg' site_img %}" /> 
+	<meta property="og:image" content="{{ setting.logo.url }}" /> 
 	<meta property="og:url" content="" /> <!-- where do you want your post to link to -->
     <meta property="og:type" content="article" />
     
     <!-- {# Google Developerr Sigin #} -->
-    <!-- App Unolet Sites -->
+    <!-- {# App Unolet Sites #} -->
     <meta name="google-signin-client_id" content="632095761113-vl3obm2vtre59mihchjoa7nt2mkpopl5.apps.googleusercontent.com">
      <!-- {# Google recaptcha - websites py Unolet #} -->
      <script src="https://www.google.com/recaptcha/api.js?render=6LeRs-0aAAAAAEtuUEs-bpdwbzDJm4bAV3kXz8LS"></script>
@@ -41,7 +42,7 @@
     {% endif %}
     
 
-    <!-- Scripts. -->
+    <!-- {# Scripts. #} -->
     {% if settings.DEBUG == True %}
         <!-- Utilizamos las versiones almacenadas localmente, para reducir la 
         carga del Internet al recargar sin caché. -->
