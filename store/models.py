@@ -24,30 +24,32 @@ class Item(models.Model):
 
     IMG_DEFAULT = "/static/img/base/articulo.svg"
 
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,
     blank=True, null=True)
 
     codename = models.CharField(_l("Referencia"), max_length=30)
 
     name = models.CharField(_l("Nombre"), max_length=50)
 
-    description = models.CharField(_l("Descripción"), max_length=700, 
+    description = models.CharField(_l("Descripción"), max_length=700,
     blank=True)
 
-    group = models.ManyToManyField("store.Group", verbose_name=_l("Grupo"), 
+    group = models.ManyToManyField("store.Group", verbose_name=_l("Grupo"),
     blank=True, help_text=_l("Categoría a la que pertenece."))
 
-    brand = models.ForeignKey("store.Brand", verbose_name=_l("Marca"), 
+    brand = models.ForeignKey("store.Brand", verbose_name=_l("Marca"),
     blank=True, null=True, on_delete=models.CASCADE,
     help_text=_l("Marca a la que pertenece."))
 
-    image1 = models.ImageField(_l("Imágen 1"), upload_to="store/item/", 
+    image_url = models.URLField(_l("URL de la imagen"), blank=True)
+
+    image1 = models.ImageField(_l("Imagen 1"), upload_to="store/item/",
     blank=True)
 
-    image2 = models.ImageField(_l("Imágen 2"), upload_to="store/item/", 
+    image2 = models.ImageField(_l("Imagen 2"), upload_to="store/item/",
     blank=True)
 
-    image3 = models.ImageField(_l("Imágen 3"), upload_to="store/item/", 
+    image3 = models.ImageField(_l("Imagen 3"), upload_to="store/item/",
     blank=True)
 
     color1 = ColorField(_l("Color principal"), blank=True)
@@ -61,39 +63,39 @@ class Item(models.Model):
     help_text=_l("Indique el tipo de medida para el peso indicado (Kg, Lbr, "
     "Onz, ...)."))
 
-    volumen = models.DecimalField(_l("Volumen"), max_digits=17, 
+    volumen = models.DecimalField(_l("Volumen"), max_digits=17,
     decimal_places=2, null=True, blank=True)
 
-    volumen_type = models.CharField(_l("Volumen (tipo)"), max_length=50, 
+    volumen_type = models.CharField(_l("Volumen (tipo)"), max_length=50,
     blank=True, help_text=_l("Indique el tipo de medida para el volumen "
     "indicado (Ejemplo 'metro cúbico')."))
 
-    length_width = models.DecimalField(_l("Longitud de ancho"), max_digits=17, 
+    length_width = models.DecimalField(_l("Longitud de ancho"), max_digits=17,
     decimal_places=2, null=True, blank=True)
 
-    length_height = models.DecimalField(_l("Longitud de alto"), max_digits=17, 
+    length_height = models.DecimalField(_l("Longitud de alto"), max_digits=17,
     decimal_places=2, null=True, blank=True)
 
-    length_depth = models.DecimalField(_l("Longitud de profundidad"), 
+    length_depth = models.DecimalField(_l("Longitud de profundidad"),
     max_digits=17, decimal_places=2, null=True, blank=True)
 
-    length_type = models.CharField(_l("Longitud (tipo)"), max_length=50, 
+    length_type = models.CharField(_l("Longitud (tipo)"), max_length=50,
     blank=True, help_text=_l("Indique el tipo de medida para las longitudes "
     "indicadas (Ejemplo 'metro')."))
 
-    material = models.CharField(_l("Material"), max_length=50, blank=True, 
+    material = models.CharField(_l("Material"), max_length=50, blank=True,
     help_text=_l("Tipo de material principal del cual está constituído "
     "(Ejemplo 'plástico')."))
 
-    capacity = models.DecimalField(_("Capacidad"), max_digits=17, 
+    capacity = models.DecimalField(_("Capacidad"), max_digits=17,
     decimal_places=2, null=True, blank=True)
 
     capacity_type = models.CharField(_l("Capacidad (tipo)"), max_length=50,
     blank=True, help_text=_l("El tipo de medida para la capacidad indicada "
     "(ejemplos BTU, Watts, Voltios, Amperaje, Hz, etc."))
 
-    price = models.DecimalField(_l("Precio"), max_digits=17, 
-    decimal_places=2, null=True, blank=True) 
+    price = models.DecimalField(_l("Precio"), max_digits=17,
+    decimal_places=2, null=True, blank=True)
 
     is_active = models.BooleanField(_l("Activo"), default=True,
     help_text=_l("El artículo estará o no visible para la venta."))
@@ -103,7 +105,7 @@ class Item(models.Model):
 
     # Inventario.
 
-    available = models.IntegerField(_l("Disponibles"), default=1, 
+    available = models.IntegerField(_l("Disponibles"), default=1,
     validators=[MinValueValidator(0)])
 
     # Contabilidad.
@@ -112,7 +114,7 @@ class Item(models.Model):
 
     # Estadísticas.
 
-    count_search = models.IntegerField(_l("Búsquedas"), default=0, 
+    count_search = models.IntegerField(_l("Búsquedas"), default=0,
     editable=False)
 
     count_views = models.IntegerField(_l("Vistas"), default=0, editable=False)
@@ -134,7 +136,7 @@ class Item(models.Model):
         verbose_name_plural = _l("artículos")
         ordering = ["-is_featured", "-available"]
         constraints = [
-            models.UniqueConstraint(fields=["site", "codename"], 
+            models.UniqueConstraint(fields=["site", "codename"],
             name='unique_item'),
         ]
 
@@ -142,10 +144,10 @@ class Item(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        # Importante que la url esté conformada por el pk, ya que el slug lo 
+        # Importante que la url esté conformada por el pk, ya que el slug lo
         # hemos establecido no único debido a que dos sites diferentes pueden
         # concidir con el mismo slug.
-        return reverse_lazy("store-item-detail", 
+        return reverse_lazy("store-item-detail",
             kwargs={"pk": self.pk, "slug": self.slug})
 
     def clean(self):
@@ -162,10 +164,13 @@ class Item(models.Model):
 
         self.slug = slugify(self.name)
 
-        self.tags = text.Text.GetTags(self.codename, self.name, 
+        self.tags = text.Text.GetTags(self.codename, self.name,
             self.description, combinate=True)
 
     def GetImg(self):
+        if self.image_url:
+            return self.image_url
+
         field = self.GetFirstImageField()
 
         if field:
@@ -175,7 +180,7 @@ class Item(models.Model):
     def GetFirstImageField(self):
         return (self.image1 or self.image2 or self.image3)
 
-    def CalculateAmount(self, quantity=1, price=None, tax=None, 
+    def CalculateAmount(self, quantity=1, price=None, tax=None,
         tax_included=True, parse=None, rounded=None):
         """
         Calcula el importe según la cantidad, precio e impuesto indicado.
@@ -185,14 +190,14 @@ class Item(models.Model):
 
             price (Decimal): Precio (default self.price).
 
-            tax (int or float or Decimal): Impuesto a calcular 
+            tax (int or float or Decimal): Impuesto a calcular
             (default StoreSetting.objects.last().tax).
 
         """
         quantity = quantity or 1
         price = price or self.price
         tax_included = bool(tax_included)
-        
+
         try:
             tax = tax or StoreSetting.objects.last().tax
         except (AttributeError):
@@ -215,7 +220,7 @@ class Item(models.Model):
             amount = parse(amount)
             tax_amount = parse(tax_amount)
             total = parse(total)
-        
+
         if rounded:
             amount = round(amount, 2)
             tax_amount = round(tax_amount, 2)
@@ -229,7 +234,7 @@ class Group(models.Model):
     """
     IMG_DEFAULT = "/static/img/base/articulo.svg"
 
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,
     blank=True, null=True)
 
     name = models.CharField(_l("Nombre"), max_length=100)
@@ -275,7 +280,7 @@ class Brand(models.Model):
     """
     IMG_DEFAULT = "/static/img/base/info.svg"
 
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,
     blank=True, null=True)
 
     name = models.CharField(_l("Nombre"), max_length=100)
@@ -325,7 +330,7 @@ class Order(models.Model):
         (PROCESS, _("En proceso")),
         (COMPLETE, _("Completado")),
     )
-    
+
     CASH = "CASH"
     CREDIT_CARD = "CREDIT_CARD"
     BANK_ACCOUNT = "BANK_ACCOUNT"
@@ -337,7 +342,7 @@ class Order(models.Model):
         (OTHER, _("Otro")),
     )
 
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,  
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, editable=False,
     blank=True, null=True)
 
     number = models.CharField(_l("Número"), max_length=20, blank=True)
@@ -351,27 +356,27 @@ class Order(models.Model):
 
     phone = models.CharField(_l("Teléfonos"), max_length=30, blank=True)
 
-    payment_method = models.CharField(_l("Forma de pago"), max_length=20, 
+    payment_method = models.CharField(_l("Forma de pago"), max_length=20,
     choices=PAYMENT_METHOD_CHOICES, default=CASH)
 
     create_date = models.DateTimeField(_("Creación"), auto_now_add=True,
     editable=False)
 
-    create_user = models.ForeignKey("user.User", 
-    verbose_name=_l("Usuario creó"), on_delete=models.SET_NULL, null=True, 
+    create_user = models.ForeignKey("user.User",
+    verbose_name=_l("Usuario creó"), on_delete=models.SET_NULL, null=True,
     blank=True, editable=False, related_name="order_create_user")
 
-    update_date = models.DateTimeField(_("Modificación"), auto_now=True, 
+    update_date = models.DateTimeField(_("Modificación"), auto_now=True,
     editable=False)
 
-    update_user = models.ForeignKey("user.User", 
-    verbose_name=_l("Usuario modificó"), on_delete=models.SET_NULL, null=True, 
+    update_user = models.ForeignKey("user.User",
+    verbose_name=_l("Usuario modificó"), on_delete=models.SET_NULL, null=True,
     blank=True, editable=False, related_name="order_update_user")
 
     status = models.CharField(_l("Estado"), max_length=20, blank=True,
     choices=STATUS_CHOICES, default=PROCESS)
 
-    status_date = models.DateTimeField(_l("Fecha del último estado"), 
+    status_date = models.DateTimeField(_l("Fecha del último estado"),
     blank=True, null=True)
 
     accepted_policies = models.BooleanField(default=False,
@@ -379,7 +384,7 @@ class Order(models.Model):
     help_text=_("Al marcar esta casilla usted acepta y está de acuerdo con "
     "las políticas del sitio para compras en línea."))
 
-    # Campos de consultas que serán actualizados cada vez que se guarde un 
+    # Campos de consultas que serán actualizados cada vez que se guarde un
     # movimiento de esta orden.
 
     amount = models.DecimalField(_l("Importe"), max_digits=17, decimal_places=2,
@@ -390,10 +395,10 @@ class Order(models.Model):
 
     total = models.DecimalField(_l("Total"), max_digits=17, decimal_places=2,
     blank=True, null=True)
-    
+
     objects = models.Manager()
     on_site = CurrentSiteManager()
-    
+
     class Meta:
         verbose_name = _l("Orden")
         verbose_name_plural = _l("Ordenes")
@@ -410,22 +415,22 @@ class Order(models.Model):
     def clean(self):
         if not self.pk:
             self.site = Site.objects.get_current()
-            
+
             try:
                 self.user = self.user or self.create_user
             except (Order.user.RelatedObjectDoesNotExist):
                 self.user = self.create_user
 
             # siteid + today + count
-            number = "%s%s%s" % (self.site.id, 
-                timezone.now().strftime("%Y%m%d%H%M%S"), 
+            number = "%s%s%s" % (self.site.id,
+                timezone.now().strftime("%Y%m%d%H%M%S"),
                 Order.objects.count())
             self.number = number[:20]
         else:
             this = Order.objects.get(pk=self.pk)
             if this.status != self.status:
                 self.status_date = timezone.now()
-            
+
     def save(self, *args, **kwargs):
         try:
             kwargs.pop("no_update_fields")
@@ -458,7 +463,7 @@ class Order(models.Model):
 
     def update_all(self, queryset=None):
         """
-        Actualiza todas los campos actualizables, y retorna un diccionario con 
+        Actualiza todas los campos actualizables, y retorna un diccionario con
         sus valores.
         """
         queryset = queryset or self.get_movs()
@@ -482,14 +487,14 @@ class OrderNote(models.Model):
     create_date = models.DateTimeField(_("Creación"), auto_now_add=True,
     editable=False)
 
-    create_user = models.ForeignKey("user.User", 
-    verbose_name=_l("Usuario creó"), on_delete=models.SET_NULL, null=True, 
+    create_user = models.ForeignKey("user.User",
+    verbose_name=_l("Usuario creó"), on_delete=models.SET_NULL, null=True,
     blank=True, editable=False, related_name="ordernote_create_user")
 
     class Meta:
         verbose_name = _l("Nota de orden")
         verbose_name_plural = _l("Notas de ordenes")
-    
+
     def __str__(self):
         return f"{self.order}: {self.title}"
 
@@ -518,15 +523,15 @@ class Mov(models.Model):
     create_date = models.DateTimeField(_l("Creación"), auto_now_add=True,
     editable=False)
 
-    create_user = models.ForeignKey("user.User", 
-    verbose_name=_l("Usuario creó"), on_delete=models.SET_NULL, null=True, 
+    create_user = models.ForeignKey("user.User",
+    verbose_name=_l("Usuario creó"), on_delete=models.SET_NULL, null=True,
     blank=True, editable=False, related_name="mov_create_user")
 
-    update_date = models.DateTimeField(_l("Modificación"), auto_now=True, 
+    update_date = models.DateTimeField(_l("Modificación"), auto_now=True,
     editable=False)
 
-    update_user = models.ForeignKey("user.User", 
-    verbose_name=_l("Usuario modificó"), on_delete=models.SET_NULL, null=True, 
+    update_user = models.ForeignKey("user.User",
+    verbose_name=_l("Usuario modificó"), on_delete=models.SET_NULL, null=True,
     blank=True, editable=False, related_name="mov_update_user")
 
     class Meta:
@@ -543,16 +548,16 @@ class Mov(models.Model):
         else:
             self.amount = self.price * self.cant
             self.total = self.amount
-        
+
 
 class StoreSetting(models.Model):
     """
     Configuración de la tienda.
     """
-    site = models.OneToOneField(Site, on_delete=models.CASCADE, editable=False,  
+    site = models.OneToOneField(Site, on_delete=models.CASCADE, editable=False,
     blank=True, null=True)
 
-    tax = models.DecimalField(_l("impuesto porcentaje"), decimal_places=2, 
+    tax = models.DecimalField(_l("impuesto porcentaje"), decimal_places=2,
     max_digits=5, default=18,
     help_text=_l("porcentaje de impuesto a cargar a los artículos."))
 
@@ -562,19 +567,19 @@ class StoreSetting(models.Model):
     show_items_without_price = models.BooleanField(_l("mostrar artículos in precio"),
     default=False, help_text=_l("muestra los artículos aunque no tengan precio."))
 
-    policies = models.CharField(_l("políticas de la tienda en línea"), 
+    policies = models.CharField(_l("políticas de la tienda en línea"),
     max_length=700, blank=True, help_text=_l("texto que contine una versión "
     "corta de las políticas, términos y condiciones de al compara a través de "
     "la tienda en línea. Este texto aparecerá en las ordenes impresas que "
     "realicen los clientes a través la tienda en línea."))
-    
+
     objects = models.Manager()
     on_site = CurrentSiteManager()
 
     class Meta:
         verbose_name = _l("configuración de tienda")
         verbose_name_plural = _l("configuración de tienda")
-    
+
     def __str__(self):
         return str(self._meta.verbose_name)
 

@@ -32,23 +32,31 @@
     <div class="row">
         <div class="col col-12 col-md-6">
             <div id="thumbnails" class="row border-bottom pb-1">
+                {% if object.image_url %}
+                <div class="col col-3">
+                    <img src="{{ object.image_url }}" id="thumb-image_url" alt="{{ object }}" data-img="image_url" class="btn border img-thumbnail">
+                </div>
+                {% endif %}
                 {% if object.image1 %}
-                <div class="col col-4">
+                <div class="col col-3">
                     <img src="{{ object.image1|thumbnail_url:'128crop-upscale' }}" id="thumb-image1" alt="{{ object }}" data-img="image1" class="btn border img-thumbnail">
                 </div>
                 {% endif %}
                 {% if object.image2 %}
-                <div class="col col-4">
+                <div class="col col-3">
                     <img src="{{ object.image2|thumbnail_url:'128crop-upscale' }}" id="thumb-image2" alt="{{ object }}" data-img="image2" class="btn border img-thumbnail">
                 </div>
                 {% endif %}
                 {% if object.image3 %}
-                <div class="col col-4">
+                <div class="col col-3">
                     <img src="{{ object.image3|thumbnail_url:'128crop-upscale' }}" id="thumb-image3" alt="{{ object }}" data-img="image3" class="btn border img-thumbnail">
                 </div>
                 {% endif %}
             </div>
             <div>
+                {% if object.image_url %}
+                    <img src="{{ object.image_url }}" id="image_url" alt="{{ object }}" class="item-img w-100">
+                {% endif %}
                 {% if object.image1 %}
                     <img src="{{ object.image1|thumbnail_url:'512' }}" id="image1" alt="{{ object }}" class="item-img w-100">
                 {% endif %}
@@ -72,7 +80,7 @@
                 {% if object.color2 %}<span style="background-color: {{ object.color2 }}">{{ object.color2 }}</span>{% endif %}
             </div>
             {% endif %}
-            
+
             {% if object.length_width or object.length_height or object.length_depth %}
             <div>
                 <b>Dimensiones: </b>
@@ -88,7 +96,7 @@
             {% if object.material %}<div><b>Material: </b>{{ object.material }}</div>{% endif %}
             {% if object.capacity %}<div><b>Capacidad: </b>{{ object.capacity|intcomma }} {{ object.capacity_type }}</div>{% endif %}
             {% if object.price %}<div><b>Precio: </b>RD${{ object.price|intcomma }}</div>{% endif %}
-            
+
             <hr>
             <div class="container-fluid">
                 <form action="" method="POST" id="form-add-cart">
@@ -100,7 +108,7 @@
                         <span class="pr-1">{% svg 'bag-check-fill' fill='var(--success)' size='32px' %}</span>
                         <span class="message"></span>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col col-12 col-sm-6 col-md-4 pr-1">
                             {% bootstrap_field form_cart.cant show_label=False %}
@@ -119,7 +127,7 @@
                         </div>
                     </div>
                 </form>
-            </div>            
+            </div>
         </div>
     </div>
 </div>
@@ -146,9 +154,9 @@
     } catch (error) {}
 
 
-    // {# Añadimos el evento click a cada thubnail. #} 
+    // {# Añadimos el evento click a cada thubnail. #}
     item_thumb_imgs.forEach(function(thumb) {
-        
+
         thumb.onclick = function(event) {
 
             // {# Ocultamos las imágenes y mostramos solo la elegida. #}

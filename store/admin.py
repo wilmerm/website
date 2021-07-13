@@ -16,44 +16,44 @@ get_current_site = Site.objects.get_current
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
-    
+
     fieldsets = (
         (None, {
-            "fields": ("codename", "name", "description", "group", "brand", 
+            "fields": ("codename", "name", "description", "group", "brand",
                         "price", "is_active", "is_featured", "available")
         }),
         (_("Imagen"), {
-            "fields": ("image1", "image2", "image3"),
+            "fields": ("image_url", "image1", "image2", "image3"),
         }),
         (_("Color"), {
             "fields": (("color1", "color2"),),
         }),
         (_("Otras características físicas"), {
             "fields": (
-                ("weight", "weight_type"), 
-                ("volumen", "volumen_type"), 
-                ("length_width", "length_height", "length_depth", "length_type"), 
+                ("weight", "weight_type"),
+                ("volumen", "volumen_type"),
+                ("length_width", "length_height", "length_depth", "length_type"),
                 "material",)
         }),
         (_("Características técnicas"), {
             "fields": (("capacity", "capacity_type"),),
             "classes": ('wide', 'extrapretty'),
             #"description": _("Estadísticas de uso para este artículo."),
-        }), 
+        }),
     )
 
     readonly_fields = ("count_search", "count_views", "count_taken", "count_sold")
 
-    search_fields = ("codename__istartswith", "name__icontains", 
+    search_fields = ("codename__istartswith", "name__icontains",
     "brand__name__istartswith")
 
     def get_list_display(self, request):
         if request.user.is_superuser:
-            return ("get_image", "get_text", "brand", "price", "available", 
-                "is_featured", "is_active", "count_views", "count_taken", 
+            return ("get_image", "get_text", "brand", "price", "available",
+                "is_featured", "is_active", "count_views", "count_taken",
                 "count_sold", "site")
-        return ("get_image", "get_text", "brand", "price", "available", 
-            "is_featured", "is_active", "count_views", "count_taken", 
+        return ("get_image", "get_text", "brand", "price", "available",
+            "is_featured", "is_active", "count_views", "count_taken",
             "count_sold")
 
 
@@ -128,16 +128,16 @@ class OrderAdmin(admin.ModelAdmin):
 
     def get_list_display(self, request):
         if request.user.is_superuser:
-            return ("number", "user", "create_date", "payment_method", 
+            return ("number", "user", "create_date", "payment_method",
                 "status", "site")
         return ("number", "user", "create_date", "payment_method", "status")
 
     def get_list_filter(self, request):
         if request.user.is_superuser:
-            return ("site", "user", "payment_method", "create_date", "status", 
+            return ("site", "user", "payment_method", "create_date", "status",
                 "accepted_policies")
         return ("user", "payment_method", "create_date", "status")
-        
+
 
     def get_queryset(self, request):
         if request.user.is_superuser:
